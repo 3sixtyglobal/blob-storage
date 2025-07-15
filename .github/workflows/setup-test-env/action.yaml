@@ -1,0 +1,57 @@
+name: 'Setup Testing Environment'
+description: 'Set up the testing environment for running tests from the build workflow.'
+
+inputs:
+  package:
+    description: 'The package to set up the test environment for.'
+    required: true
+    default: 'all'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Start IPFS Kubo
+      if: inputs.package == 'packages/blob-storage-connector-ipfs' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker run -d \
+          --name ipfs \
+          -p 4001:4001 \
+          -p 4001:4001/udp \
+          -p 8080:8080 \
+          -p 5001:5001 \
+          ipfs/kubo:latest
+
+    - name: Start LocalStack
+      if: inputs.package == 'packages/blob-storage-connector-aws-s3' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker run -d \
+          --name localstack \
+          -p 4566:4566 \
+          -p 4571:4571 \
+          -e AWS_DEFAULT_REGION=eu-central-1 \
+          -e AWS_ACCESS_KEY_ID=test \
+          -e AWS_SECRET_ACCESS_KEY=test \
+          -e SERVICES=s3 \
+          localstack/localstack:latest
+
+    - name: Start Azurite
+      if: inputs.package == 'packages/blob-storage-connector-azure' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker run -d \
+          --name azurite \
+          -p 10000:10000 \
+          -e AZURITE_ACCOUNTS=testAccount:testKey \
+          mcr.microsoft.com/azure-storage/azurite:latest
+
+    - name: Start GCP Storage Emulator
+      if: inputs.package == 'packages/blob-storage-connector-gcp' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker run -d \
+          -p 4443:4443 \
+          --name gcp-storage-emulator \
+          fsouza/fake-gcs-server:latest \
+          -scheme http
