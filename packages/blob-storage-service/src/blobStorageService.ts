@@ -56,8 +56,9 @@ import type { IBlobStorageServiceConstructorOptions } from "./models/IBlobStorag
 export class BlobStorageService implements IBlobStorageComponent {
 	/**
 	 * The namespace supported by the blob storage service.
+	 * @internal
 	 */
-	public static readonly NAMESPACE: string = "blob";
+	private static readonly _NAMESPACE: string = "blob";
 
 	/**
 	 * Runtime name for the class.
@@ -535,9 +536,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 	private getConnector(id: string): IBlobStorageConnector {
 		const idUri = Urn.fromValidString(id);
 
-		if (idUri.namespaceIdentifier() !== BlobStorageService.NAMESPACE) {
+		if (idUri.namespaceIdentifier() !== BlobStorageService._NAMESPACE) {
 			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
-				namespace: BlobStorageService.NAMESPACE,
+				namespace: BlobStorageService._NAMESPACE,
 				id
 			});
 		}
