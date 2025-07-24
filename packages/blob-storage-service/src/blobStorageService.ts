@@ -91,16 +91,10 @@ export class BlobStorageService implements IBlobStorageComponent {
 	private readonly _vaultKeyId: string | undefined;
 
 	/**
-	 * Include the node identity when performing storage operations, defaults to true.
+	 * Include the user identity when performing storage operations, can be used to partition for users, defaults to false.
 	 * @internal
 	 */
-	private readonly _includeNodeIdentity: boolean;
-
-	/**
-	 * Include the user identity when performing storage operations, defaults to true.
-	 * @internal
-	 */
-	private readonly _includeUserIdentity: boolean;
+	private readonly _partitionPerUser: boolean;
 
 	/**
 	 * Create a new instance of BlobStorageService.
@@ -121,8 +115,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 		this._defaultNamespace = options?.config?.defaultNamespace ?? names[0];
 		this._vaultKeyId = options?.config?.vaultKeyId;
-		this._includeNodeIdentity = options?.config?.includeNodeIdentity ?? true;
-		this._includeUserIdentity = options?.config?.includeUserIdentity ?? true;
+		this._partitionPerUser = options?.config?.partitionPerUser ?? false;
 
 		SchemaOrgDataTypes.registerRedirects();
 	}
@@ -157,17 +150,13 @@ export class BlobStorageService implements IBlobStorageComponent {
 		nodeIdentity?: string
 	): Promise<string> {
 		Guards.stringBase64(this.CLASS_NAME, nameof(blob), blob);
-		if (this._includeUserIdentity) {
+		if (this._partitionPerUser) {
 			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
 		}
 
 		const disableEncryption = options?.disableEncryption ?? false;
 		const vaultKeyId = options?.overrideVaultKeyId ?? this._vaultKeyId;
 		const encryptionEnabled = !disableEncryption && Is.stringValue(vaultKeyId);
-
-		if (this._includeNodeIdentity || encryptionEnabled) {
-			Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
-		}
 
 		try {
 			const connectorNamespace = options?.namespace ?? this._defaultNamespace;
@@ -204,6 +193,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 			// If we have a vault connector then encrypt the data.
 			if (encryptionEnabled) {
+				Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
 				if (Is.empty(this._vaultConnector)) {
 					throw new GeneralError(this.CLASS_NAME, "vaultConnectorNotConfigured");
 				}
@@ -231,13 +221,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 			};
 
 			const conditions: { property: keyof BlobStorageEntry; value: unknown }[] = [];
-			if (this._includeUserIdentity) {
+			if (this._partitionPerUser) {
 				ObjectHelper.propertySet(blobEntry, "userIdentity", userIdentity);
 				conditions.push({ property: "userIdentity", value: userIdentity });
-			}
-			if (this._includeNodeIdentity) {
-				ObjectHelper.propertySet(blobEntry, "nodeIdentity", nodeIdentity);
-				conditions.push({ property: "nodeIdentity", value: nodeIdentity });
 			}
 
 			await this._entryEntityStorage.set(blobEntry, conditions);
@@ -277,7 +263,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 		const conditions: EntityCondition<BlobStorageEntry>[] = [];
 
-		if (this._includeUserIdentity) {
+		if (this._partitionPerUser) {
 			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
 			conditions.push({
 				property: "userIdentity",
@@ -285,17 +271,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 				value: userIdentity
 			});
 		}
-		if (this._includeNodeIdentity || (Is.notEmpty(this._vaultConnector) && includeContent)) {
-			Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
-			conditions.push({
-				property: "nodeIdentity",
-				comparison: ComparisonOperator.Equals,
-				value: nodeIdentity
-			});
-		}
 
 		try {
-			const blobEntry = await this.internalGet(id, userIdentity, nodeIdentity);
+			const blobEntry = await this.internalGet(id, userIdentity);
 
 			let returnBlob: Uint8Array | undefined;
 			if (includeContent) {
@@ -308,6 +286,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 				// If the data is encrypted then decrypt it.
 				const decryptionEnabled = blobEntry.isEncrypted && Is.stringValue(vaultKeyId);
 				if (decryptionEnabled) {
+					Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
 					if (Is.empty(this._vaultConnector)) {
 						throw new GeneralError(this.CLASS_NAME, "vaultConnectorNotConfigured");
 					}
@@ -337,7 +316,6 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param fileExtension Extension for the blob, will be detected if left undefined.
 	 * @param metadata Data for the custom metadata as JSON-LD.
 	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns Nothing.
 	 * @throws Not found error if the blob cannot be found.
 	 */
@@ -346,15 +324,11 @@ export class BlobStorageService implements IBlobStorageComponent {
 		encodingFormat?: string,
 		fileExtension?: string,
 		metadata?: IJsonLdNodeObject,
-		userIdentity?: string,
-		nodeIdentity?: string
+		userIdentity?: string
 	): Promise<void> {
 		Urn.guard(this.CLASS_NAME, nameof(id), id);
-		if (this._includeUserIdentity) {
+		if (this._partitionPerUser) {
 			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
-		}
-		if (this._includeNodeIdentity || Is.notEmpty(this._vaultConnector)) {
-			Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
 		}
 
 		try {
@@ -385,13 +359,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 			};
 
 			const conditions: { property: keyof BlobStorageEntry; value: unknown }[] = [];
-			if (this._includeUserIdentity) {
+			if (this._partitionPerUser) {
 				ObjectHelper.propertySet(updatedBlobEntry, "userIdentity", userIdentity);
 				conditions.push({ property: "userIdentity", value: userIdentity });
-			}
-			if (this._includeNodeIdentity) {
-				ObjectHelper.propertySet(updatedBlobEntry, "nodeIdentity", nodeIdentity);
-				conditions.push({ property: "nodeIdentity", value: nodeIdentity });
 			}
 
 			await this._entryEntityStorage.set(updatedBlobEntry, conditions);
@@ -404,27 +374,20 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
 	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns Nothing.
 	 */
-	public async remove(id: string, userIdentity?: string, nodeIdentity?: string): Promise<void> {
+	public async remove(id: string, userIdentity?: string): Promise<void> {
 		Urn.guard(this.CLASS_NAME, nameof(id), id);
-		if (this._includeUserIdentity) {
+		if (this._partitionPerUser) {
 			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
-		}
-		if (this._includeNodeIdentity || Is.notEmpty(this._vaultConnector)) {
-			Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
 		}
 
 		try {
 			const blobStorageConnector = this.getConnector(id);
 
 			const conditions: { property: keyof BlobStorageEntry; value: unknown }[] = [];
-			if (this._includeUserIdentity) {
+			if (this._partitionPerUser) {
 				conditions.push({ property: "userIdentity", value: userIdentity });
-			}
-			if (this._includeNodeIdentity) {
-				conditions.push({ property: "nodeIdentity", value: nodeIdentity });
 			}
 			await this._entryEntityStorage.remove(id, conditions);
 
@@ -446,7 +409,6 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param cursor The cursor to request the next page of entries.
 	 * @param pageSize The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
 	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns All the entries for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -456,23 +418,14 @@ export class BlobStorageService implements IBlobStorageComponent {
 		orderByDirection?: SortDirection,
 		cursor?: string,
 		pageSize?: number,
-		userIdentity?: string,
-		nodeIdentity?: string
+		userIdentity?: string
 	): Promise<IBlobStorageEntryList> {
 		const finalConditions: EntityCondition<IBlobStorageEntry> = {
 			conditions: [],
 			logicalOperator: LogicalOperator.And
 		};
 
-		if (this._includeNodeIdentity) {
-			Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
-			finalConditions.conditions.push({
-				property: "nodeIdentity",
-				comparison: ComparisonOperator.Equals,
-				value: nodeIdentity
-			});
-		}
-		if (this._includeUserIdentity) {
+		if (this._partitionPerUser) {
 			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
 			finalConditions.conditions.push({
 				property: "userIdentity",
@@ -551,31 +504,18 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param id The id of the entity to get, or the index value if secondaryIndex is set.
 	 * @param secondaryIndex Get the item using a secondary index.
 	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns The object if it can be found or throws.
 	 * @internal
 	 */
-	private async internalGet(
-		id: string,
-		userIdentity?: string,
-		nodeIdentity?: string
-	): Promise<BlobStorageEntry> {
+	private async internalGet(id: string, userIdentity?: string): Promise<BlobStorageEntry> {
 		const conditions: EntityCondition<BlobStorageEntry>[] = [];
 
-		if (this._includeUserIdentity) {
+		if (this._partitionPerUser) {
 			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
 			conditions.push({
 				property: "userIdentity",
 				comparison: ComparisonOperator.Equals,
 				value: userIdentity
-			});
-		}
-		if (this._includeNodeIdentity) {
-			Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
-			conditions.push({
-				property: "nodeIdentity",
-				comparison: ComparisonOperator.Equals,
-				value: nodeIdentity
 			});
 		}
 
@@ -610,7 +550,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 			throw new NotFoundError(this.CLASS_NAME, "entityNotFound", id);
 		}
 
-		return ObjectHelper.omit(entity, ["nodeIdentity", "userIdentity"]) as BlobStorageEntry;
+		return ObjectHelper.omit(entity, ["userIdentity"]) as BlobStorageEntry;
 	}
 
 	/**

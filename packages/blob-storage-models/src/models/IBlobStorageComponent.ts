@@ -71,7 +71,6 @@ export interface IBlobStorageComponent extends IComponent {
 	 * @param fileExtension Extension for the blob, will be detected if left undefined.
 	 * @param metadata Data for the custom metadata as JSON-LD.
 	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns Nothing.
 	 * @throws Not found error if the blob cannot be found.
 	 */
@@ -80,19 +79,17 @@ export interface IBlobStorageComponent extends IComponent {
 		encodingFormat?: string,
 		fileExtension?: string,
 		metadata?: IJsonLdNodeObject,
-		userIdentity?: string,
-		nodeIdentity?: string
+		userIdentity?: string
 	): Promise<void>;
 
 	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
 	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns Nothing.
 	 * @throws Not found error if the blob cannot be found.
 	 */
-	remove(id: string, userIdentity?: string, nodeIdentity?: string): Promise<void>;
+	remove(id: string, userIdentity?: string): Promise<void>;
 
 	/**
 	 * Query all the blob storage entries which match the conditions.
@@ -102,7 +99,6 @@ export interface IBlobStorageComponent extends IComponent {
 	 * @param cursor The cursor to request the next page of entries.
 	 * @param pageSize The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
 	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns All the entries for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -112,7 +108,6 @@ export interface IBlobStorageComponent extends IComponent {
 		orderByDirection?: SortDirection,
 		cursor?: string,
 		pageSize?: number,
-		userIdentity?: string,
-		nodeIdentity?: string
+		userIdentity?: string
 	): Promise<IBlobStorageEntryList>;
 }

@@ -79,10 +79,4 @@ export class BlobStorageEntry {
 	 */
 	@property({ type: "string", optional: true })
 	public userIdentity?: string;
-
-	/**
-	 * The node identity that created the blob.
-	 */
-	@property({ type: "string", optional: true })
-	public nodeIdentity?: string;
 }

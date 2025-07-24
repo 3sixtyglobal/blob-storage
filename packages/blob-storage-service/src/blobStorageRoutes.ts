@@ -611,8 +611,7 @@ export async function blobStorageUpdate(
 		request.body.encodingFormat,
 		request.body.fileExtension,
 		request.body.metadata,
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
+		httpRequestContext.userIdentity
 	);
 
 	return {
@@ -642,11 +641,7 @@ export async function blobStorageRemove(
 
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
-	await component.remove(
-		request.pathParams.id,
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
-	);
+	await component.remove(request.pathParams.id, httpRequestContext.userIdentity);
 
 	return {
 		statusCode: HttpStatusCode.noContent
@@ -677,8 +672,7 @@ export async function blobStorageList(
 		request.query?.orderByDirection,
 		request.query?.cursor,
 		Coerce.number(request.query?.pageSize),
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
+		httpRequestContext.userIdentity
 	);
 
 	return {

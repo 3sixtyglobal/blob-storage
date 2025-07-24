@@ -54,9 +54,7 @@ describe("blob-storage-service", () => {
 	});
 
 	test("can add a file with no metadata", async () => {
-		const service = new BlobStorageService({
-			config: { includeNodeIdentity: false, includeUserIdentity: false }
-		});
+		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
 		await service.create(data);
@@ -97,9 +95,7 @@ describe("blob-storage-service", () => {
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
-				isEncrypted: false,
-				nodeIdentity: "test-node-identity",
-				userIdentity: "test-user-identity"
+				isEncrypted: false
 			}
 		]);
 		expect(blobStorage.getStore()).toEqual({
@@ -107,7 +103,7 @@ describe("blob-storage-service", () => {
 		});
 	});
 
-	test("can add a file with metadata with userIdentity and nodeIdentity", async () => {
+	test("can add a file with metadata with userIdentity", async () => {
 		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
@@ -133,8 +129,6 @@ describe("blob-storage-service", () => {
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
 				isEncrypted: false,
-				nodeIdentity: "test-node-identity",
-				userIdentity: "test-user-identity",
 				metadata: {
 					"@context": "https://schema.org",
 					"@type": "CreativeWork",
@@ -148,9 +142,7 @@ describe("blob-storage-service", () => {
 	});
 
 	test("can get a file with no metadata", async () => {
-		const service = new BlobStorageService({
-			config: { includeNodeIdentity: false, includeUserIdentity: false }
-		});
+		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
 		const id = await service.create(data);
@@ -318,9 +310,7 @@ describe("blob-storage-service", () => {
 	});
 
 	test("can update a file with metadata", async () => {
-		const service = new BlobStorageService({
-			config: { includeNodeIdentity: false, includeUserIdentity: false }
-		});
+		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
 		const id = await service.create(data);
@@ -372,8 +362,7 @@ describe("blob-storage-service", () => {
 				"@type": "CreativeWork",
 				name: "Test2"
 			},
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
+			TEST_USER_IDENTITY
 		);
 		expect(entityStorage.getStore()).toEqual([
 			{
@@ -385,8 +374,6 @@ describe("blob-storage-service", () => {
 				blobSize: 43,
 				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				isEncrypted: false,
-				nodeIdentity: "test-node-identity",
-				userIdentity: "test-user-identity",
 				metadata: {
 					"@context": "https://schema.org",
 					"@type": "CreativeWork",
@@ -397,9 +384,7 @@ describe("blob-storage-service", () => {
 	});
 
 	test("can remove a file with metadata", async () => {
-		const service = new BlobStorageService({
-			config: { includeNodeIdentity: false, includeUserIdentity: false }
-		});
+		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
 		const id = await service.create(data, undefined, undefined, {
@@ -431,15 +416,13 @@ describe("blob-storage-service", () => {
 			TEST_NODE_IDENTITY
 		);
 
-		await service.remove(id, TEST_USER_IDENTITY, TEST_NODE_IDENTITY);
+		await service.remove(id, TEST_USER_IDENTITY);
 		expect(entityStorage.getStore()).toEqual([]);
 		expect(blobStorage.getStore()).toEqual({});
 	});
 
 	test("can query the entries", async () => {
-		const service = new BlobStorageService({
-			config: { includeNodeIdentity: false, includeUserIdentity: false }
-		});
+		const service = new BlobStorageService();
 
 		for (let i = 0; i < 3; i++) {
 			const dataBytes = Converter.utf8ToBytes(`The quick brown fox jumps over the lazy dog${i}`);
@@ -616,9 +599,7 @@ describe("blob-storage-service", () => {
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
-				isEncrypted: true,
-				nodeIdentity: "test-node-identity",
-				userIdentity: "test-user-identity"
+				isEncrypted: true
 			}
 		]);
 
@@ -678,9 +659,7 @@ describe("blob-storage-service", () => {
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
-				isEncrypted: false,
-				nodeIdentity: "test-node-identity",
-				userIdentity: "test-user-identity"
+				isEncrypted: false
 			}
 		]);
 
@@ -740,9 +719,7 @@ describe("blob-storage-service", () => {
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
-				isEncrypted: true,
-				nodeIdentity: "test-node-identity",
-				userIdentity: "test-user-identity"
+				isEncrypted: true
 			}
 		]);
 
@@ -783,9 +760,7 @@ describe("blob-storage-service", () => {
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
 				isEncrypted: false,
-				compression: BlobStorageCompressionType.Gzip,
-				nodeIdentity: "test-node-identity",
-				userIdentity: "test-user-identity"
+				compression: BlobStorageCompressionType.Gzip
 			}
 		]);
 

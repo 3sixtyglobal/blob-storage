@@ -17,12 +17,7 @@ export interface IBlobStorageServiceConfig {
 	defaultNamespace?: string;
 
 	/**
-	 * Include the node identity when performing storage operations, defaults to true.
+	 * Include the user identity when performing storage operations, allow partitioning per user, defaults to false.
 	 */
-	includeNodeIdentity?: boolean;
-
-	/**
-	 * Include the user identity when performing storage operations, defaults to true.
-	 */
-	includeUserIdentity?: boolean;
+	partitionPerUser?: boolean;
 }
