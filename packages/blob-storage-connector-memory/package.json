@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-connector-memory",
-	"version": "0.0.2-next.0",
+	"version": "0.0.2-next.1",
 	"description": "Blob Storage connector implementation using in-memory storage",
 	"repository": {
 		"type": "git",
@@ -30,7 +30,7 @@
 		"prepare": "ts-patch install -s"
 	},
 	"dependencies": {
-		"@twin.org/blob-storage-models": "0.0.2-next.0",
+		"@twin.org/blob-storage-models": "0.0.2-next.1",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
 		"@twin.org/nameof": "next"
