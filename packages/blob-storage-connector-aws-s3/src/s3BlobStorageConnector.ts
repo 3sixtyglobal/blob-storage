@@ -10,9 +10,9 @@ import {
 	S3Client
 } from "@aws-sdk/client-s3";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { BaseError, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import { BaseError, ComponentFactory, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
-import { LoggingConnectorFactory } from "@twin.org/logging-models";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
 import type { IS3BlobStorageConnectorConfig } from "./models/IS3BlobStorageConnectorConfig";
 import type { IS3BlobStorageConnectorConstructorOptions } from "./models/IS3BlobStorageConnectorConstructorOptions";
@@ -86,13 +86,11 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Bootstrap the component by creating and initializing any resources it needs.
-	 * @param nodeLoggingConnectorType The node logging connector type, defaults to "node-logging".
+	 * @param nodeLoggingComponentType The node logging component type.
 	 * @returns True if the bootstrapping process was successful.
 	 */
-	public async bootstrap(nodeLoggingConnectorType?: string): Promise<boolean> {
-		const nodeLogging = LoggingConnectorFactory.getIfExists(
-			nodeLoggingConnectorType ?? "node-logging"
-		);
+	public async bootstrap(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 
 		try {
 			await nodeLogging?.log({

@@ -549,7 +549,7 @@ describe("blob-storage-service", () => {
 		).rejects.toMatchObject({
 			name: "GeneralError",
 			message: "blobStorageService.createFailed",
-			inner: {
+			cause: {
 				name: "GeneralError",
 				message: "blobStorageService.vaultConnectorNotConfigured"
 			}

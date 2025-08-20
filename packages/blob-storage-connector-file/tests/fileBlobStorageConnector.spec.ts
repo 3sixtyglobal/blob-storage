@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { rm } from "node:fs/promises";
-import { Converter, I18n, RandomHelper } from "@twin.org/core";
+import { ComponentFactory, Converter, I18n, RandomHelper } from "@twin.org/core";
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
 import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
 import {
@@ -10,6 +10,7 @@ import {
 	initSchema
 } from "@twin.org/logging-connector-entity-storage";
 import { LoggingConnectorFactory } from "@twin.org/logging-models";
+import { LoggingService } from "@twin.org/logging-service";
 import { nameof } from "@twin.org/nameof";
 import { FileBlobStorageConnector } from "../src/fileBlobStorageConnector";
 import type { IFileBlobStorageConnectorConfig } from "../src/models/IFileBlobStorageConnectorConfig";
@@ -32,7 +33,7 @@ describe("FileBlobStorageConnector", () => {
 		});
 		EntityStorageConnectorFactory.register("log-entry", () => memoryEntityStorage);
 		LoggingConnectorFactory.register("logging", () => new EntityStorageLoggingConnector());
-		LoggingConnectorFactory.register("node-logging", () => new EntityStorageLoggingConnector());
+		ComponentFactory.register("logging", () => new LoggingService());
 	});
 
 	afterAll(async () => {
@@ -114,7 +115,7 @@ describe("FileBlobStorageConnector", () => {
 				directory: "|\0"
 			}
 		});
-		await blobStorage.bootstrap();
+		await blobStorage.bootstrap("logging");
 		const logs = memoryEntityStorage.getStore();
 		expect(logs).toBeDefined();
 		expect(logs?.length).toEqual(2);
@@ -130,7 +131,7 @@ describe("FileBlobStorageConnector", () => {
 				directory: TEST_DIRECTORY
 			}
 		});
-		await blobStorage.bootstrap();
+		await blobStorage.bootstrap("logging");
 		const logs = memoryEntityStorage.getStore();
 		expect(logs).toBeDefined();
 		expect(logs?.length).toEqual(2);
@@ -146,7 +147,7 @@ describe("FileBlobStorageConnector", () => {
 				directory: TEST_DIRECTORY
 			}
 		});
-		await blobStorage.bootstrap();
+		await blobStorage.bootstrap("logging");
 		const logs = memoryEntityStorage.getStore();
 		expect(logs).toBeDefined();
 		expect(logs?.length).toEqual(1);

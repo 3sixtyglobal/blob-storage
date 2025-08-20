@@ -19,7 +19,7 @@ describe("S3BlobStorageConnector", () => {
 
 	test("can bootstrap", async () => {
 		const blobStorage = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
-		await blobStorage.bootstrap();
+		await blobStorage.bootstrap("logging");
 		expect(blobStorage).toBeDefined();
 	});
 

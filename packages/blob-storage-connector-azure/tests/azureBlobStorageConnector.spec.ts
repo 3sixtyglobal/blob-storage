@@ -18,7 +18,7 @@ describe("AzureBlobStorageConnector", () => {
 
 	test("can bootstrap", async () => {
 		const blobStorage = new AzureBlobStorageConnector({ config: TEST_AZURE_CONFIG });
-		await blobStorage.bootstrap();
+		await blobStorage.bootstrap("logging");
 		expect(blobStorage).toBeDefined();
 	});
 

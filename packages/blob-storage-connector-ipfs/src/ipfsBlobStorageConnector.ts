@@ -54,7 +54,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
 
 		try {
-			const formBlob = new Blob([blob], { type: MimeTypes.OctetStream });
+			const formBlob = new Blob([new Uint8Array(blob)], { type: MimeTypes.OctetStream });
 			const formData = new FormData();
 			formData.append("file", formBlob);
 

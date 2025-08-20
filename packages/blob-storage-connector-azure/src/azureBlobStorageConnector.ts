@@ -1,18 +1,18 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
-	type BlockBlobClient,
-	BlobServiceClient,
-	type ContainerClient,
 	type BlobClient,
 	type BlobDeleteOptions,
 	type BlobDeleteResponse,
+	BlobServiceClient,
+	type BlockBlobClient,
+	type ContainerClient,
 	StorageSharedKeyCredential
 } from "@azure/storage-blob";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { BaseError, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import { BaseError, ComponentFactory, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
-import { LoggingConnectorFactory } from "@twin.org/logging-models";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
 import type { IAzureBlobStorageConnectorConfig } from "./models/IAzureBlobStorageConnectorConfig";
 import type { IAzureBlobStorageConnectorConstructorOptions } from "./models/IAzureBlobStorageConnectorConstructorOptions";
@@ -94,13 +94,11 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Bootstrap the component by creating and initializing any resources it needs.
-	 * @param nodeLoggingConnectorType The node logging connector type, defaults to "node-logging".
+	 * @param nodeLoggingComponentType The node logging component type.
 	 * @returns True if the bootstrapping process was successful.
 	 */
-	public async bootstrap(nodeLoggingConnectorType?: string): Promise<boolean> {
-		const nodeLogging = LoggingConnectorFactory.getIfExists(
-			nodeLoggingConnectorType ?? "node-logging"
-		);
+	public async bootstrap(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 
 		try {
 			await nodeLogging?.log({

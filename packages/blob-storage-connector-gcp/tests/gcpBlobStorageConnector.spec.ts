@@ -19,7 +19,7 @@ describe("GcpBlobStorageConnector", () => {
 
 	test("can bootstrap", async () => {
 		const blobStorage = new GcpBlobStorageConnector({ config: TEST_GCP_CONFIG });
-		await blobStorage.bootstrap();
+		await blobStorage.bootstrap("logging");
 		expect(blobStorage).toBeDefined();
 	});
 

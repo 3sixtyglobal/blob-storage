@@ -72,7 +72,7 @@ describe("IpfsBlobStorageConnector", () => {
 		await expect(blobStorage.get(errorUri)).rejects.toMatchObject({
 			name: "GeneralError",
 			message: "ipfsBlobStorageConnector.getBlobFailed",
-			inner: {
+			cause: {
 				name: "GeneralError",
 				message: "ipfsBlobStorageConnector.fetchFail",
 				properties: {
@@ -125,7 +125,7 @@ describe("IpfsBlobStorageConnector", () => {
 		await expect(blobStorage.remove(errorUri)).rejects.toMatchObject({
 			name: "GeneralError",
 			message: "ipfsBlobStorageConnector.removeBlobFailed",
-			inner: {
+			cause: {
 				name: "GeneralError",
 				message: "ipfsBlobStorageConnector.fetchFail",
 				properties: {
