@@ -1,5 +1,12 @@
 # @twin.org/blob-storage-models - Changelog
 
+## [0.0.2-next.3](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.2-next.2...blob-storage-models-v0.0.2-next.3) (2025-08-29)
+
+
+### Features
+
+* eslint migration to flat config ([e4239dd](https://github.com/twinfoundation/blob-storage/commit/e4239dd1c721955cff7f0357255d2bba15319972))
+
 ## [0.0.2-next.2](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.2-next.1...blob-storage-models-v0.0.2-next.2) (2025-08-20)
 
 
