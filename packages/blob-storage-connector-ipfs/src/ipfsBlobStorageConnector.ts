@@ -181,13 +181,10 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	private addSecurity(requestInit: RequestInit): void {
 		if (Is.stringValue(this._config.bearerToken)) {
-			const token = HeaderHelper.createBearer(this._config.bearerToken);
-			if (Is.stringValue(token)) {
-				requestInit.headers = {
-					...requestInit.headers,
-					[HeaderTypes.Authorization]: token
-				};
-			}
+			requestInit.headers = {
+				...requestInit.headers,
+				[HeaderTypes.Authorization]: HeaderHelper.createBearer(this._config.bearerToken)
+			};
 		}
 	}
 }
