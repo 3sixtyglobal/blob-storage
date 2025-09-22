@@ -3,7 +3,7 @@
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { GeneralError, Guards, Is, StringHelper, Urn } from "@twin.org/core";
 import { nameof } from "@twin.org/nameof";
-import { HeaderTypes, MimeTypes } from "@twin.org/web";
+import { HeaderHelper, HeaderTypes, MimeTypes } from "@twin.org/web";
 import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig";
 import type { IIpfsBlobStorageConnectorConstructorOptions } from "./models/IIpfsBlobStorageConnectorConstructorOptions";
 
@@ -181,10 +181,13 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	private addSecurity(requestInit: RequestInit): void {
 		if (Is.stringValue(this._config.bearerToken)) {
-			requestInit.headers = {
-				...requestInit.headers,
-				Authorization: `Bearer ${this._config.bearerToken}`
-			};
+			const token = HeaderHelper.createBearer(this._config.bearerToken);
+			if (Is.stringValue(token)) {
+				requestInit.headers = {
+					...requestInit.headers,
+					[HeaderTypes.Authorization]: token
+				};
+			}
 		}
 	}
 }
