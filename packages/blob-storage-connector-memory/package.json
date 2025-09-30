@@ -69,5 +69,23 @@
 		"dist/types",
 		"locales",
 		"docs"
+	],
+	"keywords": [
+		"twin",
+		"trade",
+		"iota",
+		"framework",
+		"blockchain",
+		"blob-storage",
+		"blob",
+		"storage",
+		"files",
+		"binary",
+		"connector",
+		"adapter",
+		"integration",
+		"memory",
+		"in-memory",
+		"testing"
 	]
 }
