@@ -1,5 +1,20 @@
 # @twin.org/blob-storage-connector-ipfs - Changelog
 
+## [0.0.2-next.4](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-ipfs-v0.0.2-next.3...blob-storage-connector-ipfs-v0.0.2-next.4) (2025-10-02)
+
+
+### Features
+
+* use new createBearer method ([f87c550](https://github.com/twinfoundation/blob-storage/commit/f87c5502fe3b5fee81257d7500f5d4500ea5ed28))
+* use new createBearer method ([a965801](https://github.com/twinfoundation/blob-storage/commit/a96580160315c363fc0f06a1615cc92d4339a5e4))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.2-next.3 to 0.0.2-next.4
+
 ## [0.0.2-next.3](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-ipfs-v0.0.2-next.2...blob-storage-connector-ipfs-v0.0.2-next.3) (2025-08-29)
 
 

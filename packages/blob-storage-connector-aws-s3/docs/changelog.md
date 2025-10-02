@@ -1,5 +1,19 @@
 # @twin.org/blob-storage-connector-aws-s3 - Changelog
 
+## [0.0.2-next.4](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-aws-s3-v0.0.2-next.3...blob-storage-connector-aws-s3-v0.0.2-next.4) (2025-10-02)
+
+
+### Features
+
+* add AWS pod authentication mode ([c34b11c](https://github.com/twinfoundation/blob-storage/commit/c34b11cb32d3310a9e59840341a2b0b4221bc780))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.2-next.3 to 0.0.2-next.4
+
 ## [0.0.2-next.3](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-aws-s3-v0.0.2-next.2...blob-storage-connector-aws-s3-v0.0.2-next.3) (2025-08-29)
 
 
