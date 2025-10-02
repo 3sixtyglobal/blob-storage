@@ -61,25 +61,32 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			nameof(options.config.bucketName),
 			options.config.bucketName
 		);
-		Guards.stringValue(
-			this.CLASS_NAME,
-			nameof(options.config.accessKeyId),
-			options.config.accessKeyId
-		);
-		Guards.stringValue(
-			this.CLASS_NAME,
-			nameof(options.config.secretAccessKey),
-			options.config.secretAccessKey
-		);
+
+		options.config.authMode ??= "credentials";
+
+		let credentials;
+		if (options.config.authMode === "credentials") {
+			Guards.stringValue(
+				this.CLASS_NAME,
+				nameof(options.config.accessKeyId),
+				options.config.accessKeyId
+			);
+			Guards.stringValue(
+				this.CLASS_NAME,
+				nameof(options.config.secretAccessKey),
+				options.config.secretAccessKey
+			);
+			credentials = {
+				accessKeyId: options.config.accessKeyId,
+				secretAccessKey: options.config.secretAccessKey
+			};
+		}
 
 		this._config = options.config;
 		this._s3Client = new S3Client({
 			region: this._config.region,
 			endpoint: this._config.endpoint,
-			credentials: {
-				accessKeyId: this._config.accessKeyId,
-				secretAccessKey: this._config.secretAccessKey
-			},
+			credentials,
 			forcePathStyle: true
 		});
 	}
