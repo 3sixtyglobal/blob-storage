@@ -1,4 +1,4 @@
-# Class: BlobStorageClient
+# Class: BlobStorageRestClient
 
 Client for performing blob storage through to REST endpoints.
 
@@ -14,7 +14,7 @@ Client for performing blob storage through to REST endpoints.
 
 ### Constructor
 
-> **new BlobStorageClient**(`config`): `BlobStorageClient`
+> **new BlobStorageRestClient**(`config`): `BlobStorageRestClient`
 
 Create a new instance of BlobStorageClient.
 
@@ -28,7 +28,7 @@ The configuration for the client.
 
 #### Returns
 
-`BlobStorageClient`
+`BlobStorageRestClient`
 
 #### Overrides
 
@@ -38,13 +38,9 @@ The configuration for the client.
 
 ### CLASS\_NAME
 
-> `readonly` **CLASS\_NAME**: `string` = `BlobStorageClient._CLASS_NAME`
+> `readonly` `static` **CLASS\_NAME**: `string`
 
 Runtime name for the class.
-
-#### Implementation of
-
-`IBlobStorageComponent.CLASS_NAME`
 
 ## Methods
 
@@ -242,7 +238,7 @@ Nothing.
 
 ### query()
 
-> **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `pageSize?`): `Promise`\<`IBlobStorageEntryList`\>
+> **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `limit?`): `Promise`\<`IBlobStorageEntryList`\>
 
 Query all the blob storage entries which match the conditions.
 
@@ -272,7 +268,7 @@ The direction for the order, defaults to descending.
 
 The cursor to request the next page of entries.
 
-##### pageSize?
+##### limit?
 
 `number`
 

@@ -20,7 +20,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<IpfsBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<IpfsBlobStorageConnector>();
 
 	/**
 	 * The configuration for the connector.
@@ -33,13 +33,17 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IIpfsBlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(IpfsBlobStorageConnector.CLASS_NAME, nameof(options), options);
 		Guards.object<IIpfsBlobStorageConnectorConfig>(
-			this.CLASS_NAME,
+			IpfsBlobStorageConnector.CLASS_NAME,
 			nameof(options.config),
 			options.config
 		);
-		Guards.stringValue(this.CLASS_NAME, nameof(options.config.apiUrl), options.config.apiUrl);
+		Guards.stringValue(
+			IpfsBlobStorageConnector.CLASS_NAME,
+			nameof(options.config.apiUrl),
+			options.config.apiUrl
+		);
 
 		this._config = options.config;
 		this._config.apiUrl = StringHelper.trimTrailingSlashes(this._config.apiUrl);
@@ -51,7 +55,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(IpfsBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
 
 		try {
 			const formBlob = new Blob([new Uint8Array(blob)], { type: MimeTypes.OctetStream });
@@ -82,9 +86,9 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 			}
 
 			const error = await response.json();
-			throw new GeneralError(this.CLASS_NAME, "fetchFail", error);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "fetchFail", error);
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -94,11 +98,11 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(IpfsBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== IpfsBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: IpfsBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -126,9 +130,9 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 			}
 
 			const error = await response.json();
-			throw new GeneralError(this.CLASS_NAME, "fetchFail", error);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "fetchFail", error);
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "getBlobFailed", undefined, err);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "getBlobFailed", undefined, err);
 		}
 	}
 
@@ -138,11 +142,11 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(IpfsBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== IpfsBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: IpfsBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -168,9 +172,14 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 			}
 
 			const error = await response.json();
-			throw new GeneralError(this.CLASS_NAME, "fetchFail", error);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "fetchFail", error);
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", undefined, err);
+			throw new GeneralError(
+				IpfsBlobStorageConnector.CLASS_NAME,
+				"removeBlobFailed",
+				undefined,
+				err
+			);
 		}
 	}
 

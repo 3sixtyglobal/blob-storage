@@ -671,7 +671,7 @@ export async function blobStorageList(
 		request.query?.orderBy,
 		request.query?.orderByDirection,
 		request.query?.cursor,
-		Coerce.number(request.query?.pageSize),
+		Coerce.number(request.query?.limit),
 		httpRequestContext.userIdentity
 	);
 

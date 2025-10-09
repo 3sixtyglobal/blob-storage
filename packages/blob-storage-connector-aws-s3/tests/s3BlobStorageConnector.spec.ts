@@ -70,9 +70,15 @@ describe("S3BlobStorageConnector", () => {
 	test("can not get an item", async () => {
 		const blobStorage = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
 		const idUrn = await blobStorage.set(TEST_DATA);
-		const item = await blobStorage.get(`${idUrn}-2`);
 
-		expect(item).toBeUndefined();
+		await expect(blobStorage.get(`${idUrn}-2`)).rejects.toMatchObject({
+			name: "GeneralError",
+			message: "s3BlobStorageConnector.getBlobFailed",
+			properties: {
+				namespace: S3BlobStorageConnector.NAMESPACE,
+				id: `${idUrn}-2`
+			}
+		});
 	});
 
 	test("can get an item", async () => {

@@ -28,24 +28,18 @@ import { HeaderTypes, MimeTypes } from "@twin.org/web";
 /**
  * Client for performing blob storage through to REST endpoints.
  */
-export class BlobStorageClient extends BaseRestClient implements IBlobStorageComponent {
-	/**
-	 * Runtime name for the class.
-	 * @internal
-	 */
-	private static readonly _CLASS_NAME: string = nameof<BlobStorageClient>();
-
+export class BlobStorageRestClient extends BaseRestClient implements IBlobStorageComponent {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = BlobStorageClient._CLASS_NAME;
+	public static readonly CLASS_NAME: string = nameof<BlobStorageRestClient>();
 
 	/**
 	 * Create a new instance of BlobStorageClient.
 	 * @param config The configuration for the client.
 	 */
 	constructor(config: IBaseRestClientConfig) {
-		super(BlobStorageClient._CLASS_NAME, config, "blob");
+		super(BlobStorageRestClient.CLASS_NAME, config, "blob");
 	}
 
 	/**
@@ -71,7 +65,7 @@ export class BlobStorageClient extends BaseRestClient implements IBlobStorageCom
 			namespace?: string;
 		}
 	): Promise<string> {
-		Guards.stringBase64(this.CLASS_NAME, nameof(blob), blob);
+		Guards.stringBase64(BlobStorageRestClient.CLASS_NAME, nameof(blob), blob);
 
 		const response = await this.fetch<IBlobStorageCreateRequest, ICreatedResponse>("/", "POST", {
 			body: {
@@ -106,7 +100,7 @@ export class BlobStorageClient extends BaseRestClient implements IBlobStorageCom
 			overrideVaultKeyId?: string;
 		}
 	): Promise<IBlobStorageEntry> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(BlobStorageRestClient.CLASS_NAME, nameof(id), id);
 
 		const response = await this.fetch<IBlobStorageGetRequest, IBlobStorageGetResponse>(
 			"/:id",
@@ -144,7 +138,7 @@ export class BlobStorageClient extends BaseRestClient implements IBlobStorageCom
 		fileExtension?: string,
 		metadata?: IJsonLdNodeObject
 	): Promise<void> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(BlobStorageRestClient.CLASS_NAME, nameof(id), id);
 
 		await this.fetch<IBlobStorageUpdateRequest, INoContentResponse>("/:id", "PUT", {
 			pathParams: {
@@ -164,7 +158,7 @@ export class BlobStorageClient extends BaseRestClient implements IBlobStorageCom
 	 * @returns Nothing.
 	 */
 	public async remove(id: string): Promise<void> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(BlobStorageRestClient.CLASS_NAME, nameof(id), id);
 
 		await this.fetch<IBlobStorageRemoveRequest, INoContentResponse>("/:id", "DELETE", {
 			pathParams: {
@@ -179,7 +173,7 @@ export class BlobStorageClient extends BaseRestClient implements IBlobStorageCom
 	 * @param orderBy The order for the results, defaults to created.
 	 * @param orderByDirection The direction for the order, defaults to descending.
 	 * @param cursor The cursor to request the next page of entries.
-	 * @param pageSize The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
+	 * @param limit The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
 	 * @returns All the entries for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -188,7 +182,7 @@ export class BlobStorageClient extends BaseRestClient implements IBlobStorageCom
 		orderBy?: keyof Pick<IBlobStorageEntry, "dateCreated" | "dateModified">,
 		orderByDirection?: SortDirection,
 		cursor?: string,
-		pageSize?: number
+		limit?: number
 	): Promise<IBlobStorageEntryList> {
 		const response = await this.fetch<IBlobStorageListRequest, IBlobStorageListResponse>(
 			"/",
@@ -201,7 +195,7 @@ export class BlobStorageClient extends BaseRestClient implements IBlobStorageCom
 					conditions: HttpParameterHelper.objectToString(conditions),
 					orderBy,
 					orderByDirection,
-					pageSize,
+					limit: Coerce.string(limit),
 					cursor
 				}
 			}
@@ -218,7 +212,7 @@ export class BlobStorageClient extends BaseRestClient implements IBlobStorageCom
 	 * @returns The download link.
 	 */
 	public createDownloadLink(id: string, download?: boolean, filename?: string): string {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(BlobStorageRestClient.CLASS_NAME, nameof(id), id);
 
 		let link = StringHelper.trimTrailingSlashes(this.getEndpointWithPrefix());
 		link += `/${id}/content`;

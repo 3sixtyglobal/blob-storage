@@ -10,7 +10,15 @@ import {
 	StorageSharedKeyCredential
 } from "@azure/storage-blob";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { BaseError, ComponentFactory, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import {
+	BaseError,
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	Is,
+	Urn
+} from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
@@ -30,7 +38,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<AzureBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<AzureBlobStorageConnector>();
 
 	/**
 	 * The configuration for the connector.
@@ -55,24 +63,24 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IAzureBlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(AzureBlobStorageConnector.CLASS_NAME, nameof(options), options);
 		Guards.object<IAzureBlobStorageConnectorConfig>(
-			this.CLASS_NAME,
+			AzureBlobStorageConnector.CLASS_NAME,
 			nameof(options.config),
 			options.config
 		);
 		Guards.stringValue(
-			this.CLASS_NAME,
+			AzureBlobStorageConnector.CLASS_NAME,
 			nameof(options.config.accountName),
 			options.config.accountName
 		);
 		Guards.stringValue(
-			this.CLASS_NAME,
+			AzureBlobStorageConnector.CLASS_NAME,
 			nameof(options.config.accountKey),
 			options.config.accountKey
 		);
 		Guards.stringValue(
-			this.CLASS_NAME,
+			AzureBlobStorageConnector.CLASS_NAME,
 			nameof(options.config.containerName),
 			options.config.containerName
 		);
@@ -103,7 +111,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 		try {
 			await nodeLogging?.log({
 				level: "info",
-				source: this.CLASS_NAME,
+				source: AzureBlobStorageConnector.CLASS_NAME,
 				message: "containerCreating",
 				data: {
 					container: this._config.containerName
@@ -115,7 +123,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 			if (exists) {
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
+					source: AzureBlobStorageConnector.CLASS_NAME,
 					message: "containerExists",
 					data: {
 						container: this._config.containerName
@@ -126,7 +134,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
+					source: AzureBlobStorageConnector.CLASS_NAME,
 					message: "containerCreated",
 					data: {
 						container: this._config.containerName
@@ -136,7 +144,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 		} catch (err) {
 			await nodeLogging?.log({
 				level: "error",
-				source: this.CLASS_NAME,
+				source: AzureBlobStorageConnector.CLASS_NAME,
 				message: "containerCreateFailed",
 				data: {
 					container: this._config.containerName
@@ -156,7 +164,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(AzureBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
 
 		try {
 			const id = Converter.bytesToHex(Sha256.sum256(blob));
@@ -165,7 +173,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 
 			return `blob:${new Urn(AzureBlobStorageConnector.NAMESPACE, id).toString()}`;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(AzureBlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -175,11 +183,11 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(AzureBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== AzureBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(AzureBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: AzureBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -192,7 +200,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 			return new Uint8Array(buffer);
 		} catch (err) {
 			throw new GeneralError(
-				this.CLASS_NAME,
+				AzureBlobStorageConnector.CLASS_NAME,
 				"getBlobFailed",
 				{
 					id,
@@ -209,11 +217,11 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(AzureBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== AzureBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(AzureBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: AzureBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -235,10 +243,10 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 			}
 			return false;
 		} catch (err) {
-			if (err instanceof Error && "statusCode" in err && err.statusCode === 404) {
+			if (Is.object<{ statusCode: number }>(err) && err.statusCode === 404) {
 				return false;
 			}
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", { id }, err);
+			throw new GeneralError(AzureBlobStorageConnector.CLASS_NAME, "removeBlobFailed", { id }, err);
 		}
 	}
 }

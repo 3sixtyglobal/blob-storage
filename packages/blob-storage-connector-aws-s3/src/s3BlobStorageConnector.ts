@@ -30,7 +30,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<S3BlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<S3BlobStorageConnector>();
 
 	/**
 	 * The configuration for the connector.
@@ -49,15 +49,19 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IS3BlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(S3BlobStorageConnector.CLASS_NAME, nameof(options), options);
 		Guards.object<IS3BlobStorageConnectorConfig>(
-			this.CLASS_NAME,
+			S3BlobStorageConnector.CLASS_NAME,
 			nameof(options.config),
 			options.config
 		);
-		Guards.stringValue(this.CLASS_NAME, nameof(options.config.region), options.config.region);
 		Guards.stringValue(
-			this.CLASS_NAME,
+			S3BlobStorageConnector.CLASS_NAME,
+			nameof(options.config.region),
+			options.config.region
+		);
+		Guards.stringValue(
+			S3BlobStorageConnector.CLASS_NAME,
 			nameof(options.config.bucketName),
 			options.config.bucketName
 		);
@@ -67,12 +71,12 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 		let credentials;
 		if (options.config.authMode === "credentials") {
 			Guards.stringValue(
-				this.CLASS_NAME,
+				S3BlobStorageConnector.CLASS_NAME,
 				nameof(options.config.accessKeyId),
 				options.config.accessKeyId
 			);
 			Guards.stringValue(
-				this.CLASS_NAME,
+				S3BlobStorageConnector.CLASS_NAME,
 				nameof(options.config.secretAccessKey),
 				options.config.secretAccessKey
 			);
@@ -102,7 +106,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 		try {
 			await nodeLogging?.log({
 				level: "info",
-				source: this.CLASS_NAME,
+				source: S3BlobStorageConnector.CLASS_NAME,
 				message: "bucketCreating",
 				data: {
 					bucket: this._config.bucketName
@@ -118,7 +122,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			if (bucketExists) {
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
+					source: S3BlobStorageConnector.CLASS_NAME,
 					message: "bucketExists",
 					data: {
 						bucket: this._config.bucketName
@@ -129,7 +133,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
+					source: S3BlobStorageConnector.CLASS_NAME,
 					message: "bucketCreated",
 					data: {
 						bucket: this._config.bucketName
@@ -139,7 +143,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 		} catch (err) {
 			await nodeLogging?.log({
 				level: "error",
-				source: this.CLASS_NAME,
+				source: S3BlobStorageConnector.CLASS_NAME,
 				message: "bucketCreateFailed",
 				data: {
 					bucket: this._config.bucketName
@@ -159,7 +163,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(S3BlobStorageConnector.CLASS_NAME, nameof(blob), blob);
 
 		try {
 			const id = Converter.bytesToHex(Sha256.sum256(blob));
@@ -174,7 +178,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 			return `blob:${new Urn(S3BlobStorageConnector.NAMESPACE, id).toString()}`;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -184,11 +188,11 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(S3BlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== S3BlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: S3BlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -206,7 +210,17 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			if (response.Body) {
 				return new Uint8Array(await response.Body.transformToByteArray());
 			}
-		} catch {}
+		} catch (err) {
+			throw new GeneralError(
+				S3BlobStorageConnector.CLASS_NAME,
+				"getBlobFailed",
+				{
+					id,
+					namespace: S3BlobStorageConnector.NAMESPACE
+				},
+				err
+			);
+		}
 	}
 
 	/**
@@ -215,11 +229,11 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(S3BlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== S3BlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: S3BlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -251,7 +265,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 			return true;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", { id }, err);
+			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "removeBlobFailed", { id }, err);
 		}
 	}
 }

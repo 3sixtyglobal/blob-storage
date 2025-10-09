@@ -55,15 +55,15 @@ import type { IBlobStorageServiceConstructorOptions } from "./models/IBlobStorag
  */
 export class BlobStorageService implements IBlobStorageComponent {
 	/**
+	 * Runtime name for the class.
+	 */
+	public static readonly CLASS_NAME: string = nameof<BlobStorageService>();
+
+	/**
 	 * The namespace supported by the blob storage service.
 	 * @internal
 	 */
 	private static readonly _NAMESPACE: string = "blob";
-
-	/**
-	 * Runtime name for the class.
-	 */
-	public readonly CLASS_NAME: string = nameof<BlobStorageService>();
 
 	/**
 	 * The namespace of the default storage connector to use.
@@ -103,7 +103,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	constructor(options?: IBlobStorageServiceConstructorOptions) {
 		const names = BlobStorageConnectorFactory.names();
 		if (names.length === 0) {
-			throw new GeneralError(this.CLASS_NAME, "noConnectors");
+			throw new GeneralError(BlobStorageService.CLASS_NAME, "noConnectors");
 		}
 
 		this._entryEntityStorage = EntityStorageConnectorFactory.get(
@@ -149,9 +149,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 		userIdentity?: string,
 		nodeIdentity?: string
 	): Promise<string> {
-		Guards.stringBase64(this.CLASS_NAME, nameof(blob), blob);
+		Guards.stringBase64(BlobStorageService.CLASS_NAME, nameof(blob), blob);
 		if (this._partitionPerUser) {
-			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
+			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
 		}
 
 		const disableEncryption = options?.disableEncryption ?? false;
@@ -182,7 +182,11 @@ export class BlobStorageService implements IBlobStorageComponent {
 			if (Is.object(metadata)) {
 				const validationFailures: IValidationFailure[] = [];
 				JsonLdHelper.validate(metadata, validationFailures);
-				Validation.asValidationError(this.CLASS_NAME, nameof(metadata), validationFailures);
+				Validation.asValidationError(
+					BlobStorageService.CLASS_NAME,
+					nameof(metadata),
+					validationFailures
+				);
 			}
 
 			const blobHash = `sha256:${Converter.bytesToBase64(Sha256.sum256(storeBlob))}`;
@@ -193,9 +197,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 			// If we have a vault connector then encrypt the data.
 			if (encryptionEnabled) {
-				Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
+				Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
 				if (Is.empty(this._vaultConnector)) {
-					throw new GeneralError(this.CLASS_NAME, "vaultConnectorNotConfigured");
+					throw new GeneralError(BlobStorageService.CLASS_NAME, "vaultConnectorNotConfigured");
 				}
 				storeBlob = await this._vaultConnector.encrypt(
 					`${nodeIdentity}/${vaultKeyId}`,
@@ -230,7 +234,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 			return blobId;
 		} catch (error) {
-			throw new GeneralError(this.CLASS_NAME, "createFailed", undefined, error);
+			throw new GeneralError(BlobStorageService.CLASS_NAME, "createFailed", undefined, error);
 		}
 	}
 
@@ -256,7 +260,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		userIdentity?: string,
 		nodeIdentity?: string
 	): Promise<IBlobStorageEntry> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);
 
 		const includeContent = options?.includeContent ?? false;
 		const vaultKeyId = options?.overrideVaultKeyId ?? this._vaultKeyId;
@@ -264,7 +268,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		const conditions: EntityCondition<BlobStorageEntry>[] = [];
 
 		if (this._partitionPerUser) {
-			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
+			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
 			conditions.push({
 				property: "userIdentity",
 				comparison: ComparisonOperator.Equals,
@@ -280,15 +284,15 @@ export class BlobStorageService implements IBlobStorageComponent {
 				const blobStorageConnector = this.getConnector(id);
 				returnBlob = await blobStorageConnector.get(id);
 				if (Is.undefined(returnBlob)) {
-					throw new NotFoundError(this.CLASS_NAME, "blobNotFound", id);
+					throw new NotFoundError(BlobStorageService.CLASS_NAME, "blobNotFound", id);
 				}
 
 				// If the data is encrypted then decrypt it.
 				const decryptionEnabled = blobEntry.isEncrypted && Is.stringValue(vaultKeyId);
 				if (decryptionEnabled) {
-					Guards.stringValue(this.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
+					Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
 					if (Is.empty(this._vaultConnector)) {
-						throw new GeneralError(this.CLASS_NAME, "vaultConnectorNotConfigured");
+						throw new GeneralError(BlobStorageService.CLASS_NAME, "vaultConnectorNotConfigured");
 					}
 					returnBlob = await this._vaultConnector.decrypt(
 						`${nodeIdentity}/${vaultKeyId}`,
@@ -305,7 +309,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 			const jsonLd = this.entryToJsonLd(blobEntry, returnBlob);
 			return JsonLdProcessor.compact(jsonLd, jsonLd["@context"]);
 		} catch (error) {
-			throw new GeneralError(this.CLASS_NAME, "getFailed", undefined, error);
+			throw new GeneralError(BlobStorageService.CLASS_NAME, "getFailed", undefined, error);
 		}
 	}
 
@@ -326,22 +330,26 @@ export class BlobStorageService implements IBlobStorageComponent {
 		metadata?: IJsonLdNodeObject,
 		userIdentity?: string
 	): Promise<void> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);
 		if (this._partitionPerUser) {
-			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
+			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
 		}
 
 		try {
 			const blobEntry = await this._entryEntityStorage.get(id);
 
 			if (Is.undefined(blobEntry)) {
-				throw new NotFoundError(this.CLASS_NAME, "blobNotFound", id);
+				throw new NotFoundError(BlobStorageService.CLASS_NAME, "blobNotFound", id);
 			}
 
 			if (Is.object(metadata)) {
 				const validationFailures: IValidationFailure[] = [];
 				await JsonLdHelper.validate(metadata, validationFailures);
-				Validation.asValidationError(this.CLASS_NAME, nameof(metadata), validationFailures);
+				Validation.asValidationError(
+					BlobStorageService.CLASS_NAME,
+					nameof(metadata),
+					validationFailures
+				);
 			}
 
 			// Now store the entry in entity storage
@@ -366,7 +374,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 			await this._entryEntityStorage.set(updatedBlobEntry, conditions);
 		} catch (error) {
-			throw new GeneralError(this.CLASS_NAME, "updateFailed", undefined, error);
+			throw new GeneralError(BlobStorageService.CLASS_NAME, "updateFailed", undefined, error);
 		}
 	}
 
@@ -377,9 +385,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @returns Nothing.
 	 */
 	public async remove(id: string, userIdentity?: string): Promise<void> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);
 		if (this._partitionPerUser) {
-			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
+			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
 		}
 
 		try {
@@ -394,10 +402,10 @@ export class BlobStorageService implements IBlobStorageComponent {
 			const removed = await blobStorageConnector.remove(id);
 
 			if (!removed) {
-				throw new NotFoundError(this.CLASS_NAME, "blobNotFound", id);
+				throw new NotFoundError(BlobStorageService.CLASS_NAME, "blobNotFound", id);
 			}
 		} catch (error) {
-			throw new GeneralError(this.CLASS_NAME, "removeFailed", undefined, error);
+			throw new GeneralError(BlobStorageService.CLASS_NAME, "removeFailed", undefined, error);
 		}
 	}
 
@@ -407,7 +415,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param orderBy The order for the results, defaults to created.
 	 * @param orderByDirection The direction for the order, defaults to descending.
 	 * @param cursor The cursor to request the next page of entries.
-	 * @param pageSize The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
+	 * @param limit The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
 	 * @param userIdentity The user identity to use with storage operations.
 	 * @returns All the entries for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
@@ -417,7 +425,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		orderBy?: keyof Pick<IBlobStorageEntry, "dateCreated" | "dateModified">,
 		orderByDirection?: SortDirection,
 		cursor?: string,
-		pageSize?: number,
+		limit?: number,
 		userIdentity?: string
 	): Promise<IBlobStorageEntryList> {
 		const finalConditions: EntityCondition<IBlobStorageEntry> = {
@@ -426,7 +434,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		};
 
 		if (this._partitionPerUser) {
-			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
+			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
 			finalConditions.conditions.push({
 				property: "userIdentity",
 				comparison: ComparisonOperator.Equals,
@@ -451,7 +459,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 			],
 			undefined,
 			cursor,
-			pageSize
+			limit
 		);
 
 		let context: IBlobStorageEntryList["@context"] = [
@@ -490,7 +498,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		const idUri = Urn.fromValidString(id);
 
 		if (idUri.namespaceIdentifier() !== BlobStorageService._NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(BlobStorageService.CLASS_NAME, "namespaceMismatch", {
 				namespace: BlobStorageService._NAMESPACE,
 				id
 			});
@@ -511,7 +519,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		const conditions: EntityCondition<BlobStorageEntry>[] = [];
 
 		if (this._partitionPerUser) {
-			Guards.stringValue(this.CLASS_NAME, nameof(userIdentity), userIdentity);
+			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
 			conditions.push({
 				property: "userIdentity",
 				comparison: ComparisonOperator.Equals,
@@ -547,7 +555,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		}
 
 		if (Is.empty(entity)) {
-			throw new NotFoundError(this.CLASS_NAME, "entityNotFound", id);
+			throw new NotFoundError(BlobStorageService.CLASS_NAME, "entityNotFound", id);
 		}
 
 		return ObjectHelper.omit(entity, ["userIdentity"]) as BlobStorageEntry;

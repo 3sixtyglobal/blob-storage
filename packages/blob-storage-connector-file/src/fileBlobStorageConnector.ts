@@ -21,7 +21,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<FileBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<FileBlobStorageConnector>();
 
 	/**
 	 * The directory to use for storage.
@@ -40,9 +40,13 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IFileBlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
-		Guards.object(this.CLASS_NAME, nameof(options.config), options.config);
-		Guards.stringValue(this.CLASS_NAME, nameof(options.config.directory), options.config.directory);
+		Guards.object(FileBlobStorageConnector.CLASS_NAME, nameof(options), options);
+		Guards.object(FileBlobStorageConnector.CLASS_NAME, nameof(options.config), options.config);
+		Guards.stringValue(
+			FileBlobStorageConnector.CLASS_NAME,
+			nameof(options.config.directory),
+			options.config.directory
+		);
 		this._directory = path.resolve(options.config.directory);
 		this._extension = options.config.extension ?? ".blob";
 	}
@@ -58,7 +62,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 		if (!(await this.dirExists(this._directory))) {
 			await nodeLogging?.log({
 				level: "info",
-				source: this.CLASS_NAME,
+				source: FileBlobStorageConnector.CLASS_NAME,
 				message: "directoryCreating",
 				data: {
 					directory: this._directory
@@ -70,7 +74,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
+					source: FileBlobStorageConnector.CLASS_NAME,
 					message: "directoryCreated",
 					data: {
 						directory: this._directory
@@ -79,7 +83,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 			} catch (err) {
 				await nodeLogging?.log({
 					level: "error",
-					source: this.CLASS_NAME,
+					source: FileBlobStorageConnector.CLASS_NAME,
 					message: "directoryCreateFailed",
 					data: {
 						directory: this._directory
@@ -91,7 +95,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 		} else {
 			await nodeLogging?.log({
 				level: "info",
-				source: this.CLASS_NAME,
+				source: FileBlobStorageConnector.CLASS_NAME,
 				message: "directoryExists",
 				data: {
 					directory: this._directory
@@ -108,7 +112,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(FileBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
 
 		try {
 			if (!(await this.dirExists(this._directory))) {
@@ -123,7 +127,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 
 			return `blob:${new Urn(FileBlobStorageConnector.NAMESPACE, id).toString()}`;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -133,12 +137,12 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(FileBlobStorageConnector.CLASS_NAME, nameof(id), id);
 
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== FileBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: FileBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -155,7 +159,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 			if (BaseError.isErrorCode(err, "ENOENT")) {
 				return;
 			}
-			throw new GeneralError(this.CLASS_NAME, "getBlobFailed", { id }, err);
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "getBlobFailed", { id }, err);
 		}
 	}
 
@@ -165,12 +169,12 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(FileBlobStorageConnector.CLASS_NAME, nameof(id), id);
 
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== FileBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: FileBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -189,7 +193,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 			if (BaseError.isErrorCode(err, "ENOENT")) {
 				return false;
 			}
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", { id }, err);
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "removeBlobFailed", { id }, err);
 		}
 	}
 

@@ -17,7 +17,7 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<MemoryBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<MemoryBlobStorageConnector>();
 
 	/**
 	 * The storage for the in-memory items.
@@ -38,7 +38,7 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(MemoryBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
 
 		const id = Converter.bytesToHex(Sha256.sum256(blob));
 
@@ -53,12 +53,12 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(MemoryBlobStorageConnector.CLASS_NAME, nameof(id), id);
 
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== MemoryBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(MemoryBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: MemoryBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -73,12 +73,12 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(MemoryBlobStorageConnector.CLASS_NAME, nameof(id), id);
 
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== MemoryBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(MemoryBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: MemoryBlobStorageConnector.NAMESPACE,
 				id
 			});

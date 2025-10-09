@@ -97,7 +97,7 @@ export interface IBlobStorageComponent extends IComponent {
 	 * @param orderBy The order for the results, defaults to created.
 	 * @param orderByDirection The direction for the order, defaults to descending.
 	 * @param cursor The cursor to request the next page of entries.
-	 * @param pageSize The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
+	 * @param limit The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
 	 * @param userIdentity The user identity to use with storage operations.
 	 * @returns All the entries for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
@@ -107,7 +107,7 @@ export interface IBlobStorageComponent extends IComponent {
 		orderBy?: keyof Pick<IBlobStorageEntry, "dateCreated" | "dateModified">,
 		orderByDirection?: SortDirection,
 		cursor?: string,
-		pageSize?: number,
+		limit?: number,
 		userIdentity?: string
 	): Promise<IBlobStorageEntryList>;
 }
