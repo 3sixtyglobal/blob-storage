@@ -1,5 +1,12 @@
 # @twin.org/blob-storage-models - Changelog
 
+## [0.0.2-next.5](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.2-next.4...blob-storage-models-v0.0.2-next.5) (2025-10-09)
+
+
+### Features
+
+* add validate-locales ([f20fcec](https://github.com/twinfoundation/blob-storage/commit/f20fceced91e39a0c9edb770b2e43ce944c92f3c))
+
 ## [0.0.2-next.4](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.2-next.3...blob-storage-models-v0.0.2-next.4) (2025-10-02)
 
 

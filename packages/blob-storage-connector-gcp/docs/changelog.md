@@ -1,5 +1,19 @@
 # @twin.org/blob-storage-connector-gcp - Changelog
 
+## [0.0.2-next.5](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-gcp-v0.0.2-next.4...blob-storage-connector-gcp-v0.0.2-next.5) (2025-10-09)
+
+
+### Features
+
+* add validate-locales ([f20fcec](https://github.com/twinfoundation/blob-storage/commit/f20fceced91e39a0c9edb770b2e43ce944c92f3c))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.2-next.4 to 0.0.2-next.5
+
 ## [0.0.2-next.4](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-gcp-v0.0.2-next.3...blob-storage-connector-gcp-v0.0.2-next.4) (2025-10-02)
 
 

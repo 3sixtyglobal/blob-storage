@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-connector-gcp",
-	"version": "0.0.2-next.4",
+	"version": "0.0.2-next.5",
 	"description": "Blob Storage connector implementation using Google Cloud Storage",
 	"repository": {
 		"type": "git",
@@ -32,7 +32,7 @@
 	},
 	"dependencies": {
 		"@google-cloud/storage": "7.17.2",
-		"@twin.org/blob-storage-models": "0.0.2-next.4",
+		"@twin.org/blob-storage-models": "0.0.2-next.5",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
 		"@twin.org/logging-models": "next",

@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-connector-memory",
-	"version": "0.0.2-next.4",
+	"version": "0.0.2-next.5",
 	"description": "Blob Storage connector implementation using in-memory storage",
 	"repository": {
 		"type": "git",
@@ -31,7 +31,7 @@
 		"dist:no-test": "npm run clean && npm run build && npm run bundle && npm run docs"
 	},
 	"dependencies": {
-		"@twin.org/blob-storage-models": "0.0.2-next.4",
+		"@twin.org/blob-storage-models": "0.0.2-next.5",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
 		"@twin.org/nameof": "next"
