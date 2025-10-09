@@ -35,7 +35,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	public static readonly CLASS_NAME: string = nameof<BlobStorageRestClient>();
 
 	/**
-	 * Create a new instance of BlobStorageClient.
+	 * Create a new instance of BlobStorageRestClient
 	 * @param config The configuration for the client.
 	 */
 	constructor(config: IBaseRestClientConfig) {
