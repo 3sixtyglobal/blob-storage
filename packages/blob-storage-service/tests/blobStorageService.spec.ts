@@ -5,6 +5,7 @@ import {
 	BlobStorageCompressionType,
 	BlobStorageConnectorFactory
 } from "@twin.org/blob-storage-models";
+import { ContextIdStore } from "@twin.org/context";
 import { Converter } from "@twin.org/core";
 import { EntitySchemaFactory, EntitySchemaHelper } from "@twin.org/entity";
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
@@ -17,11 +18,12 @@ import {
 	initSchema as initSchemaVault
 } from "@twin.org/vault-connector-entity-storage";
 import { VaultConnectorFactory, VaultKeyType } from "@twin.org/vault-models";
-import { BlobStorageService } from "../src/blobStorageService";
-import { BlobStorageEntry } from "../src/entities/blobStorageEntry";
+import { BlobStorageService } from "../src/blobStorageService.js";
+import { BlobStorageEntry } from "../src/entities/blobStorageEntry.js";
 
 const TEST_USER_IDENTITY = "test-user-identity";
 const TEST_NODE_IDENTITY = "test-node-identity";
+const TEST_ORGANIZATION_IDENTITY = "test-organization-identity";
 let entityStorage: MemoryEntityStorageConnector<BlobStorageEntry>;
 let blobStorage: MemoryBlobStorageConnector;
 
@@ -46,6 +48,12 @@ describe("blob-storage-service", () => {
 			.mockImplementation(() => 1724327816272);
 
 		initSchemaVault();
+
+		ContextIdStore.getContextIds = vi.fn().mockImplementation(() => ({
+			node: TEST_NODE_IDENTITY,
+			organization: TEST_ORGANIZATION_IDENTITY,
+			user: TEST_USER_IDENTITY
+		}));
 	});
 
 	test("can create the service", async () => {
@@ -70,23 +78,15 @@ describe("blob-storage-service", () => {
 			}
 		]);
 		expect(blobStorage.getStore()).toEqual({
-			d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592: dataBytes
+			"root/d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592": dataBytes
 		});
 	});
 
-	test("can add a file with no metadata with userIdentity and nodeIdentity", async () => {
+	test("can add a file with no metadata with userId and nodeId", async () => {
 		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		await service.create(
-			data,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		await service.create(data, undefined, undefined, undefined, undefined);
 		expect(entityStorage.getStore()).toEqual([
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
@@ -99,27 +99,19 @@ describe("blob-storage-service", () => {
 			}
 		]);
 		expect(blobStorage.getStore()).toEqual({
-			d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592: dataBytes
+			"root/d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592": dataBytes
 		});
 	});
 
-	test("can add a file with metadata with userIdentity", async () => {
+	test("can add a file with metadata with userId", async () => {
 		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		await service.create(
-			data,
-			undefined,
-			undefined,
-			{
-				"@context": "https://schema.org",
-				"@type": "CreativeWork",
-				name: "Test"
-			},
-			undefined,
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		await service.create(data, undefined, undefined, {
+			"@context": "https://schema.org",
+			"@type": "CreativeWork",
+			name: "Test"
+		});
 		expect(entityStorage.getStore()).toEqual([
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
@@ -137,7 +129,7 @@ describe("blob-storage-service", () => {
 			}
 		]);
 		expect(blobStorage.getStore()).toEqual({
-			d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592: dataBytes
+			"root/d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592": dataBytes
 		});
 	});
 
@@ -166,26 +158,13 @@ describe("blob-storage-service", () => {
 		});
 	});
 
-	test("can get a file with no metadata with userIdentity and nodeIdentity", async () => {
+	test("can get a file with no metadata with userId and nodeId", async () => {
 		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const id = await service.create(
-			data,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const id = await service.create(data);
 
-		const result = await service.get(
-			id,
-			{ includeContent: true },
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const result = await service.get(id, { includeContent: true });
 		expect(result).toEqual({
 			"@context": [
 				"https://schema.twindev.org/blob-storage/",
@@ -204,30 +183,17 @@ describe("blob-storage-service", () => {
 		});
 	});
 
-	test("can get a file with metadata with userIdentity and nodeIdentity", async () => {
+	test("can get a file with metadata with userId and nodeId", async () => {
 		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const id = await service.create(
-			data,
-			undefined,
-			undefined,
-			{
-				"@context": "https://schema.org",
-				"@type": "CreativeWork",
-				name: "Test"
-			},
-			undefined,
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const id = await service.create(data, undefined, undefined, {
+			"@context": "https://schema.org",
+			"@type": "CreativeWork",
+			name: "Test"
+		});
 
-		const result = await service.get(
-			id,
-			{ includeContent: true },
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const result = await service.get(id, { includeContent: true });
 		expect(result).toEqual({
 			"@context": [
 				"https://schema.twindev.org/blob-storage/",
@@ -250,34 +216,26 @@ describe("blob-storage-service", () => {
 		});
 	});
 
-	test("can get a file metadata only with userIdentity and nodeIdentity", async () => {
+	test("can get a file metadata only with userId and nodeId", async () => {
 		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const id = await service.create(
-			data,
-			undefined,
-			undefined,
-			{
-				"@context": "https://www.w3.org/ns/activitystreams",
-				type: "Create",
-				actor: {
-					type: "Person",
-					id: "acct:person@example.org",
-					name: "Person"
-				},
-				object: {
-					type: "Note",
-					content: "This is a simple note"
-				},
-				published: "2015-01-25T12:34:56Z"
+		const id = await service.create(data, undefined, undefined, {
+			"@context": "https://www.w3.org/ns/activitystreams",
+			type: "Create",
+			actor: {
+				type: "Person",
+				id: "acct:person@example.org",
+				name: "Person"
 			},
-			undefined,
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+			object: {
+				type: "Note",
+				content: "This is a simple note"
+			},
+			published: "2015-01-25T12:34:56Z"
+		});
 
-		const result = await service.get(id, undefined, TEST_USER_IDENTITY, TEST_NODE_IDENTITY);
+		const result = await service.get(id);
 		expect(result).toEqual({
 			"@context": [
 				"https://schema.twindev.org/blob-storage/",
@@ -339,31 +297,17 @@ describe("blob-storage-service", () => {
 		]);
 	});
 
-	test("can update a file with metadata with userIdentity and nodeIdentity", async () => {
+	test("can update a file with metadata with userId and nodeId", async () => {
 		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const id = await service.create(
-			data,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const id = await service.create(data);
 
-		await service.update(
-			id,
-			undefined,
-			undefined,
-			{
-				"@context": "https://schema.org",
-				"@type": "CreativeWork",
-				name: "Test2"
-			},
-			TEST_USER_IDENTITY
-		);
+		await service.update(id, undefined, undefined, {
+			"@context": "https://schema.org",
+			"@type": "CreativeWork",
+			name: "Test2"
+		});
 		expect(entityStorage.getStore()).toEqual([
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
@@ -398,25 +342,17 @@ describe("blob-storage-service", () => {
 		expect(blobStorage.getStore()).toEqual({});
 	});
 
-	test("can remove a file with metadata with userIdentity and nodeIdentity", async () => {
+	test("can remove a file with metadata with userId and nodeId", async () => {
 		const service = new BlobStorageService();
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const id = await service.create(
-			data,
-			undefined,
-			undefined,
-			{
-				"@context": "https://schema.org",
-				"@type": "CreativeWork",
-				name: "Test2"
-			},
-			undefined,
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const id = await service.create(data, undefined, undefined, {
+			"@context": "https://schema.org",
+			"@type": "CreativeWork",
+			name: "Test2"
+		});
 
-		await service.remove(id, TEST_USER_IDENTITY);
+		await service.remove(id);
 		expect(entityStorage.getStore()).toEqual([]);
 		expect(blobStorage.getStore()).toEqual({});
 	});
@@ -536,17 +472,7 @@ describe("blob-storage-service", () => {
 		});
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		await expect(
-			service.create(
-				data,
-				undefined,
-				undefined,
-				undefined,
-				undefined,
-				TEST_USER_IDENTITY,
-				TEST_NODE_IDENTITY
-			)
-		).rejects.toMatchObject({
+		await expect(service.create(data)).rejects.toMatchObject({
 			name: "GeneralError",
 			message: "blobStorageService.createFailed",
 			cause: {
@@ -571,7 +497,7 @@ describe("blob-storage-service", () => {
 		VaultConnectorFactory.register("vault", () => new EntityStorageVaultConnector());
 
 		await vaultKeyEntityStorageConnector.set({
-			id: `${TEST_NODE_IDENTITY}/my-key`,
+			id: `${TEST_ORGANIZATION_IDENTITY}/my-key`,
 			type: VaultKeyType.ChaCha20Poly1305,
 			privateKey: "vOpvrUcuiDJF09hoe9AWa4OUqcNqr6RpGOuj/A57gag="
 		});
@@ -582,15 +508,7 @@ describe("blob-storage-service", () => {
 		});
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const result = await service.create(
-			data,
-			undefined,
-			undefined,
-			undefined,
-			undefined,
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const result = await service.create(data);
 		expect(entityStorage.getStore()).toEqual([
 			{
 				id: result,
@@ -603,12 +521,7 @@ describe("blob-storage-service", () => {
 			}
 		]);
 
-		const decryptedData = await service.get(
-			result,
-			{ includeContent: true },
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const decryptedData = await service.get(result, { includeContent: true });
 		expect(Converter.base64ToBytes(decryptedData.blob ?? "")).toEqual(
 			Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog")
 		);
@@ -629,7 +542,7 @@ describe("blob-storage-service", () => {
 		VaultConnectorFactory.register("vault", () => new EntityStorageVaultConnector());
 
 		await vaultKeyEntityStorageConnector.set({
-			id: `${TEST_NODE_IDENTITY}/my-key`,
+			id: `${TEST_ORGANIZATION_IDENTITY}/my-key`,
 			type: VaultKeyType.ChaCha20Poly1305,
 			privateKey: "vOpvrUcuiDJF09hoe9AWa4OUqcNqr6RpGOuj/A57gag="
 		});
@@ -640,17 +553,9 @@ describe("blob-storage-service", () => {
 		});
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const result = await service.create(
-			data,
-			undefined,
-			undefined,
-			undefined,
-			{
-				disableEncryption: true
-			},
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const result = await service.create(data, undefined, undefined, undefined, {
+			disableEncryption: true
+		});
 		expect(entityStorage.getStore()).toEqual([
 			{
 				id: result,
@@ -663,12 +568,7 @@ describe("blob-storage-service", () => {
 			}
 		]);
 
-		const decryptedData = await service.get(
-			result,
-			{ includeContent: true },
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const decryptedData = await service.get(result, { includeContent: true });
 		expect(Converter.base64ToBytes(decryptedData.blob ?? "")).toEqual(
 			Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog")
 		);
@@ -689,7 +589,7 @@ describe("blob-storage-service", () => {
 		VaultConnectorFactory.register("vault", () => new EntityStorageVaultConnector());
 
 		await vaultKeyEntityStorageConnector.set({
-			id: `${TEST_NODE_IDENTITY}/my-key`,
+			id: `${TEST_ORGANIZATION_IDENTITY}/my-key`,
 			type: VaultKeyType.ChaCha20Poly1305,
 			privateKey: "vOpvrUcuiDJF09hoe9AWa4OUqcNqr6RpGOuj/A57gag="
 		});
@@ -700,17 +600,9 @@ describe("blob-storage-service", () => {
 		});
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const result = await service.create(
-			data,
-			undefined,
-			undefined,
-			undefined,
-			{
-				overrideVaultKeyId: "my-key"
-			},
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const result = await service.create(data, undefined, undefined, undefined, {
+			overrideVaultKeyId: "my-key"
+		});
 		expect(entityStorage.getStore()).toEqual([
 			{
 				id: result,
@@ -723,12 +615,10 @@ describe("blob-storage-service", () => {
 			}
 		]);
 
-		const decryptedData = await service.get(
-			result,
-			{ includeContent: true, overrideVaultKeyId: "my-key" },
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const decryptedData = await service.get(result, {
+			includeContent: true,
+			overrideVaultKeyId: "my-key"
+		});
 		expect(Converter.base64ToBytes(decryptedData.blob ?? "")).toEqual(
 			Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog")
 		);
@@ -740,17 +630,9 @@ describe("blob-storage-service", () => {
 		});
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
-		const result = await service.create(
-			data,
-			undefined,
-			undefined,
-			undefined,
-			{
-				compress: BlobStorageCompressionType.Gzip
-			},
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const result = await service.create(data, undefined, undefined, undefined, {
+			compress: BlobStorageCompressionType.Gzip
+		});
 		expect(entityStorage.getStore()).toEqual([
 			{
 				id: result,
@@ -764,23 +646,13 @@ describe("blob-storage-service", () => {
 			}
 		]);
 
-		const compressedData = await service.get(
-			result,
-			{ includeContent: true, decompress: false },
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const compressedData = await service.get(result, { includeContent: true, decompress: false });
 		// Should still be compressed
 		expect(compressedData.blob ?? "").toEqual(
 			"H4sIAAAAAAAAAwvJSFUoLM1MzlZIKsovz1NIy69QyCrNLShWyC9LLVIoyUhVyEmsqlRIyU8HADmjT0ErAAAA"
 		);
 
-		const uncompressedData = await service.get(
-			result,
-			{ includeContent: true },
-			TEST_USER_IDENTITY,
-			TEST_NODE_IDENTITY
-		);
+		const uncompressedData = await service.get(result, { includeContent: true });
 		expect(Converter.base64ToBytes(uncompressedData.blob ?? "")).toEqual(
 			Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog")
 		);

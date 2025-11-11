@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IRestRouteEntryPoint } from "@twin.org/api-models";
-import { generateRestRoutesBlobStorage, tagsBlobStorage } from "./blobStorageRoutes";
+import { generateRestRoutesBlobStorage, tagsBlobStorage } from "./blobStorageRoutes.js";
 
 /**
  * These are dummy entry points for the blob storage service.

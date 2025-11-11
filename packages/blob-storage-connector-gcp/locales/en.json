@@ -2,7 +2,6 @@
 	"info": {
 		"gcpBlobStorageConnector": {
 			"bucketCreating": "Creating bucket \"{bucket}\"",
-			"bucketCreated": "Created bucket \"{bucket}\"",
 			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
 		}
 	},

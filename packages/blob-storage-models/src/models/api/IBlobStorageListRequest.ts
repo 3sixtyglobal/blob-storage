@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { SortDirection } from "@twin.org/entity";
 import type { HeaderTypes, MimeTypes } from "@twin.org/web";
-import type { IBlobStorageEntry } from "../IBlobStorageEntry";
+import type { IBlobStorageEntry } from "../IBlobStorageEntry.js";
 
 /**
  * Query the entries from blob storage.

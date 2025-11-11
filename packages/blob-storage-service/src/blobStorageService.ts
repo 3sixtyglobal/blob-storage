@@ -1,15 +1,16 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
-	type BlobStorageCompressionType,
 	BlobStorageConnectorFactory,
 	BlobStorageContexts,
 	BlobStorageTypes,
+	type BlobStorageCompressionType,
 	type IBlobStorageComponent,
 	type IBlobStorageConnector,
 	type IBlobStorageEntry,
 	type IBlobStorageEntryList
 } from "@twin.org/blob-storage-models";
+import { ContextIdHelper, ContextIdKeys, ContextIdStore } from "@twin.org/context";
 import {
 	Compression,
 	Converter,
@@ -17,7 +18,6 @@ import {
 	Guards,
 	Is,
 	NotFoundError,
-	ObjectHelper,
 	Urn,
 	Validation,
 	type IValidationFailure
@@ -47,8 +47,8 @@ import {
 	type IVaultConnector
 } from "@twin.org/vault-models";
 import { MimeTypeHelper } from "@twin.org/web";
-import type { BlobStorageEntry } from "./entities/blobStorageEntry";
-import type { IBlobStorageServiceConstructorOptions } from "./models/IBlobStorageServiceConstructorOptions";
+import type { BlobStorageEntry } from "./entities/blobStorageEntry.js";
+import type { IBlobStorageServiceConstructorOptions } from "./models/IBlobStorageServiceConstructorOptions.js";
 
 /**
  * Service for performing blob storage operations to a connector.
@@ -91,12 +91,6 @@ export class BlobStorageService implements IBlobStorageComponent {
 	private readonly _vaultKeyId: string | undefined;
 
 	/**
-	 * Include the user identity when performing storage operations, can be used to partition for users, defaults to false.
-	 * @internal
-	 */
-	private readonly _partitionPerUser: boolean;
-
-	/**
 	 * Create a new instance of BlobStorageService.
 	 * @param options The options for the service.
 	 */
@@ -115,9 +109,16 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 		this._defaultNamespace = options?.config?.defaultNamespace ?? names[0];
 		this._vaultKeyId = options?.config?.vaultKeyId;
-		this._partitionPerUser = options?.config?.partitionPerUser ?? false;
 
 		SchemaOrgDataTypes.registerRedirects();
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return BlobStorageService.CLASS_NAME;
 	}
 
 	/**
@@ -129,10 +130,8 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param options Optional options for the creation of the blob.
 	 * @param options.disableEncryption Disables encryption if enabled by default.
 	 * @param options.overrideVaultKeyId Use a different vault key id for encryption, if not provided the default vault key id will be used.
-	 * @param options.compress Optional compression type to use for the blob, defaults to no compression.*
+	 * @param options.compress Optional compression type to use for the blob, defaults to no compression.
 	 * @param options.namespace The namespace to use for storing, defaults to component configured namespace.
-	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async create(
@@ -145,14 +144,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 			overrideVaultKeyId?: string;
 			compress?: BlobStorageCompressionType;
 			namespace?: string;
-		},
-		userIdentity?: string,
-		nodeIdentity?: string
+		}
 	): Promise<string> {
 		Guards.stringBase64(BlobStorageService.CLASS_NAME, nameof(blob), blob);
-		if (this._partitionPerUser) {
-			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
-		}
 
 		const disableEncryption = options?.disableEncryption ?? false;
 		const vaultKeyId = options?.overrideVaultKeyId ?? this._vaultKeyId;
@@ -176,12 +170,12 @@ export class BlobStorageService implements IBlobStorageComponent {
 			}
 
 			if (!Is.stringValue(fileExtension) && Is.stringValue(encodingFormat)) {
-				fileExtension = await MimeTypeHelper.defaultExtension(encodingFormat);
+				fileExtension = MimeTypeHelper.defaultExtension(encodingFormat);
 			}
 
 			if (Is.object(metadata)) {
 				const validationFailures: IValidationFailure[] = [];
-				JsonLdHelper.validate(metadata, validationFailures);
+				await JsonLdHelper.validate(metadata, validationFailures);
 				Validation.asValidationError(
 					BlobStorageService.CLASS_NAME,
 					nameof(metadata),
@@ -197,12 +191,14 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 			// If we have a vault connector then encrypt the data.
 			if (encryptionEnabled) {
-				Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
+				const contextIds = await ContextIdStore.getContextIds();
+				ContextIdHelper.guard(contextIds, ContextIdKeys.Organization);
+
 				if (Is.empty(this._vaultConnector)) {
 					throw new GeneralError(BlobStorageService.CLASS_NAME, "vaultConnectorNotConfigured");
 				}
 				storeBlob = await this._vaultConnector.encrypt(
-					`${nodeIdentity}/${vaultKeyId}`,
+					`${contextIds[ContextIdKeys.Organization]}/${vaultKeyId}`,
 					VaultEncryptionType.ChaCha20Poly1305,
 					storeBlob
 				);
@@ -224,13 +220,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 				compression: options?.compress
 			};
 
-			const conditions: { property: keyof BlobStorageEntry; value: unknown }[] = [];
-			if (this._partitionPerUser) {
-				ObjectHelper.propertySet(blobEntry, "userIdentity", userIdentity);
-				conditions.push({ property: "userIdentity", value: userIdentity });
-			}
-
-			await this._entryEntityStorage.set(blobEntry, conditions);
+			await this._entryEntityStorage.set(blobEntry);
 
 			return blobId;
 		} catch (error) {
@@ -245,8 +235,6 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param options.includeContent Include the content, or just get the metadata.
 	 * @param options.overrideVaultKeyId Use a different vault key id for decryption, if not provided the default vault key id will be used.
 	 * @param options.decompress If the content should be decompressed, if it was compressed when stored, defaults to true.
-	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns The entry and data for the blob if it can be found.
 	 * @throws Not found error if the blob cannot be found.
 	 */
@@ -256,28 +244,15 @@ export class BlobStorageService implements IBlobStorageComponent {
 			includeContent?: boolean;
 			decompress?: boolean;
 			overrideVaultKeyId?: string;
-		},
-		userIdentity?: string,
-		nodeIdentity?: string
+		}
 	): Promise<IBlobStorageEntry> {
 		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);
 
 		const includeContent = options?.includeContent ?? false;
 		const vaultKeyId = options?.overrideVaultKeyId ?? this._vaultKeyId;
 
-		const conditions: EntityCondition<BlobStorageEntry>[] = [];
-
-		if (this._partitionPerUser) {
-			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
-			conditions.push({
-				property: "userIdentity",
-				comparison: ComparisonOperator.Equals,
-				value: userIdentity
-			});
-		}
-
 		try {
-			const blobEntry = await this.internalGet(id, userIdentity);
+			const blobEntry = await this.internalGet(id);
 
 			let returnBlob: Uint8Array | undefined;
 			if (includeContent) {
@@ -290,12 +265,15 @@ export class BlobStorageService implements IBlobStorageComponent {
 				// If the data is encrypted then decrypt it.
 				const decryptionEnabled = blobEntry.isEncrypted && Is.stringValue(vaultKeyId);
 				if (decryptionEnabled) {
-					Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(nodeIdentity), nodeIdentity);
+					const contextIds = await ContextIdStore.getContextIds();
+					ContextIdHelper.guard(contextIds, ContextIdKeys.Organization);
+
 					if (Is.empty(this._vaultConnector)) {
 						throw new GeneralError(BlobStorageService.CLASS_NAME, "vaultConnectorNotConfigured");
 					}
+
 					returnBlob = await this._vaultConnector.decrypt(
-						`${nodeIdentity}/${vaultKeyId}`,
+						`${contextIds[ContextIdKeys.Organization]}/${vaultKeyId}`,
 						VaultEncryptionType.ChaCha20Poly1305,
 						returnBlob
 					);
@@ -307,7 +285,8 @@ export class BlobStorageService implements IBlobStorageComponent {
 			}
 
 			const jsonLd = this.entryToJsonLd(blobEntry, returnBlob);
-			return JsonLdProcessor.compact(jsonLd, jsonLd["@context"]);
+			const result = await JsonLdProcessor.compact(jsonLd, jsonLd["@context"]);
+			return result;
 		} catch (error) {
 			throw new GeneralError(BlobStorageService.CLASS_NAME, "getFailed", undefined, error);
 		}
@@ -319,7 +298,6 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param encodingFormat Mime type for the blob, will be detected if left undefined.
 	 * @param fileExtension Extension for the blob, will be detected if left undefined.
 	 * @param metadata Data for the custom metadata as JSON-LD.
-	 * @param userIdentity The user identity to use with storage operations.
 	 * @returns Nothing.
 	 * @throws Not found error if the blob cannot be found.
 	 */
@@ -327,13 +305,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 		id: string,
 		encodingFormat?: string,
 		fileExtension?: string,
-		metadata?: IJsonLdNodeObject,
-		userIdentity?: string
+		metadata?: IJsonLdNodeObject
 	): Promise<void> {
 		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);
-		if (this._partitionPerUser) {
-			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
-		}
 
 		try {
 			const blobEntry = await this._entryEntityStorage.get(id);
@@ -366,13 +340,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 				compression: blobEntry.compression
 			};
 
-			const conditions: { property: keyof BlobStorageEntry; value: unknown }[] = [];
-			if (this._partitionPerUser) {
-				ObjectHelper.propertySet(updatedBlobEntry, "userIdentity", userIdentity);
-				conditions.push({ property: "userIdentity", value: userIdentity });
-			}
-
-			await this._entryEntityStorage.set(updatedBlobEntry, conditions);
+			await this._entryEntityStorage.set(updatedBlobEntry);
 		} catch (error) {
 			throw new GeneralError(BlobStorageService.CLASS_NAME, "updateFailed", undefined, error);
 		}
@@ -381,23 +349,15 @@ export class BlobStorageService implements IBlobStorageComponent {
 	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
-	 * @param userIdentity The user identity to use with storage operations.
 	 * @returns Nothing.
 	 */
-	public async remove(id: string, userIdentity?: string): Promise<void> {
+	public async remove(id: string): Promise<void> {
 		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);
-		if (this._partitionPerUser) {
-			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
-		}
 
 		try {
 			const blobStorageConnector = this.getConnector(id);
 
-			const conditions: { property: keyof BlobStorageEntry; value: unknown }[] = [];
-			if (this._partitionPerUser) {
-				conditions.push({ property: "userIdentity", value: userIdentity });
-			}
-			await this._entryEntityStorage.remove(id, conditions);
+			await this._entryEntityStorage.remove(id);
 
 			const removed = await blobStorageConnector.remove(id);
 
@@ -416,7 +376,6 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param orderByDirection The direction for the order, defaults to descending.
 	 * @param cursor The cursor to request the next page of entries.
 	 * @param limit The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
-	 * @param userIdentity The user identity to use with storage operations.
 	 * @returns All the entries for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -425,32 +384,13 @@ export class BlobStorageService implements IBlobStorageComponent {
 		orderBy?: keyof Pick<IBlobStorageEntry, "dateCreated" | "dateModified">,
 		orderByDirection?: SortDirection,
 		cursor?: string,
-		limit?: number,
-		userIdentity?: string
+		limit?: number
 	): Promise<IBlobStorageEntryList> {
-		const finalConditions: EntityCondition<IBlobStorageEntry> = {
-			conditions: [],
-			logicalOperator: LogicalOperator.And
-		};
-
-		if (this._partitionPerUser) {
-			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
-			finalConditions.conditions.push({
-				property: "userIdentity",
-				comparison: ComparisonOperator.Equals,
-				value: userIdentity
-			});
-		}
-
-		if (!Is.empty(conditions)) {
-			finalConditions.conditions.push(conditions);
-		}
-
 		const orderProperty = orderBy ?? "dateCreated";
 		const orderDirection = orderByDirection ?? SortDirection.Descending;
 
 		const result = await this._entryEntityStorage.query(
-			finalConditions.conditions.length > 0 ? finalConditions : undefined,
+			conditions,
 			[
 				{
 					property: orderProperty,
@@ -511,54 +451,40 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * Get an entity.
 	 * @param id The id of the entity to get, or the index value if secondaryIndex is set.
 	 * @param secondaryIndex Get the item using a secondary index.
-	 * @param userIdentity The user identity to use with storage operations.
+	 * @param partitionKey The optional partition key to use.
 	 * @returns The object if it can be found or throws.
 	 * @internal
 	 */
-	private async internalGet(id: string, userIdentity?: string): Promise<BlobStorageEntry> {
-		const conditions: EntityCondition<BlobStorageEntry>[] = [];
+	private async internalGet(id: string): Promise<BlobStorageEntry> {
+		const schema = this._entryEntityStorage.getSchema();
+		const primaryKey = EntitySchemaHelper.getPrimaryKey(schema);
 
-		if (this._partitionPerUser) {
-			Guards.stringValue(BlobStorageService.CLASS_NAME, nameof(userIdentity), userIdentity);
-			conditions.push({
-				property: "userIdentity",
-				comparison: ComparisonOperator.Equals,
-				value: userIdentity
-			});
-		}
-
-		let entity: BlobStorageEntry | undefined;
-		if (conditions.length === 0) {
-			entity = await this._entryEntityStorage.get(id);
-		} else {
-			const schema = this._entryEntityStorage.getSchema();
-			const primaryKey = EntitySchemaHelper.getPrimaryKey(schema);
-
-			conditions.unshift({
+		const conditions: EntityCondition<BlobStorageEntry>[] = [
+			{
 				property: primaryKey.property,
 				comparison: ComparisonOperator.Equals,
 				value: id
-			});
+			}
+		];
 
-			const results = await this._entryEntityStorage.query(
-				{
-					conditions,
-					logicalOperator: LogicalOperator.And
-				},
-				undefined,
-				undefined,
-				undefined,
-				1
-			);
+		const results = await this._entryEntityStorage.query(
+			{
+				conditions,
+				logicalOperator: LogicalOperator.And
+			},
+			undefined,
+			undefined,
+			undefined,
+			1
+		);
 
-			entity = results.entities[0] as BlobStorageEntry;
-		}
+		const entity = results.entities[0] as BlobStorageEntry;
 
 		if (Is.empty(entity)) {
 			throw new NotFoundError(BlobStorageService.CLASS_NAME, "entityNotFound", id);
 		}
 
-		return ObjectHelper.omit(entity, ["userIdentity"]) as BlobStorageEntry;
+		return entity;
 	}
 
 	/**

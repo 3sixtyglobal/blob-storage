@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { HeaderTypes, MimeTypes } from "@twin.org/web";
-import type { IBlobStorageEntryList } from "../IBlobStorageEntryList";
+import type { IBlobStorageEntryList } from "../IBlobStorageEntryList.js";
 
 /**
  * Response to getting the list of entries from a query.

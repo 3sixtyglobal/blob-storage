@@ -3,7 +3,7 @@
 import path from "node:path";
 import { Guards } from "@twin.org/core";
 import * as dotenv from "dotenv";
-import type { IS3BlobStorageConnectorConfig } from "../src/models/IS3BlobStorageConnectorConfig";
+import type { IS3BlobStorageConnectorConfig } from "../src/models/IS3BlobStorageConnectorConfig.js";
 
 dotenv.config({
 	path: [path.join(__dirname, ".env"), path.join(__dirname, ".env.dev")],

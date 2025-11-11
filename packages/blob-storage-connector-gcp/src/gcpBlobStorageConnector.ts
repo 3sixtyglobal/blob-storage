@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { Storage } from "@google-cloud/storage";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
 import {
 	BaseError,
 	ComponentFactory,
@@ -17,8 +18,8 @@ import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
 import { MimeTypes } from "@twin.org/web";
 import type { JWTInput } from "google-auth-library";
-import type { IGcpBlobStorageConnectorConfig } from "./models/IGcpBlobStorageConnectorConfig";
-import type { IGcpBlobStorageConnectorConstructorOptions } from "./models/IGcpBlobStorageConnectorConstructorOptions";
+import type { IGcpBlobStorageConnectorConfig } from "./models/IGcpBlobStorageConnectorConfig.js";
+import type { IGcpBlobStorageConnectorConstructorOptions } from "./models/IGcpBlobStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations on GCP Storage.
@@ -40,6 +41,12 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	 * @internal
 	 */
 	private readonly _config: IGcpBlobStorageConnectorConfig;
+
+	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
 
 	/**
 	 * The GCP Storage client.
@@ -83,11 +90,20 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 		);
 
 		this._config = options.config;
+		this._partitionContextIds = options.partitionContextIds;
 		this._storage = new Storage({
 			projectId: this._config.projectId,
 			apiEndpoint: this._config.apiEndpoint,
 			credentials
 		});
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return GcpBlobStorageConnector.CLASS_NAME;
 	}
 
 	/**
@@ -99,15 +115,6 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 
 		try {
-			await nodeLogging?.log({
-				level: "info",
-				source: GcpBlobStorageConnector.CLASS_NAME,
-				message: "bucketCreating",
-				data: {
-					bucket: this._config.bucketName
-				}
-			});
-
 			const [buckets] = await this._storage.getBuckets();
 			const bucketExists = buckets.some(bucket => bucket.name === this._config.bucketName);
 
@@ -121,16 +128,15 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 					}
 				});
 			} else {
-				await this._storage.createBucket(this._config.bucketName);
-
 				await nodeLogging?.log({
 					level: "info",
 					source: GcpBlobStorageConnector.CLASS_NAME,
-					message: "bucketCreated",
+					message: "bucketCreating",
 					data: {
 						bucket: this._config.bucketName
 					}
 				});
+				await this._storage.createBucket(this._config.bucketName);
 			}
 		} catch (err) {
 			await nodeLogging?.log({
@@ -157,10 +163,13 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	public async set(blob: Uint8Array): Promise<string> {
 		Guards.uint8Array(GcpBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		try {
 			const id = Converter.bytesToHex(Sha256.sum256(blob));
 			const bucket = this._storage.bucket(this._config.bucketName);
-			const file = bucket.file(id);
+			const file = bucket.file(`${partitionKey ?? "root"}/${id}`);
 
 			await file.save(blob, {
 				contentType: MimeTypes.OctetStream
@@ -179,6 +188,10 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
 		Urn.guard(GcpBlobStorageConnector.CLASS_NAME, nameof(id), id);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== GcpBlobStorageConnector.NAMESPACE) {
@@ -191,7 +204,7 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 		try {
 			const key = urnParsed.namespaceSpecific(1);
 			const bucket = this._storage.bucket(this._config.bucketName);
-			const file = bucket.file(key);
+			const file = bucket.file(`${partitionKey ?? "root"}/${key}`);
 
 			const [exists] = await file.exists();
 			if (!exists) {
@@ -212,6 +225,10 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	public async remove(id: string): Promise<boolean> {
 		Urn.guard(GcpBlobStorageConnector.CLASS_NAME, nameof(id), id);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== GcpBlobStorageConnector.NAMESPACE) {
@@ -224,7 +241,7 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 		try {
 			const key = urnParsed.namespaceSpecific(1);
 			const bucket = this._storage.bucket(this._config.bucketName);
-			const file = bucket.file(key);
+			const file = bucket.file(`${partitionKey ?? "root"}/${key}`);
 
 			const [exists] = await file.exists();
 			if (!exists) {

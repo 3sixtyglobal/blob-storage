@@ -1,15 +1,18 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { I18n, RandomHelper } from "@twin.org/core";
-import { TEST_S3_CONFIG } from "./setupTestEnv";
-import { S3BlobStorageConnector } from "../src/s3BlobStorageConnector";
+import { ContextIdStore } from "@twin.org/context";
+import { RandomHelper } from "@twin.org/core";
+import { TEST_S3_CONFIG } from "./setupTestEnv.js";
+import { S3BlobStorageConnector } from "../src/s3BlobStorageConnector.js";
 
 const TEST_DATA = RandomHelper.generate(32);
 const TEST_DATA_2 = RandomHelper.generate(32);
 
 describe("S3BlobStorageConnector", () => {
 	beforeAll(async () => {
-		I18n.addDictionary("en", await import("../locales/en.json"));
+		ContextIdStore.getContextIds = vi
+			.fn()
+			.mockImplementation(() => ({ node: "node", tenant: "tenant", user: "user" }));
 	});
 
 	test("can construct", async () => {
@@ -64,21 +67,14 @@ describe("S3BlobStorageConnector", () => {
 				namespace: S3BlobStorageConnector.NAMESPACE
 			}
 		});
-		expect(I18n.hasMessage("error.s3BlobStorageConnector.namespaceMismatch")).toEqual(true);
 	});
 
 	test("can not get an item", async () => {
 		const blobStorage = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
 		const idUrn = await blobStorage.set(TEST_DATA);
 
-		await expect(blobStorage.get(`${idUrn}-2`)).rejects.toMatchObject({
-			name: "GeneralError",
-			message: "s3BlobStorageConnector.getBlobFailed",
-			properties: {
-				namespace: S3BlobStorageConnector.NAMESPACE,
-				id: `${idUrn}-2`
-			}
-		});
+		const item = await blobStorage.get(`${idUrn}-2`);
+		expect(item).toBeUndefined();
 	});
 
 	test("can get an item", async () => {
@@ -111,7 +107,6 @@ describe("S3BlobStorageConnector", () => {
 				namespace: S3BlobStorageConnector.NAMESPACE
 			}
 		});
-		expect(I18n.hasMessage("error.s3BlobStorageConnector.namespaceMismatch")).toEqual(true);
 	});
 
 	test("can remove an item", async () => {
@@ -127,5 +122,37 @@ describe("S3BlobStorageConnector", () => {
 
 		const removed = await blobStorage.remove(`${idUrn}-2`);
 		expect(removed).toBe(false);
+	});
+
+	test("can set and get an item with a partitionKey", async () => {
+		const blobStorage = new S3BlobStorageConnector({
+			partitionContextIds: ["node", "tenant", "user"],
+			config: TEST_S3_CONFIG
+		});
+		const idUrn = await blobStorage.set(new Uint8Array([1, 2, 3]));
+
+		const item = await blobStorage.get(idUrn);
+
+		expect(item).toBeDefined();
+		expect(item?.length).toEqual(3);
+		expect(item?.[0]).toEqual(1);
+		expect(item?.[1]).toEqual(2);
+		expect(item?.[2]).toEqual(3);
+	});
+
+	test("can remove an item with a partitionKey", async () => {
+		const blobStorage = new S3BlobStorageConnector({
+			partitionContextIds: ["node", "tenant", "user"],
+			config: TEST_S3_CONFIG
+		});
+		const idUrn = await blobStorage.set(new Uint8Array([1, 2, 3]));
+
+		const item = await blobStorage.get(idUrn);
+		expect(item).toBeDefined();
+
+		await blobStorage.remove(idUrn);
+
+		const itemAfterRemove = await blobStorage.get(idUrn);
+		expect(itemAfterRemove).toBeUndefined();
 	});
 });

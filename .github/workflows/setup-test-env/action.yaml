@@ -42,7 +42,7 @@ runs:
       run: |
         docker run -d \
           --name azurite \
-          -p 10000:10000 \
+          -p 20610:10000 \
           -e AZURITE_ACCOUNTS=testAccount:testKey \
           mcr.microsoft.com/azure-storage/azurite:latest
 

@@ -2,7 +2,6 @@
 	"info": {
 		"azureBlobStorageConnector": {
 			"containerCreating": "Creating container \"{container}\"",
-			"containerCreated": "Created container \"{container}\"",
 			"containerExists": "Skipping create container \"{container}\" as it already exists"
 		}
 	},

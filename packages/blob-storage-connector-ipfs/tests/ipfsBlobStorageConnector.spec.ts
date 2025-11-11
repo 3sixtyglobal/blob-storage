@@ -1,16 +1,12 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { I18n, RandomHelper, Urn } from "@twin.org/core";
-import { TEST_IPFS_CONFIG, TEST_IPFS_PUBLIC_GATEWAY } from "./setupTestEnv";
-import { IpfsBlobStorageConnector } from "../src/ipfsBlobStorageConnector";
+import { RandomHelper, Urn } from "@twin.org/core";
+import { TEST_IPFS_CONFIG, TEST_IPFS_PUBLIC_GATEWAY } from "./setupTestEnv.js";
+import { IpfsBlobStorageConnector } from "../src/ipfsBlobStorageConnector.js";
 
 const TEST_DATA = RandomHelper.generate(32);
 
 describe("IpfsBlobStorageConnector", () => {
-	beforeAll(async () => {
-		I18n.addDictionary("en", await import("../locales/en.json"));
-	});
-
 	test("can construct", async () => {
 		const blobStorage = new IpfsBlobStorageConnector({ config: TEST_IPFS_CONFIG });
 		expect(blobStorage).toBeDefined();
@@ -60,7 +56,15 @@ describe("IpfsBlobStorageConnector", () => {
 				namespace: IpfsBlobStorageConnector.NAMESPACE
 			}
 		});
-		expect(I18n.hasMessage("error.ipfsBlobStorageConnector.namespaceMismatch")).toEqual(true);
+	});
+
+	test("can not get an item if it does not exist", async () => {
+		const blobStorage = new IpfsBlobStorageConnector({ config: TEST_IPFS_CONFIG });
+
+		const errorUri = "blob:ipfs:QmYjGapQfNT9MN3k3oz7TFv7RxoF45JuypCjSXkdCffy4A";
+
+		const item = await blobStorage.get(errorUri);
+		expect(item).toBeUndefined();
 	});
 
 	test("can not get an item with exception", async () => {
@@ -76,7 +80,7 @@ describe("IpfsBlobStorageConnector", () => {
 				name: "GeneralError",
 				message: "ipfsBlobStorageConnector.fetchFail",
 				properties: {
-					Message: `invalid path "${Urn.fromValidString(errorUri).namespaceSpecificParts(1)}": path does not have enough components`,
+					Message: `invalid path "${Urn.fromValidString(errorUri).namespaceSpecificParts(1).join(",")}": path does not have enough components`,
 					Code: 0,
 					Type: "error"
 				}
@@ -114,7 +118,6 @@ describe("IpfsBlobStorageConnector", () => {
 				namespace: IpfsBlobStorageConnector.NAMESPACE
 			}
 		});
-		expect(I18n.hasMessage("error.ipfsBlobStorageConnector.namespaceMismatch")).toEqual(true);
 	});
 
 	test("can not remove an item with exception", async () => {
@@ -129,7 +132,7 @@ describe("IpfsBlobStorageConnector", () => {
 				name: "GeneralError",
 				message: "ipfsBlobStorageConnector.fetchFail",
 				properties: {
-					Message: `invalid path "${Urn.fromValidString(errorUri).namespaceSpecificParts(1)}": path does not have enough components`,
+					Message: `invalid path "${Urn.fromValidString(errorUri).namespaceSpecificParts(1).join(",")}": path does not have enough components`,
 					Code: 0,
 					Type: "error"
 				}

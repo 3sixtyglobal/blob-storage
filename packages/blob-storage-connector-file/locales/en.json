@@ -2,7 +2,6 @@
 	"info": {
 		"fileBlobStorageConnector": {
 			"directoryCreating": "Creating directory \"{directory}\"",
-			"directoryCreated": "Created directory \"{directory}\"",
 			"directoryExists": "Skipping create directory \"{directory}\" as it already exists"
 		}
 	},

@@ -1,7 +1,9 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { rm } from "node:fs/promises";
-import { ComponentFactory, Converter, I18n, RandomHelper } from "@twin.org/core";
+import { rm, stat } from "node:fs/promises";
+import path from "node:path";
+import { ContextIdStore } from "@twin.org/context";
+import { ComponentFactory, Converter, RandomHelper, Urn } from "@twin.org/core";
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
 import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
 import {
@@ -12,8 +14,8 @@ import {
 import { LoggingConnectorFactory } from "@twin.org/logging-models";
 import { LoggingService } from "@twin.org/logging-service";
 import { nameof } from "@twin.org/nameof";
-import { FileBlobStorageConnector } from "../src/fileBlobStorageConnector";
-import type { IFileBlobStorageConnectorConfig } from "../src/models/IFileBlobStorageConnectorConfig";
+import { FileBlobStorageConnector } from "../src/fileBlobStorageConnector.js";
+import type { IFileBlobStorageConnectorConfig } from "../src/models/IFileBlobStorageConnectorConfig.js";
 
 let memoryEntityStorage: MemoryEntityStorageConnector<LogEntry>;
 
@@ -22,8 +24,6 @@ const TEST_DIRECTORY = `${TEST_DIRECTORY_ROOT}test-data-${Converter.bytesToHex(R
 
 describe("FileBlobStorageConnector", () => {
 	beforeAll(async () => {
-		I18n.addDictionary("en", await import("../locales/en.json"));
-
 		initSchema();
 	});
 
@@ -34,6 +34,10 @@ describe("FileBlobStorageConnector", () => {
 		EntityStorageConnectorFactory.register("log-entry", () => memoryEntityStorage);
 		LoggingConnectorFactory.register("logging", () => new EntityStorageLoggingConnector());
 		ComponentFactory.register("logging", () => new LoggingService());
+
+		ContextIdStore.getContextIds = vi
+			.fn()
+			.mockImplementation(() => ({ node: "node", tenant: "tenant", user: "user" }));
 	});
 
 	afterAll(async () => {
@@ -121,8 +125,6 @@ describe("FileBlobStorageConnector", () => {
 		expect(logs?.length).toEqual(2);
 		expect(logs?.[0].message).toEqual("directoryCreating");
 		expect(logs?.[1].message).toEqual("directoryCreateFailed");
-		expect(I18n.hasMessage("info.fileBlobStorageConnector.directoryCreating")).toEqual(true);
-		expect(I18n.hasMessage("error.fileBlobStorageConnector.directoryCreateFailed")).toEqual(true);
 	});
 
 	test("can bootstrap and create directory", async () => {
@@ -134,11 +136,8 @@ describe("FileBlobStorageConnector", () => {
 		await blobStorage.bootstrap("logging");
 		const logs = memoryEntityStorage.getStore();
 		expect(logs).toBeDefined();
-		expect(logs?.length).toEqual(2);
+		expect(logs?.length).toEqual(1);
 		expect(logs?.[0].message).toEqual("directoryCreating");
-		expect(logs?.[1].message).toEqual("directoryCreated");
-		expect(I18n.hasMessage("info.fileBlobStorageConnector.directoryCreating")).toEqual(true);
-		expect(I18n.hasMessage("info.fileBlobStorageConnector.directoryCreated")).toEqual(true);
 	});
 
 	test("can bootstrap and skip existing directory", async () => {
@@ -152,7 +151,6 @@ describe("FileBlobStorageConnector", () => {
 		expect(logs).toBeDefined();
 		expect(logs?.length).toEqual(1);
 		expect(logs?.[0].message).toEqual("directoryExists");
-		expect(I18n.hasMessage("info.fileBlobStorageConnector.directoryExists")).toEqual(true);
 	});
 
 	test("can fail to set an item with no blob", async () => {
@@ -183,8 +181,6 @@ describe("FileBlobStorageConnector", () => {
 			name: "GeneralError",
 			message: "fileBlobStorageConnector.setBlobFailed"
 		});
-
-		expect(I18n.hasMessage("error.fileBlobStorageConnector.setBlobFailed")).toEqual(true);
 	});
 
 	test("can set an item", async () => {
@@ -233,7 +229,6 @@ describe("FileBlobStorageConnector", () => {
 				namespace: FileBlobStorageConnector.NAMESPACE
 			}
 		});
-		expect(I18n.hasMessage("error.fileBlobStorageConnector.namespaceMismatch")).toEqual(true);
 	});
 
 	test("can fail to get an item with read failure", async () => {
@@ -249,7 +244,6 @@ describe("FileBlobStorageConnector", () => {
 			name: "GeneralError",
 			message: "fileBlobStorageConnector.getBlobFailed"
 		});
-		expect(I18n.hasMessage("error.fileBlobStorageConnector.getBlobFailed")).toEqual(true);
 	});
 
 	test("can not get an item", async () => {
@@ -309,7 +303,6 @@ describe("FileBlobStorageConnector", () => {
 				namespace: FileBlobStorageConnector.NAMESPACE
 			}
 		});
-		expect(I18n.hasMessage("error.fileBlobStorageConnector.namespaceMismatch")).toEqual(true);
 	});
 
 	test("can fail to remove an item with storage failure", async () => {
@@ -325,7 +318,6 @@ describe("FileBlobStorageConnector", () => {
 			name: "GeneralError",
 			message: "fileBlobStorageConnector.removeBlobFailed"
 		});
-		expect(I18n.hasMessage("error.fileBlobStorageConnector.removeBlobFailed")).toEqual(true);
 	});
 
 	test("can not remove an item", async () => {
@@ -355,4 +347,69 @@ describe("FileBlobStorageConnector", () => {
 
 		expect(item).toBeUndefined();
 	});
+
+	test("can set and get an item with a partitionKey", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			partitionContextIds: ["node", "tenant", "user"],
+			config: {
+				directory: TEST_DIRECTORY
+			}
+		});
+		const idUrn = await blobStorage.set(new Uint8Array([1, 2, 3]));
+
+		const urnParsed = Urn.fromValidString(idUrn);
+		const exists = await fileExists(
+			path.join(TEST_DIRECTORY, "node/tenant/user", `${urnParsed.namespaceSpecific(1)}.blob`)
+		);
+		expect(exists).toBe(true);
+
+		const item = await blobStorage.get(idUrn);
+
+		expect(item).toBeDefined();
+		expect(item?.length).toEqual(3);
+		expect(item?.[0]).toEqual(1);
+		expect(item?.[1]).toEqual(2);
+		expect(item?.[2]).toEqual(3);
+	});
+
+	test("can remove an item with a partitionKey", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			partitionContextIds: ["node", "tenant", "user"],
+			config: {
+				directory: TEST_DIRECTORY
+			}
+		});
+		const idUrn = await blobStorage.set(new Uint8Array([1, 2, 3]));
+
+		const urnParsed = Urn.fromValidString(idUrn);
+		const fullName = path.join(
+			TEST_DIRECTORY,
+			"node/tenant/user",
+			`${urnParsed.namespaceSpecific(1)}.blob`
+		);
+		let exists = await fileExists(fullName);
+		expect(exists).toBe(true);
+
+		await blobStorage.remove(idUrn);
+
+		exists = await fileExists(fullName);
+		expect(exists).toBe(false);
+
+		const itemAfterRemove = await blobStorage.get(idUrn);
+		expect(itemAfterRemove).toBeUndefined();
+	});
 });
+
+/**
+ * Does the specified file exist.
+ * @param filename The filename to check for existence.
+ * @returns True if the file exists.
+ */
+export async function fileExists(filename: string): Promise<boolean> {
+	try {
+		const stats = await stat(filename);
+		return stats.isFile();
+	} catch {
+		return false;
+	}
+}

@@ -1,5 +1,5 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-export * from "./azureBlobStorageConnector";
-export * from "./models/IAzureBlobStorageConnectorConfig";
-export * from "./models/IAzureBlobStorageConnectorConstructorOptions";
+export * from "./azureBlobStorageConnector.js";
+export * from "./models/IAzureBlobStorageConnectorConfig.js";
+export * from "./models/IAzureBlobStorageConnectorConstructorOptions.js";

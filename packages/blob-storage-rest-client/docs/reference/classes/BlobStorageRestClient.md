@@ -16,7 +16,7 @@ Client for performing blob storage through to REST endpoints.
 
 > **new BlobStorageRestClient**(`config`): `BlobStorageRestClient`
 
-Create a new instance of BlobStorageClient.
+Create a new instance of BlobStorageRestClient.
 
 #### Parameters
 
@@ -43,6 +43,24 @@ The configuration for the client.
 Runtime name for the class.
 
 ## Methods
+
+### className()
+
+> **className**(): `string`
+
+Returns the class name of the component.
+
+#### Returns
+
+`string`
+
+The class name of the component.
+
+#### Implementation of
+
+`IBlobStorageComponent.className`
+
+***
 
 ### create()
 

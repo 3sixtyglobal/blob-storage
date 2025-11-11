@@ -43,6 +43,14 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	}
 
 	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return BlobStorageRestClient.CLASS_NAME;
+	}
+
+	/**
 	 * Create the blob with some metadata.
 	 * @param blob The data for the blob in base64 format.
 	 * @param encodingFormat Mime type for the blob, will be detected if left undefined.

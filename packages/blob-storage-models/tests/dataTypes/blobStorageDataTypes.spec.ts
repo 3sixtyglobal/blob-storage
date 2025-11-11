@@ -3,9 +3,9 @@
 import type { IValidationFailure } from "@twin.org/core";
 import { DataTypeHelper } from "@twin.org/data-core";
 import { JsonLdDataTypes } from "@twin.org/data-json-ld";
-import { BlobStorageDataTypes } from "../../src/dataTypes/blobStorageDataTypes";
-import { BlobStorageContexts } from "../../src/models/blobStorageContexts";
-import { BlobStorageTypes } from "../../src/models/blobStorageTypes";
+import { BlobStorageDataTypes } from "../../src/dataTypes/blobStorageDataTypes.js";
+import { BlobStorageContexts } from "../../src/models/blobStorageContexts.js";
+import { BlobStorageTypes } from "../../src/models/blobStorageTypes.js";
 
 describe("BlobStorageDataTypes", () => {
 	beforeAll(async () => {

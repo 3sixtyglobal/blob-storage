@@ -10,12 +10,13 @@ import {
 	S3Client
 } from "@aws-sdk/client-s3";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
 import { BaseError, ComponentFactory, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { IS3BlobStorageConnectorConfig } from "./models/IS3BlobStorageConnectorConfig";
-import type { IS3BlobStorageConnectorConstructorOptions } from "./models/IS3BlobStorageConnectorConstructorOptions";
+import type { IS3BlobStorageConnectorConfig } from "./models/IS3BlobStorageConnectorConfig.js";
+import type { IS3BlobStorageConnectorConstructorOptions } from "./models/IS3BlobStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations on S3.
@@ -37,6 +38,12 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @internal
 	 */
 	private readonly _config: IS3BlobStorageConnectorConfig;
+
+	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
 
 	/**
 	 * The S3 client.
@@ -86,6 +93,8 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			};
 		}
 
+		this._partitionContextIds = options.partitionContextIds;
+
 		this._config = options.config;
 		this._s3Client = new S3Client({
 			region: this._config.region,
@@ -93,6 +102,14 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			credentials,
 			forcePathStyle: true
 		});
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return S3BlobStorageConnector.CLASS_NAME;
 	}
 
 	/**
@@ -104,15 +121,6 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 
 		try {
-			await nodeLogging?.log({
-				level: "info",
-				source: S3BlobStorageConnector.CLASS_NAME,
-				message: "bucketCreating",
-				data: {
-					bucket: this._config.bucketName
-				}
-			});
-
 			const listBucketsCommand = new ListBucketsCommand({});
 			const bucketsList = await this._s3Client.send(listBucketsCommand);
 			const bucketExists = bucketsList.Buckets?.some(
@@ -129,16 +137,15 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 					}
 				});
 			} else {
-				await this._s3Client.send(new CreateBucketCommand({ Bucket: this._config.bucketName }));
-
 				await nodeLogging?.log({
 					level: "info",
 					source: S3BlobStorageConnector.CLASS_NAME,
-					message: "bucketCreated",
+					message: "bucketCreating",
 					data: {
 						bucket: this._config.bucketName
 					}
 				});
+				await this._s3Client.send(new CreateBucketCommand({ Bucket: this._config.bucketName }));
 			}
 		} catch (err) {
 			await nodeLogging?.log({
@@ -168,9 +175,15 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 		try {
 			const id = Converter.bytesToHex(Sha256.sum256(blob));
 
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+
 			const command = new PutObjectCommand({
 				Bucket: this._config.bucketName,
-				Key: id,
+				Key: `${partitionKey ?? "root"}/${id}`,
 				Body: blob
 			});
 
@@ -191,6 +204,9 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 		Urn.guard(S3BlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		if (urnParsed.namespaceMethod() !== S3BlobStorageConnector.NAMESPACE) {
 			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: S3BlobStorageConnector.NAMESPACE,
@@ -202,7 +218,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			const key = urnParsed.namespaceSpecific(1);
 			const command = new GetObjectCommand({
 				Bucket: this._config.bucketName,
-				Key: key
+				Key: `${partitionKey ?? "root"}/${key}`
 			});
 
 			const response = await this._s3Client.send(command);
@@ -211,6 +227,9 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 				return new Uint8Array(await response.Body.transformToByteArray());
 			}
 		} catch (err) {
+			if (BaseError.isErrorName(err, "NoSuchKey")) {
+				return undefined;
+			}
 			throw new GeneralError(
 				S3BlobStorageConnector.CLASS_NAME,
 				"getBlobFailed",
@@ -232,6 +251,9 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 		Urn.guard(S3BlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		if (urnParsed.namespaceMethod() !== S3BlobStorageConnector.NAMESPACE) {
 			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: S3BlobStorageConnector.NAMESPACE,
@@ -244,7 +266,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 			const headCommand = new HeadObjectCommand({
 				Bucket: this._config.bucketName,
-				Key: key
+				Key: `${partitionKey ?? "root"}/${key}`
 			});
 
 			try {
@@ -258,7 +280,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 			const deleteCommand = new DeleteObjectCommand({
 				Bucket: this._config.bucketName,
-				Key: key
+				Key: `${partitionKey ?? "root"}/${key}`
 			});
 
 			await this._s3Client.send(deleteCommand);

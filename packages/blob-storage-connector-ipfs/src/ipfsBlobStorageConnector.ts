@@ -4,8 +4,8 @@ import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { GeneralError, Guards, Is, StringHelper, Urn } from "@twin.org/core";
 import { nameof } from "@twin.org/nameof";
 import { HeaderHelper, HeaderTypes, MimeTypes } from "@twin.org/web";
-import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig";
-import type { IIpfsBlobStorageConnectorConstructorOptions } from "./models/IIpfsBlobStorageConnectorConstructorOptions";
+import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig.js";
+import type { IIpfsBlobStorageConnectorConstructorOptions } from "./models/IIpfsBlobStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations on IPFS.
@@ -29,6 +29,12 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	private readonly _config: IIpfsBlobStorageConnectorConfig;
 
 	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
+
+	/**
 	 * Create a new instance of IpfsBlobStorageConnector.
 	 * @param options The options for the connector.
 	 */
@@ -46,7 +52,16 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 		);
 
 		this._config = options.config;
+		this._partitionContextIds = options.partitionContextIds;
 		this._config.apiUrl = StringHelper.trimTrailingSlashes(this._config.apiUrl);
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return IpfsBlobStorageConnector.CLASS_NAME;
 	}
 
 	/**
@@ -118,6 +133,22 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 			this.addSecurity(fetchOptions);
 
+			const responseStat = await fetch(
+				`${this._config.apiUrl}/block/stat?arg=${urnParsed.namespaceSpecific(1)}&local=true`,
+				fetchOptions
+			);
+
+			if (!responseStat.ok) {
+				const resp = await responseStat.json();
+				if (
+					Is.object<{ Message: string }>(resp) &&
+					Is.stringValue(resp.Message) &&
+					resp.Message.includes("not found")
+				) {
+					return;
+				}
+			}
+
 			const response = await fetch(
 				`${this._config.apiUrl}/cat?arg=${urnParsed.namespaceSpecific(1)}`,
 				fetchOptions
@@ -125,7 +156,6 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 			if (response.ok) {
 				const result = await response.arrayBuffer();
-
 				return new Uint8Array(result);
 			}
 

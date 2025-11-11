@@ -464,9 +464,7 @@ export async function blobStorageCreate(
 			disableEncryption: request.body.disableEncryption,
 			overrideVaultKeyId: request.body.overrideVaultKeyId,
 			namespace: request.body.namespace
-		},
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
+		}
 	);
 
 	return {
@@ -501,16 +499,11 @@ export async function blobStorageGet(
 
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
-	const result = await component.get(
-		request.pathParams.id,
-		{
-			includeContent: Coerce.boolean(request.query?.includeContent),
-			decompress: Coerce.boolean(request.query?.decompress),
-			overrideVaultKeyId: request.query?.overrideVaultKeyId
-		},
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
-	);
+	const result = await component.get(request.pathParams.id, {
+		includeContent: Coerce.boolean(request.query?.includeContent),
+		decompress: Coerce.boolean(request.query?.decompress),
+		overrideVaultKeyId: request.query?.overrideVaultKeyId
+	});
 
 	return {
 		headers: {
@@ -545,16 +538,11 @@ export async function blobStorageGetContent(
 	const decompress = Coerce.boolean(request.query?.decompress);
 	const download = Coerce.boolean(request.query?.download) ?? false;
 
-	const result = await component.get(
-		request.pathParams.id,
-		{
-			includeContent: true,
-			decompress,
-			overrideVaultKeyId: request.query?.overrideVaultKeyId
-		},
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
-	);
+	const result = await component.get(request.pathParams.id, {
+		includeContent: true,
+		decompress,
+		overrideVaultKeyId: request.query?.overrideVaultKeyId
+	});
 
 	const encodingFormat = result?.encodingFormat ?? MimeTypes.OctetStream;
 	let compressedEncodingFormat: MimeTypes | undefined;
@@ -610,8 +598,7 @@ export async function blobStorageUpdate(
 		request.pathParams.id,
 		request.body.encodingFormat,
 		request.body.fileExtension,
-		request.body.metadata,
-		httpRequestContext.userIdentity
+		request.body.metadata
 	);
 
 	return {
@@ -641,7 +628,7 @@ export async function blobStorageRemove(
 
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
-	await component.remove(request.pathParams.id, httpRequestContext.userIdentity);
+	await component.remove(request.pathParams.id);
 
 	return {
 		statusCode: HttpStatusCode.noContent
@@ -671,8 +658,7 @@ export async function blobStorageList(
 		request.query?.orderBy,
 		request.query?.orderByDirection,
 		request.query?.cursor,
-		Coerce.number(request.query?.limit),
-		httpRequestContext.userIdentity
+		Coerce.number(request.query?.limit)
 	);
 
 	return {

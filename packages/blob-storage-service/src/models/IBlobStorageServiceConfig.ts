@@ -15,9 +15,4 @@ export interface IBlobStorageServiceConfig {
 	 * Defaults to the first entry in the factory if not provided.
 	 */
 	defaultNamespace?: string;
-
-	/**
-	 * Include the user identity when performing storage operations, allow partitioning per user, defaults to false.
-	 */
-	partitionPerUser?: boolean;
 }

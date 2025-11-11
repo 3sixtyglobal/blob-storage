@@ -73,10 +73,4 @@ export class BlobStorageEntry {
 	 */
 	@property({ type: "string", optional: true })
 	public compression?: BlobStorageCompressionType;
-
-	/**
-	 * The user identity that created the blob.
-	 */
-	@property({ type: "string", optional: true })
-	public userIdentity?: string;
 }
