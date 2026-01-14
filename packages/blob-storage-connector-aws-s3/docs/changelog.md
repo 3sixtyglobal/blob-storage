@@ -1,5 +1,20 @@
 # @twin.org/blob-storage-connector-aws-s3 - Changelog
 
+## [0.0.3-next.2](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-aws-s3-v0.0.3-next.1...blob-storage-connector-aws-s3-v0.0.3-next.2) (2026-01-14)
+
+
+### Bug Fixes
+
+* missing dependency ([77e92ef](https://github.com/twinfoundation/blob-storage/commit/77e92ef1db734e1859b0846e1eac6d0bdf65f952))
+* missing dependency ([fa35282](https://github.com/twinfoundation/blob-storage/commit/fa35282ed0b6c9a564c0a0cc7956a759585e3f52))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.1 to 0.0.3-next.2
+
 ## [0.0.3-next.1](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-aws-s3-v0.0.3-next.0...blob-storage-connector-aws-s3-v0.0.3-next.1) (2025-11-11)
 
 

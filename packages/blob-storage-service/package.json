@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-service",
-	"version": "0.0.3-next.1",
+	"version": "0.0.3-next.2",
 	"description": "Blob storage contract implementation and REST endpoint definitions",
 	"repository": {
 		"type": "git",
@@ -30,7 +30,7 @@
 	},
 	"dependencies": {
 		"@twin.org/api-models": "next",
-		"@twin.org/blob-storage-models": "0.0.3-next.1",
+		"@twin.org/blob-storage-models": "0.0.3-next.2",
 		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
@@ -43,7 +43,7 @@
 		"@twin.org/web": "next"
 	},
 	"devDependencies": {
-		"@twin.org/blob-storage-connector-memory": "0.0.3-next.1",
+		"@twin.org/blob-storage-connector-memory": "0.0.3-next.2",
 		"@twin.org/entity-storage-connector-memory": "next",
 		"@twin.org/nameof-transformer": "next",
 		"@twin.org/nameof-vitest-plugin": "next",
