@@ -388,10 +388,7 @@
 						"in": "query",
 						"required": false,
 						"schema": {
-							"type": [
-								"boolean",
-								"string"
-							]
+							"type": "string"
 						},
 						"example": "true"
 					},
@@ -401,10 +398,7 @@
 						"in": "query",
 						"required": false,
 						"schema": {
-							"type": [
-								"boolean",
-								"string"
-							]
+							"type": "string"
 						}
 					},
 					{

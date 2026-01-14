@@ -9,12 +9,12 @@ export const BlobStorageContexts = {
 	/**
 	 * The context root for the blob storage types.
 	 */
-	ContextRoot: "https://schema.twindev.org/blob-storage/",
+	Namespace: "https://schema.twindev.org/blob-storage/",
 
 	/**
 	 * The context root for the common types.
 	 */
-	ContextRootCommon: "https://schema.twindev.org/common/"
+	NamespaceCommon: "https://schema.twindev.org/common/"
 } as const;
 
 /**

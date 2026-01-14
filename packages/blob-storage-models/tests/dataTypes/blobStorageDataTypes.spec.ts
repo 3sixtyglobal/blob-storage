@@ -17,7 +17,7 @@ describe("BlobStorageDataTypes", () => {
 		const validationFailures: IValidationFailure[] = [];
 		const isValid = await DataTypeHelper.validate(
 			"",
-			`${BlobStorageContexts.ContextRoot}${BlobStorageTypes.Entry}`,
+			`${BlobStorageContexts.Namespace}${BlobStorageTypes.Entry}`,
 			{},
 			validationFailures
 		);
@@ -30,9 +30,9 @@ describe("BlobStorageDataTypes", () => {
 		const validationFailures: IValidationFailure[] = [];
 		const isValid = await DataTypeHelper.validate(
 			"",
-			`${BlobStorageContexts.ContextRoot}${BlobStorageTypes.Entry}`,
+			`${BlobStorageContexts.Namespace}${BlobStorageTypes.Entry}`,
 			{
-				"@context": [BlobStorageContexts.ContextRoot, BlobStorageContexts.ContextRootCommon],
+				"@context": [BlobStorageContexts.Namespace, BlobStorageContexts.NamespaceCommon],
 				type: BlobStorageTypes.Entry,
 				dateCreated: new Date().toISOString(),
 				id: "1111",

@@ -13,9 +13,9 @@ export interface IBlobStorageEntryList {
 	 * JSON-LD Context.
 	 */
 	"@context": [
-		typeof SchemaOrgContexts.ContextRoot,
-		typeof BlobStorageContexts.ContextRoot,
-		typeof BlobStorageContexts.ContextRootCommon,
+		typeof SchemaOrgContexts.Namespace,
+		typeof BlobStorageContexts.Namespace,
+		typeof BlobStorageContexts.NamespaceCommon,
 		...IJsonLdContextDefinitionElement[]
 	];
 

@@ -38,7 +38,7 @@ The query parameters.
 
 #### includeContent?
 
-> `optional` **includeContent**: `string` \| `boolean`
+> `optional` **includeContent**: `string`
 
 Include the content in the response, otherwise only metadata is returned.
 
@@ -50,7 +50,7 @@ false
 
 #### decompress?
 
-> `optional` **decompress**: `string` \| `boolean`
+> `optional` **decompress**: `string`
 
 If the content should be decompressed, if it was compressed when stored, defaults to true.
 

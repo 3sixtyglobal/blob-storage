@@ -15,9 +15,9 @@ export class BlobStorageDataTypes {
 	 */
 	public static registerTypes(): void {
 		DataTypeHandlerFactory.register(
-			`${BlobStorageContexts.ContextRoot}${BlobStorageTypes.Entry}`,
+			`${BlobStorageContexts.Namespace}${BlobStorageTypes.Entry}`,
 			() => ({
-				context: BlobStorageContexts.ContextRoot,
+				namespace: BlobStorageContexts.Namespace,
 				type: BlobStorageTypes.Entry,
 				defaultValue: {},
 				jsonSchema: async () => BlobStorageEntrySchema as IJsonSchema
@@ -25,9 +25,9 @@ export class BlobStorageDataTypes {
 		);
 
 		DataTypeHandlerFactory.register(
-			`${BlobStorageContexts.ContextRoot}${BlobStorageTypes.CompressionType}`,
+			`${BlobStorageContexts.Namespace}${BlobStorageTypes.CompressionType}`,
 			() => ({
-				context: BlobStorageContexts.ContextRoot,
+				namespace: BlobStorageContexts.Namespace,
 				type: BlobStorageTypes.CompressionType,
 				defaultValue: {},
 				jsonSchema: async () => BlobStorageCompressionTypeSchema as IJsonSchema

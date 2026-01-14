@@ -13,8 +13,8 @@ export interface IBlobStorageEntry {
 	 * JSON-LD Context.
 	 */
 	"@context": [
-		typeof BlobStorageContexts.ContextRoot,
-		typeof BlobStorageContexts.ContextRootCommon,
+		typeof BlobStorageContexts.Namespace,
+		typeof BlobStorageContexts.NamespaceCommon,
 		...IJsonLdContextDefinitionElement[]
 	];
 
