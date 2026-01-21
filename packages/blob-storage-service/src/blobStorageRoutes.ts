@@ -144,9 +144,9 @@ export function generateRestRoutesBlobStorage(
 						response: {
 							body: {
 								"@context": [
-									BlobStorageContexts.Namespace,
-									BlobStorageContexts.NamespaceCommon,
-									SchemaOrgContexts.Namespace
+									BlobStorageContexts.Context,
+									BlobStorageContexts.ContextCommon,
+									SchemaOrgContexts.Context
 								],
 								type: BlobStorageTypes.Entry,
 								id: "blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
@@ -175,9 +175,9 @@ export function generateRestRoutesBlobStorage(
 						response: {
 							body: {
 								"@context": [
-									BlobStorageContexts.Namespace,
-									BlobStorageContexts.NamespaceCommon,
-									SchemaOrgContexts.Namespace
+									BlobStorageContexts.Context,
+									BlobStorageContexts.ContextCommon,
+									SchemaOrgContexts.Context
 								],
 								type: BlobStorageTypes.Entry,
 								id: "blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
@@ -343,17 +343,17 @@ export function generateRestRoutesBlobStorage(
 						response: {
 							body: {
 								"@context": [
-									SchemaOrgContexts.Namespace,
-									BlobStorageContexts.Namespace,
-									BlobStorageContexts.NamespaceCommon
+									SchemaOrgContexts.Context,
+									BlobStorageContexts.Context,
+									BlobStorageContexts.ContextCommon
 								],
 								type: SchemaOrgTypes.ItemList,
 								[SchemaOrgTypes.ItemListElement]: [
 									{
 										"@context": [
-											BlobStorageContexts.Namespace,
-											BlobStorageContexts.NamespaceCommon,
-											SchemaOrgContexts.Namespace
+											BlobStorageContexts.Context,
+											BlobStorageContexts.ContextCommon,
+											SchemaOrgContexts.Context
 										],
 										type: BlobStorageTypes.Entry,
 										id: "blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
@@ -385,17 +385,17 @@ export function generateRestRoutesBlobStorage(
 						response: {
 							body: {
 								"@context": [
-									SchemaOrgContexts.Namespace,
-									BlobStorageContexts.Namespace,
-									BlobStorageContexts.NamespaceCommon
+									SchemaOrgContexts.Context,
+									BlobStorageContexts.Context,
+									BlobStorageContexts.ContextCommon
 								],
 								type: SchemaOrgTypes.ItemList,
 								[SchemaOrgTypes.ItemListElement]: [
 									{
 										"@context": [
-											BlobStorageContexts.Namespace,
-											BlobStorageContexts.NamespaceCommon,
-											SchemaOrgContexts.Namespace
+											BlobStorageContexts.Context,
+											BlobStorageContexts.ContextCommon,
+											SchemaOrgContexts.Context
 										],
 										type: BlobStorageTypes.Entry,
 										id: "blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",

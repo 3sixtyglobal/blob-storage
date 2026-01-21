@@ -7,14 +7,34 @@
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export const BlobStorageContexts = {
 	/**
-	 * The context root for the blob storage types.
+	 * The canonical RDF namespace URI for Blob Storage.
 	 */
 	Namespace: "https://schema.twindev.org/blob-storage/",
 
 	/**
-	 * The context root for the common types.
+	 * The value to use in JSON-LD context for Blob Storage.
 	 */
-	NamespaceCommon: "https://schema.twindev.org/common/"
+	Context: "https://schema.twindev.org/blob-storage/",
+
+	/**
+	 * The JSON-LD Context URL.
+	 */
+	JsonLdContext: "https://schema.twindev.org/blob-storage/types.jsonld",
+
+	/**
+	 * The canonical RDF namespace URI for TWIN Common.
+	 */
+	NamespaceCommon: "https://schema.twindev.org/common/",
+
+	/**
+	 * The value to use in JSON-LD context for TWIN Common.
+	 */
+	ContextCommon: "https://schema.twindev.org/common/",
+
+	/**
+	 * The JSON-LD Context URL for TWIN Common.
+	 */
+	JsonLdContextCommon: "https://schema.twindev.org/common/types.jsonld"
 } as const;
 
 /**

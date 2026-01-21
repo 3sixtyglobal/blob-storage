@@ -403,9 +403,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 		);
 
 		let context: IBlobStorageEntryList["@context"] = [
-			SchemaOrgContexts.Namespace,
-			BlobStorageContexts.Namespace,
-			BlobStorageContexts.NamespaceCommon
+			SchemaOrgContexts.Context,
+			BlobStorageContexts.Context,
+			BlobStorageContexts.ContextCommon
 		];
 		const entriesJsonLd = [];
 
@@ -497,11 +497,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	private entryToJsonLd(entry: BlobStorageEntry, blob?: Uint8Array): IBlobStorageEntry {
 		const jsonLd: IBlobStorageEntry = {
 			"@context": JsonLdProcessor.combineContexts(
-				[
-					BlobStorageContexts.Namespace,
-					BlobStorageContexts.NamespaceCommon,
-					SchemaOrgContexts.Namespace
-				],
+				[BlobStorageContexts.Context, BlobStorageContexts.ContextCommon, SchemaOrgContexts.Context],
 				entry?.metadata?.["@context"]
 			) as IBlobStorageEntry["@context"],
 			id: entry.id,

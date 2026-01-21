@@ -32,7 +32,7 @@ describe("BlobStorageDataTypes", () => {
 			"",
 			`${BlobStorageContexts.Namespace}${BlobStorageTypes.Entry}`,
 			{
-				"@context": [BlobStorageContexts.Namespace, BlobStorageContexts.NamespaceCommon],
+				"@context": [BlobStorageContexts.Context, BlobStorageContexts.ContextCommon],
 				type: BlobStorageTypes.Entry,
 				dateCreated: new Date().toISOString(),
 				id: "1111",
