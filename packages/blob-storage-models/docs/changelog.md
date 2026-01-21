@@ -1,5 +1,12 @@
 # @twin.org/blob-storage-models - Changelog
 
+## [0.0.3-next.3](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.3-next.2...blob-storage-models-v0.0.3-next.3) (2026-01-21)
+
+
+### Features
+
+* update contexts ([#34](https://github.com/twinfoundation/blob-storage/issues/34)) ([b9e432c](https://github.com/twinfoundation/blob-storage/commit/b9e432c26025e4bfdf5ba837516dfdbf40f45a61))
+
 ## [0.0.3-next.2](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.3-next.1...blob-storage-models-v0.0.3-next.2) (2026-01-14)
 
 
