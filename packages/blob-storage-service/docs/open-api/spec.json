@@ -1087,10 +1087,6 @@
 							"$ref": "#/components/schemas/BlobStorageEntry"
 						},
 						"description": "The list of entries."
-					},
-					"nextItem": {
-						"type": "string",
-						"description": "The cursor to get the next chunk of entries."
 					}
 				},
 				"required": [

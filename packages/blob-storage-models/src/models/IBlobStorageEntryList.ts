@@ -28,9 +28,4 @@ export interface IBlobStorageEntryList {
 	 * The list of entries.
 	 */
 	[SchemaOrgTypes.ItemListElement]: IBlobStorageEntry[];
-
-	/**
-	 * The cursor to get the next chunk of entries.
-	 */
-	[SchemaOrgTypes.NextItem]?: string;
 }

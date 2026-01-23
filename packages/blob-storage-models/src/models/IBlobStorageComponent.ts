@@ -96,5 +96,8 @@ export interface IBlobStorageComponent extends IComponent {
 		orderByDirection?: SortDirection,
 		cursor?: string,
 		limit?: number
-	): Promise<IBlobStorageEntryList>;
+	): Promise<{
+		entries: IBlobStorageEntryList;
+		cursor?: string;
+	}>;
 }

@@ -23,7 +23,7 @@ import { Coerce, Guards, Is, StringHelper, Urn } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import type { EntityCondition, SortDirection } from "@twin.org/entity";
 import { nameof } from "@twin.org/nameof";
-import { HeaderTypes, MimeTypes } from "@twin.org/web";
+import { HeaderHelper, HeaderTypes, MimeTypes } from "@twin.org/web";
 
 /**
  * Client for performing blob storage through to REST endpoints.
@@ -191,7 +191,10 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 		orderByDirection?: SortDirection,
 		cursor?: string,
 		limit?: number
-	): Promise<IBlobStorageEntryList> {
+	): Promise<{
+		entries: IBlobStorageEntryList;
+		cursor?: string;
+	}> {
 		const response = await this.fetch<IBlobStorageListRequest, IBlobStorageListResponse>(
 			"/",
 			"GET",
@@ -209,7 +212,11 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 			}
 		);
 
-		return response.body;
+		return {
+			entries: response.body,
+			cursor: HeaderHelper.extractLinkHeaderRelation(response.headers?.[HeaderTypes.Link], "next")
+				?.urlQueryParams?.cursor
+		};
 	}
 
 	/**

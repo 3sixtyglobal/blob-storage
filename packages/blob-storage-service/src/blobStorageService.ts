@@ -385,7 +385,10 @@ export class BlobStorageService implements IBlobStorageComponent {
 		orderByDirection?: SortDirection,
 		cursor?: string,
 		limit?: number
-	): Promise<IBlobStorageEntryList> {
+	): Promise<{
+		entries: IBlobStorageEntryList;
+		cursor?: string;
+	}> {
 		const orderProperty = orderBy ?? "dateCreated";
 		const orderDirection = orderByDirection ?? SortDirection.Descending;
 
@@ -421,11 +424,13 @@ export class BlobStorageService implements IBlobStorageComponent {
 		const jsonLd: IBlobStorageEntryList = {
 			"@context": context,
 			type: SchemaOrgTypes.ItemList,
-			[SchemaOrgTypes.ItemListElement]: entriesJsonLd,
-			[SchemaOrgTypes.NextItem]: result.cursor
+			[SchemaOrgTypes.ItemListElement]: entriesJsonLd
 		};
 
-		return JsonLdProcessor.compact(jsonLd, jsonLd["@context"]);
+		return {
+			entries: await JsonLdProcessor.compact(jsonLd, jsonLd["@context"]),
+			cursor: result.cursor
+		};
 	}
 
 	/**

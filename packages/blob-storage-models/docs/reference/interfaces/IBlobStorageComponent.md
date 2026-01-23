@@ -196,7 +196,7 @@ Not found error if the blob cannot be found.
 
 ### query()
 
-> **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `limit?`): `Promise`\<[`IBlobStorageEntryList`](IBlobStorageEntryList.md)\>
+> **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `limit?`): `Promise`\<\{ `entries`: [`IBlobStorageEntryList`](IBlobStorageEntryList.md); `cursor?`: `string`; \}\>
 
 Query all the blob storage entries which match the conditions.
 
@@ -234,7 +234,7 @@ The suggested number of entries to return in each chunk, in some scenarios can r
 
 #### Returns
 
-`Promise`\<[`IBlobStorageEntryList`](IBlobStorageEntryList.md)\>
+`Promise`\<\{ `entries`: [`IBlobStorageEntryList`](IBlobStorageEntryList.md); `cursor?`: `string`; \}\>
 
 All the entries for the storage matching the conditions,
 and a cursor which can be used to request more entities.

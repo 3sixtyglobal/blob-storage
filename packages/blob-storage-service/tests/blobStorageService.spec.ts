@@ -382,9 +382,9 @@ describe("blob-storage-service", () => {
 		expect(entityStorage.getStore().length).toEqual(3);
 		expect(Object.keys(blobStorage.getStore()).length).toEqual(3);
 
-		const entries = await service.query();
+		const entriesAndCursor = await service.query();
 
-		expect(entries).toEqual({
+		expect(entriesAndCursor.entries).toEqual({
 			"@context": [
 				"https://schema.org",
 				"https://schema.twindev.org/blob-storage/",

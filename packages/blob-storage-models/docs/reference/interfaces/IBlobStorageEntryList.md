@@ -25,11 +25,3 @@ JSON-LD Type.
 > **itemListElement**: [`IBlobStorageEntry`](IBlobStorageEntry.md)[]
 
 The list of entries.
-
-***
-
-### nextItem?
-
-> `optional` **nextItem**: `string`
-
-The cursor to get the next chunk of entries.
