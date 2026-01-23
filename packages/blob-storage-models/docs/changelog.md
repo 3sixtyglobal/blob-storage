@@ -1,5 +1,12 @@
 # @twin.org/blob-storage-models - Changelog
 
+## [0.0.3-next.4](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.3-next.3...blob-storage-models-v0.0.3-next.4) (2026-01-23)
+
+
+### Features
+
+* replace nextItem property with Link header ([#37](https://github.com/twinfoundation/blob-storage/issues/37)) ([0b68da5](https://github.com/twinfoundation/blob-storage/commit/0b68da58549c9e52eb2313ea5a868573840d5ca6))
+
 ## [0.0.3-next.3](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.3-next.2...blob-storage-models-v0.0.3-next.3) (2026-01-21)
 
 
