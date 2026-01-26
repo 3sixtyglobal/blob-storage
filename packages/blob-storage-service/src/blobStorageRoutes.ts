@@ -657,7 +657,7 @@ export async function blobStorageList(
 ): Promise<IBlobStorageListResponse> {
 	Guards.object<IBlobStorageListRequest>(ROUTES_SOURCE, nameof(request), request);
 
-	const hostingService = ComponentFactory.get<IHostingComponent>(
+	const hostingComponent = ComponentFactory.get<IHostingComponent>(
 		httpRequestContext.hostingComponentType ?? "hosting"
 	);
 
@@ -678,7 +678,7 @@ export async function blobStorageList(
 
 	if (Is.stringValue(result.cursor)) {
 		headers[HeaderTypes.Link] = HeaderHelper.createLinkHeader(
-			await hostingService.buildPublicUrl(httpRequestContext.serverRequest.url),
+			await hostingComponent.buildPublicUrl(httpRequestContext.serverRequest.url),
 			{ cursor: result.cursor },
 			"next"
 		);
