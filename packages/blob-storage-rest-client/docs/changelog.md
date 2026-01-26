@@ -1,5 +1,19 @@
 # @twin.org/blob-storage-rest-client - Changelog
 
+## [0.0.3-next.5](https://github.com/twinfoundation/blob-storage/compare/blob-storage-rest-client-v0.0.3-next.4...blob-storage-rest-client-v0.0.3-next.5) (2026-01-26)
+
+
+### Miscellaneous Chores
+
+* **blob-storage-rest-client:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.4 to 0.0.3-next.5
+
 ## [0.0.3-next.4](https://github.com/twinfoundation/blob-storage/compare/blob-storage-rest-client-v0.0.3-next.3...blob-storage-rest-client-v0.0.3-next.4) (2026-01-23)
 
 

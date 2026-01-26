@@ -1,5 +1,21 @@
 # @twin.org/blob-storage-service - Changelog
 
+## [0.0.3-next.5](https://github.com/twinfoundation/blob-storage/compare/blob-storage-service-v0.0.3-next.4...blob-storage-service-v0.0.3-next.5) (2026-01-26)
+
+
+### Features
+
+* use new hosting url for cursor links ([6844126](https://github.com/twinfoundation/blob-storage/commit/6844126e1c431448de51225392daa3559776fdf3))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.4 to 0.0.3-next.5
+  * devDependencies
+    * @twin.org/blob-storage-connector-memory bumped from 0.0.3-next.4 to 0.0.3-next.5
+
 ## [0.0.3-next.4](https://github.com/twinfoundation/blob-storage/compare/blob-storage-service-v0.0.3-next.3...blob-storage-service-v0.0.3-next.4) (2026-01-23)
 
 

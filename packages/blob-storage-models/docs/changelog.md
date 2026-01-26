@@ -1,5 +1,12 @@
 # @twin.org/blob-storage-models - Changelog
 
+## [0.0.3-next.5](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.3-next.4...blob-storage-models-v0.0.3-next.5) (2026-01-26)
+
+
+### Miscellaneous Chores
+
+* **blob-storage-models:** Synchronize repo versions
+
 ## [0.0.3-next.4](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.3-next.3...blob-storage-models-v0.0.3-next.4) (2026-01-23)
 
 
