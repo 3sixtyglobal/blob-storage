@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import {
 	HttpParameterHelper,
+	type IHostingComponent,
 	type ICreatedResponse,
 	type IHttpRequestContext,
 	type INoContentResponse,
@@ -501,8 +502,6 @@ export async function blobStorageGet(
 	);
 	Guards.stringValue(ROUTES_SOURCE, nameof(request.pathParams.id), request.pathParams.id);
 
-	const mimeType = request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd ? "jsonld" : "json";
-
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
 	const result = await component.get(request.pathParams.id, {
@@ -513,7 +512,10 @@ export async function blobStorageGet(
 
 	return {
 		headers: {
-			[HeaderTypes.ContentType]: mimeType === "json" ? MimeTypes.Json : MimeTypes.JsonLd
+			[HeaderTypes.ContentType]:
+				request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd
+					? MimeTypes.JsonLd
+					: MimeTypes.Json
 		},
 		body: result
 	};
@@ -655,7 +657,9 @@ export async function blobStorageList(
 ): Promise<IBlobStorageListResponse> {
 	Guards.object<IBlobStorageListRequest>(ROUTES_SOURCE, nameof(request), request);
 
-	const mimeType = request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd ? "jsonld" : "json";
+	const hostingService = ComponentFactory.get<IHostingComponent>(
+		httpRequestContext.hostingComponentType ?? "hosting"
+	);
 
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
@@ -667,16 +671,14 @@ export async function blobStorageList(
 		Coerce.number(request.query?.limit)
 	);
 
-	const headers: {
-		[HeaderTypes.ContentType]: typeof MimeTypes.Json | typeof MimeTypes.JsonLd;
-		[HeaderTypes.Link]?: string | string[];
-	} = {
-		[HeaderTypes.ContentType]: mimeType === "json" ? MimeTypes.Json : MimeTypes.JsonLd
+	const headers: IBlobStorageListResponse["headers"] = {
+		[HeaderTypes.ContentType]:
+			request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd ? MimeTypes.JsonLd : MimeTypes.Json
 	};
 
-	if (Is.stringValue(result.cursor) && Is.stringValue(httpRequestContext.serverRequest?.url)) {
+	if (Is.stringValue(result.cursor)) {
 		headers[HeaderTypes.Link] = HeaderHelper.createLinkHeader(
-			httpRequestContext.serverRequest.url,
+			await hostingService.buildPublicUrl(httpRequestContext.serverRequest.url),
 			{ cursor: result.cursor },
 			"next"
 		);
