@@ -33,6 +33,7 @@ The id for the blob.
 > **dateCreated**: `string`
 
 The date/time when the entry was created.
+json-ld namespace:schema
 
 ***
 
@@ -41,6 +42,7 @@ The date/time when the entry was created.
 > `optional` **dateModified**: `string`
 
 The date/time when the entry was modified.
+json-ld namespace:schema
 
 ***
 
@@ -49,6 +51,7 @@ The date/time when the entry was modified.
 > **blobSize**: `number`
 
 The size of the data in the blob.
+json-ld type:schema:Integer
 
 ***
 
@@ -57,6 +60,7 @@ The size of the data in the blob.
 > **blobHash**: `string`
 
 The hash of the data in the blob.
+json-ld namespace:twin-common
 
 ***
 
@@ -65,6 +69,7 @@ The hash of the data in the blob.
 > `optional` **encodingFormat**: `string`
 
 The mime type for the blob.
+json-ld namespace:schema
 
 ***
 
@@ -73,6 +78,7 @@ The mime type for the blob.
 > `optional` **isEncrypted**: `boolean`
 
 Indicates if the blob is encrypted.
+json-ld type:schema:Boolean
 
 ***
 
@@ -81,6 +87,7 @@ Indicates if the blob is encrypted.
 > `optional` **compression**: [`BlobStorageCompressionType`](../type-aliases/BlobStorageCompressionType.md)
 
 The type of compression used for the blob, if not set it is not stored with compression.
+json-ld type:schema:Text
 
 ***
 
@@ -89,6 +96,7 @@ The type of compression used for the blob, if not set it is not stored with comp
 > `optional` **fileExtension**: `string`
 
 The extension.
+json-ld type:schema:Text
 
 ***
 
@@ -97,6 +105,7 @@ The extension.
 > `optional` **metadata**: `IJsonLdNodeObject`
 
 The metadata for the blob as JSON-LD.
+json-ld id
 
 ***
 
@@ -105,3 +114,4 @@ The metadata for the blob as JSON-LD.
 > `optional` **blob**: `string`
 
 The blob in base64 format, included if the includeContent flag was set in the request.
+json-ld type:schema:Text
