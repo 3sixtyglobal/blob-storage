@@ -1,5 +1,23 @@
 # @twin.org/blob-storage-service - Changelog
 
+## [0.0.3-next.6](https://github.com/twinfoundation/blob-storage/compare/blob-storage-service-v0.0.3-next.5...blob-storage-service-v0.0.3-next.6) (2026-02-09)
+
+
+### Features
+
+* add ts-to-jsonld-context tool ([2fd217f](https://github.com/twinfoundation/blob-storage/commit/2fd217f50dfaf6ac068091876237f5a101a7995e))
+* blobHash changed to integrity ([#41](https://github.com/twinfoundation/blob-storage/issues/41)) ([c06a55f](https://github.com/twinfoundation/blob-storage/commit/c06a55f0eed3f7cad5d19c4084abd8ef0cdbfb60))
+* update naming ([19d160f](https://github.com/twinfoundation/blob-storage/commit/19d160f6c2b155a1a19b85f4d676cbc15c0f0869))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.5 to 0.0.3-next.6
+  * devDependencies
+    * @twin.org/blob-storage-connector-memory bumped from 0.0.3-next.5 to 0.0.3-next.6
+
 ## [0.0.3-next.5](https://github.com/twinfoundation/blob-storage/compare/blob-storage-service-v0.0.3-next.4...blob-storage-service-v0.0.3-next.5) (2026-01-26)
 
 

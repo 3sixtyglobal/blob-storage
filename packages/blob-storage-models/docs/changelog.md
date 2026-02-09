@@ -1,5 +1,14 @@
 # @twin.org/blob-storage-models - Changelog
 
+## [0.0.3-next.6](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.3-next.5...blob-storage-models-v0.0.3-next.6) (2026-02-09)
+
+
+### Features
+
+* add missing namespace for JSON-LD context ([80b15cf](https://github.com/twinfoundation/blob-storage/commit/80b15cf34b580d9550affa66bcbc9b9ccb34ce21))
+* add ts-to-jsonld-context tool ([2fd217f](https://github.com/twinfoundation/blob-storage/commit/2fd217f50dfaf6ac068091876237f5a101a7995e))
+* blobHash changed to integrity ([#41](https://github.com/twinfoundation/blob-storage/issues/41)) ([c06a55f](https://github.com/twinfoundation/blob-storage/commit/c06a55f0eed3f7cad5d19c4084abd8ef0cdbfb60))
+
 ## [0.0.3-next.5](https://github.com/twinfoundation/blob-storage/compare/blob-storage-models-v0.0.3-next.4...blob-storage-models-v0.0.3-next.5) (2026-01-26)
 
 
