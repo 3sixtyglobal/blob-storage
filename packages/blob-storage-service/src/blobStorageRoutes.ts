@@ -160,8 +160,7 @@ export function generateRestRoutesBlobStorage(
 								dateCreated: "2024-01-01T00:00:00Z",
 								encodingFormat: MimeTypes.Pdf,
 								blobSize: 42,
-								integrity:
-									"sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
+								integrity: "sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 								fileExtension: "pdf",
 								metadata: {
 									"@context": "https://schema.org",
@@ -192,8 +191,7 @@ export function generateRestRoutesBlobStorage(
 								dateCreated: "2024-01-01T00:00:00Z",
 								encodingFormat: MimeTypes.Pdf,
 								blobSize: 42,
-								integrity:
-									"sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
+								integrity: "sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 								fileExtension: "pdf",
 								metadata: {
 									"@context": "https://schema.org",
@@ -369,8 +367,7 @@ export function generateRestRoutesBlobStorage(
 										dateCreated: "2024-01-01T00:00:00Z",
 										encodingFormat: MimeTypes.Pdf,
 										blobSize: 42,
-										integrity:
-											"sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
+										integrity: "sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 										fileExtension: "pdf",
 										metadata: {
 											"@context": "https://schema.org",
@@ -411,8 +408,7 @@ export function generateRestRoutesBlobStorage(
 										dateCreated: "2024-01-01T00:00:00Z",
 										encodingFormat: MimeTypes.Pdf,
 										blobSize: 42,
-										integrity:
-											"sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
+										integrity: "sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 										fileExtension: "pdf",
 										metadata: {
 											"@context": "https://schema.org",
