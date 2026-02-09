@@ -161,7 +161,7 @@ export function generateRestRoutesBlobStorage(
 								encodingFormat: MimeTypes.Pdf,
 								blobSize: 42,
 								integrity:
-									"sha256-c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+									"sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 								fileExtension: "pdf",
 								metadata: {
 									"@context": "https://schema.org",
@@ -193,7 +193,7 @@ export function generateRestRoutesBlobStorage(
 								encodingFormat: MimeTypes.Pdf,
 								blobSize: 42,
 								integrity:
-									"sha256-c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+									"sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 								fileExtension: "pdf",
 								metadata: {
 									"@context": "https://schema.org",
@@ -370,7 +370,7 @@ export function generateRestRoutesBlobStorage(
 										encodingFormat: MimeTypes.Pdf,
 										blobSize: 42,
 										integrity:
-											"sha256-c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+											"sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 										fileExtension: "pdf",
 										metadata: {
 											"@context": "https://schema.org",
@@ -412,7 +412,7 @@ export function generateRestRoutesBlobStorage(
 										encodingFormat: MimeTypes.Pdf,
 										blobSize: 42,
 										integrity:
-											"sha256-c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+											"sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 										fileExtension: "pdf",
 										metadata: {
 											"@context": "https://schema.org",
