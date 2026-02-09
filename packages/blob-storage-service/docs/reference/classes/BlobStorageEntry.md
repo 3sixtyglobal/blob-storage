@@ -46,11 +46,11 @@ The length of the data in the blob.
 
 ***
 
-### blobHash
+### integrity
 
-> **blobHash**: `string`
+> **integrity**: `string`
 
-The hash of the data in the blob.
+The integrity of the data in the blob.
 
 ***
 

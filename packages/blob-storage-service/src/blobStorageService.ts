@@ -22,7 +22,7 @@ import {
 	Validation,
 	type IValidationFailure
 } from "@twin.org/core";
-import { Sha256 } from "@twin.org/crypto";
+import { IntegrityAlgorithm, IntegrityHelper } from "@twin.org/crypto";
 import { JsonLdHelper, JsonLdProcessor, type IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import {
 	ComparisonOperator,
@@ -183,7 +183,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 				);
 			}
 
-			const blobHash = `sha256:${Converter.bytesToBase64(Sha256.sum256(storeBlob))}`;
+			const integrity = IntegrityHelper.generate(IntegrityAlgorithm.Sha256, storeBlob);
 
 			if (!Is.empty(options?.compress)) {
 				storeBlob = await Compression.compress(storeBlob, options.compress);
@@ -212,7 +212,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 				id: blobId,
 				dateCreated: new Date(Date.now()).toISOString(),
 				blobSize,
-				blobHash,
+				integrity,
 				encodingFormat,
 				fileExtension,
 				metadata,
@@ -332,7 +332,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 				dateCreated: blobEntry.dateCreated,
 				dateModified: new Date(Date.now()).toISOString(),
 				blobSize: blobEntry.blobSize,
-				blobHash: blobEntry.blobHash,
+				integrity: blobEntry.integrity,
 				encodingFormat: encodingFormat ?? blobEntry.encodingFormat,
 				fileExtension: fileExtension ?? blobEntry.fileExtension,
 				metadata: metadata ?? blobEntry.metadata,
@@ -510,7 +510,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 			dateCreated: entry.dateCreated,
 			dateModified: entry.dateModified,
 			blobSize: entry.blobSize,
-			blobHash: entry.blobHash,
+			integrity: entry.integrity,
 			encodingFormat: entry?.encodingFormat,
 			fileExtension: entry?.fileExtension,
 			metadata: entry?.metadata,

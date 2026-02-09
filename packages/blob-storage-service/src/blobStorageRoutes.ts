@@ -160,7 +160,8 @@ export function generateRestRoutesBlobStorage(
 								dateCreated: "2024-01-01T00:00:00Z",
 								encodingFormat: MimeTypes.Pdf,
 								blobSize: 42,
-								blobHash: "sha256:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+								integrity:
+									"sha256-c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
 								fileExtension: "pdf",
 								metadata: {
 									"@context": "https://schema.org",
@@ -191,7 +192,8 @@ export function generateRestRoutesBlobStorage(
 								dateCreated: "2024-01-01T00:00:00Z",
 								encodingFormat: MimeTypes.Pdf,
 								blobSize: 42,
-								blobHash: "sha256:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+								integrity:
+									"sha256-c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
 								fileExtension: "pdf",
 								metadata: {
 									"@context": "https://schema.org",
@@ -367,8 +369,8 @@ export function generateRestRoutesBlobStorage(
 										dateCreated: "2024-01-01T00:00:00Z",
 										encodingFormat: MimeTypes.Pdf,
 										blobSize: 42,
-										blobHash:
-											"sha256:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+										integrity:
+											"sha256-c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
 										fileExtension: "pdf",
 										metadata: {
 											"@context": "https://schema.org",
@@ -409,8 +411,8 @@ export function generateRestRoutesBlobStorage(
 										dateCreated: "2024-01-01T00:00:00Z",
 										encodingFormat: MimeTypes.Pdf,
 										blobSize: 42,
-										blobHash:
-											"sha256:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+										integrity:
+											"sha256-c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
 										fileExtension: "pdf",
 										metadata: {
 											"@context": "https://schema.org",
@@ -477,7 +479,7 @@ export async function blobStorageCreate(
 	return {
 		statusCode: HttpStatusCode.created,
 		headers: {
-			location: id
+			[HeaderTypes.Location]: id
 		}
 	};
 }

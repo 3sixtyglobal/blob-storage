@@ -39,10 +39,10 @@ export class BlobStorageEntry {
 	public blobSize!: number;
 
 	/**
-	 * The hash of the data in the blob.
+	 * The integrity of the data in the blob.
 	 */
 	@property({ type: "string" })
-	public blobHash!: string;
+	public integrity!: string;
 
 	/**
 	 * The mime type for the blob.

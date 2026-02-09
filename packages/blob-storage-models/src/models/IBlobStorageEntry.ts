@@ -47,10 +47,10 @@ export interface IBlobStorageEntry {
 	blobSize: number;
 
 	/**
-	 * The hash of the data in the blob.
+	 * The integrity of the data in the blob.
 	 * json-ld namespace:twin-common
 	 */
-	blobHash: string;
+	integrity: string;
 
 	/**
 	 * The mime type for the blob.

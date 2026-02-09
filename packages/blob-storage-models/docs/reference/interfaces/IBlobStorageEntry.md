@@ -55,11 +55,11 @@ json-ld type:schema:Integer
 
 ***
 
-### blobHash
+### integrity
 
-> **blobHash**: `string`
+> **integrity**: `string`
 
-The hash of the data in the blob.
+The integrity of the data in the blob.
 json-ld namespace:twin-common
 
 ***

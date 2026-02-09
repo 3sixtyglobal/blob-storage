@@ -37,7 +37,7 @@ describe("BlobStorageDataTypes", () => {
 				dateCreated: new Date().toISOString(),
 				id: "1111",
 				blobSize: 100,
-				blobHash: "abc"
+				integrity: "abc"
 			},
 			validationFailures
 		);

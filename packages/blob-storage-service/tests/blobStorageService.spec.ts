@@ -70,7 +70,7 @@ describe("blob-storage-service", () => {
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
@@ -91,7 +91,7 @@ describe("blob-storage-service", () => {
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
@@ -116,7 +116,7 @@ describe("blob-storage-service", () => {
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
@@ -149,7 +149,7 @@ describe("blob-storage-service", () => {
 			type: "BlobStorageEntry",
 			id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 			blobSize: 43,
-			blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+			integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 			dateCreated: "2024-08-22T11:55:16.271Z",
 			fileExtension: "txt",
 			encodingFormat: "text/plain",
@@ -177,7 +177,7 @@ describe("blob-storage-service", () => {
 			dateCreated: "2024-08-22T11:55:16.271Z",
 			encodingFormat: "text/plain",
 			blobSize: 43,
-			blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+			integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 			blob: "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==",
 			isEncrypted: false
 		});
@@ -206,7 +206,7 @@ describe("blob-storage-service", () => {
 			dateCreated: "2024-08-22T11:56:56.272Z",
 			encodingFormat: "text/plain",
 			blobSize: 43,
-			blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+			integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 			blob: "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==",
 			isEncrypted: false,
 			metadata: {
@@ -249,7 +249,7 @@ describe("blob-storage-service", () => {
 			dateCreated: "2024-08-22T11:56:56.272Z",
 			encodingFormat: "text/plain",
 			blobSize: 43,
-			blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+			integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 			isEncrypted: false,
 			metadata: {
 				type: "Create",
@@ -286,7 +286,7 @@ describe("blob-storage-service", () => {
 				dateModified: "2024-08-22T11:56:56.272Z",
 				encodingFormat: "text/plain",
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				isEncrypted: false,
 				metadata: {
 					"@context": "https://schema.org",
@@ -316,7 +316,7 @@ describe("blob-storage-service", () => {
 				dateModified: "2024-08-22T11:56:56.272Z",
 				encodingFormat: "text/plain",
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				isEncrypted: false,
 				metadata: {
 					"@context": "https://schema.org",
@@ -399,7 +399,7 @@ describe("blob-storage-service", () => {
 					dateCreated: "2024-08-22T11:56:56.272Z",
 					encodingFormat: "text/plain",
 					blobSize: 44,
-					blobHash: "sha256:KQR9O1bX5vPNrthf/VSdhrrfckHSRapmEC9Vaw4OCUY=",
+					integrity: "sha256-KQR9O1bX5vPNrthf/VSdhrrfckHSRapmEC9Vaw4OCUY=",
 					fileExtension: "txt",
 					isEncrypted: false,
 					metadata: {
@@ -422,7 +422,7 @@ describe("blob-storage-service", () => {
 					dateCreated: "2024-08-22T11:56:56.272Z",
 					encodingFormat: "text/plain",
 					blobSize: 44,
-					blobHash: "sha256:NbvGkswlxO2EF+sqeOuiYOprFmgwqMHiNqETHdBBxjI=",
+					integrity: "sha256-NbvGkswlxO2EF+sqeOuiYOprFmgwqMHiNqETHdBBxjI=",
 					fileExtension: "txt",
 					isEncrypted: false,
 					metadata: {
@@ -445,7 +445,7 @@ describe("blob-storage-service", () => {
 					dateCreated: "2024-08-22T11:56:56.272Z",
 					encodingFormat: "text/plain",
 					blobSize: 44,
-					blobHash: "sha256:GZmYYH0v5kyebKxVIrpfYuqH4GCCIUEc/CtJlN5P72M=",
+					integrity: "sha256-GZmYYH0v5kyebKxVIrpfYuqH4GCCIUEc/CtJlN5P72M=",
 					fileExtension: "txt",
 					isEncrypted: false,
 					metadata: {
@@ -513,7 +513,7 @@ describe("blob-storage-service", () => {
 			{
 				id: result,
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
@@ -560,7 +560,7 @@ describe("blob-storage-service", () => {
 			{
 				id: result,
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
@@ -607,7 +607,7 @@ describe("blob-storage-service", () => {
 			{
 				id: result,
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
@@ -637,7 +637,7 @@ describe("blob-storage-service", () => {
 			{
 				id: result,
 				blobSize: 43,
-				blobHash: "sha256:16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
+				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",

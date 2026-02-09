@@ -43,9 +43,9 @@
 			"type": "number",
 			"description": "The size of the data in the blob. json-ld type:schema:Integer"
 		},
-		"blobHash": {
+		"integrity": {
 			"type": "string",
-			"description": "The hash of the data in the blob. json-ld namespace:twin-common"
+			"description": "The integrity of the data in the blob. json-ld namespace:twin-common"
 		},
 		"encodingFormat": {
 			"type": "string",
@@ -78,7 +78,7 @@
 		"id",
 		"dateCreated",
 		"blobSize",
-		"blobHash"
+		"integrity"
 	],
 	"additionalProperties": false
 }
