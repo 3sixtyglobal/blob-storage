@@ -968,7 +968,6 @@
 				"required": [
 					"blob"
 				],
-				"additionalProperties": false,
 				"description": "The body parameters."
 			},
 			"BlobStorageEntry": {
@@ -1048,7 +1047,6 @@
 					"blobSize",
 					"integrity"
 				],
-				"additionalProperties": false,
 				"description": "Interface describing a blob storage entry."
 			},
 			"BlobStorageEntryList": {
@@ -1094,7 +1092,6 @@
 					"type",
 					"itemListElement"
 				],
-				"additionalProperties": false,
 				"description": "Interface describing an blob storage entry list."
 			},
 			"BlobStorageUpdateRequest": {
@@ -1112,7 +1109,6 @@
 						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
 					}
 				},
-				"additionalProperties": false,
 				"description": "The body parameters."
 			},
 			"Error": {
@@ -1147,12 +1143,10 @@
 					"name",
 					"message"
 				],
-				"additionalProperties": false,
 				"description": "Model to describe serialized error."
 			},
 			"NotFoundResponse": {
 				"type": "object",
-				"additionalProperties": false,
 				"properties": {
 					"notFoundId": {
 						"type": "string",

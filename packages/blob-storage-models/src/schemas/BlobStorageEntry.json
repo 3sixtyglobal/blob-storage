@@ -79,6 +79,5 @@
 		"dateCreated",
 		"blobSize",
 		"integrity"
-	],
-	"additionalProperties": false
+	]
 }
