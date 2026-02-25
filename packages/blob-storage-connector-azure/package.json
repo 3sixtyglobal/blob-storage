@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-connector-azure",
-	"version": "0.0.3-next.6",
+	"version": "0.0.3-next.7",
 	"description": "Blob Storage connector implementation using Azure",
 	"repository": {
 		"type": "git",
@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@azure/storage-blob": "12.29.1",
-		"@twin.org/blob-storage-models": "0.0.3-next.6",
+		"@twin.org/blob-storage-models": "0.0.3-next.7",
 		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
