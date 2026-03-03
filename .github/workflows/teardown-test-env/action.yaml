@@ -1,0 +1,17 @@
+name: 'Teardown Testing Environment'
+description: 'Stop and remove test environment services after workflow completion.'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Teardown Docker Test Environment
+      shell: bash
+      run: |
+        docker stop ipfs 2>/dev/null || true
+        docker rm ipfs 2>/dev/null || true
+        docker stop localstack 2>/dev/null || true
+        docker rm localstack 2>/dev/null || true
+        docker stop azurite 2>/dev/null || true
+        docker rm azurite 2>/dev/null || true
+        docker stop gcp-storage-emulator 2>/dev/null || true
+        docker rm gcp-storage-emulator 2>/dev/null || true
