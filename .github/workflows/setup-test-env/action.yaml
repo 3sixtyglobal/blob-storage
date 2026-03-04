@@ -14,6 +14,7 @@ runs:
       if: inputs.package == 'packages/blob-storage-connector-ipfs' || inputs.package == 'all'
       shell: bash
       run: |
+        docker pull ipfs/kubo:latest
         docker run -d \
           --name ipfs \
           -p 4001:4001 \
@@ -26,6 +27,7 @@ runs:
       if: inputs.package == 'packages/blob-storage-connector-aws-s3' || inputs.package == 'all'
       shell: bash
       run: |
+        docker pull localstack/localstack:latest
         docker run -d \
           --name localstack \
           -p 4566:4566 \
@@ -40,6 +42,7 @@ runs:
       if: inputs.package == 'packages/blob-storage-connector-azure' || inputs.package == 'all'
       shell: bash
       run: |
+        docker pull mcr.microsoft.com/azure-storage/azurite:latest
         docker run -d \
           --name azurite \
           -p 20610:10000 \
@@ -50,6 +53,7 @@ runs:
       if: inputs.package == 'packages/blob-storage-connector-gcp' || inputs.package == 'all'
       shell: bash
       run: |
+        docker pull fsouza/fake-gcs-server:latest
         docker run -d \
           -p 4443:4443 \
           --name gcp-storage-emulator \
