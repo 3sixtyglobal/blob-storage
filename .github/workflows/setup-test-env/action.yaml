@@ -14,6 +14,7 @@ runs:
       if: inputs.package == 'packages/blob-storage-connector-ipfs' || inputs.package == 'all'
       shell: bash
       run: |
+        docker rmi ipfs/kubo:latest || true
         docker pull ipfs/kubo:latest
         docker run -d \
           --name ipfs \
@@ -27,6 +28,7 @@ runs:
       if: inputs.package == 'packages/blob-storage-connector-aws-s3' || inputs.package == 'all'
       shell: bash
       run: |
+        docker rmi localstack/localstack:latest || true
         docker pull localstack/localstack:latest
         docker run -d \
           --name localstack \
@@ -42,6 +44,7 @@ runs:
       if: inputs.package == 'packages/blob-storage-connector-azure' || inputs.package == 'all'
       shell: bash
       run: |
+        docker rmi mcr.microsoft.com/azure-storage/azurite:latest || true
         docker pull mcr.microsoft.com/azure-storage/azurite:latest
         docker run -d \
           --name azurite \
@@ -54,6 +57,7 @@ runs:
       if: inputs.package == 'packages/blob-storage-connector-gcp' || inputs.package == 'all'
       shell: bash
       run: |
+        docker rmi fsouza/fake-gcs-server:latest || true
         docker pull fsouza/fake-gcs-server:latest
         docker run -d \
           -p 4443:4443 \
