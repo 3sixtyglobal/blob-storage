@@ -1,6 +1,6 @@
 # TWIN Blob Storage Connector File
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
+This package stores and retrieves blobs using local file system directories or mounted volumes. It is useful for straightforward deployments and development environments that rely on direct disk-backed storage.
 
 ## Installation
 

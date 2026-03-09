@@ -1,6 +1,6 @@
 # TWIN Blob Storage Connector Azure
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
+This package integrates blob storage workflows with [Azure Blob Storage](https://learn.microsoft.com/azure/storage/blobs/storage-blobs-introduction). It is designed for environments that use Azure containers for scalable object persistence.
 
 ## Installation
 

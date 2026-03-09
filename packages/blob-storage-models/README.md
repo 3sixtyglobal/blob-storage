@@ -1,6 +1,6 @@
 # TWIN Blob Storage Models
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
+This package defines shared models, contracts, and schemas for blob identifiers, metadata, and storage operations. It provides the common language used by service, client, and connector packages so integrations remain consistent across environments.
 
 ## Installation
 

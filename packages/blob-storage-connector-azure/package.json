@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/blob-storage-connector-azure",
 	"version": "0.0.3-next.7",
-	"description": "Connector for integrating blob workflows with Azure Blob Storage",
+	"description": "Stores and retrieves blobs in Azure Blob Storage containers.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/blob-storage.git",

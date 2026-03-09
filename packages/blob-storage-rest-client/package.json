@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/blob-storage-rest-client",
 	"version": "0.0.3-next.7",
-	"description": "REST client for interacting with blob storage service endpoints",
+	"description": "Offers client utilities for calling blob service endpoints with consistent request handling.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/blob-storage.git",

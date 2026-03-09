@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/blob-storage-connector-ipfs",
 	"version": "0.0.3-next.7",
-	"description": "Connector for storing and retrieving blobs over IPFS",
+	"description": "Stores and retrieves blobs through IPFS for content-addressed and distributed workflows.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/blob-storage.git",

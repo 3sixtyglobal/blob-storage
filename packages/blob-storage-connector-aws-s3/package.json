@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/blob-storage-connector-aws-s3",
 	"version": "0.0.3-next.7",
-	"description": "Connector for integrating blob workflows with Amazon S3",
+	"description": "Stores and retrieves blobs in Amazon S3 and S3-compatible object storage.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/blob-storage.git",

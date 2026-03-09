@@ -1,6 +1,6 @@
 # TWIN Blob Storage Connector IPFS
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
+This package integrates blob workflows with [IPFS](https://ipfs.tech/) for decentralised, content-addressed storage and retrieval. It supports distributed scenarios where immutable content addressing is important.
 
 ## Installation
 

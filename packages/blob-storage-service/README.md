@@ -1,6 +1,6 @@
 # TWIN Blob Storage Service
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
+This package exposes service-side components and endpoint definitions for blob upload, retrieval, and management operations. It bridges shared blob models with application service layers so APIs can be published with consistent behaviour.
 
 ## Installation
 

@@ -1,6 +1,6 @@
 # TWIN Blob Storage Connector AWS S3
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
+This package integrates blob storage workflows with [Amazon S3](https://aws.amazon.com/s3/) and compatible object storage services. It is suited to deployments that need durable, managed cloud object storage.
 
 ## Installation
 

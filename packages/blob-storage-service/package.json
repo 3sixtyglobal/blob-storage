@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/blob-storage-service",
 	"version": "0.0.3-next.7",
-	"description": "Service-side contract implementation and REST endpoint definitions for blob operations",
+	"description": "Exposes blob operations through service components and HTTP route definitions.",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/blob-storage.git",

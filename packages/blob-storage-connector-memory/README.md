@@ -1,6 +1,6 @@
 # TWIN Blob Storage Connector Memory
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
+This package provides an in-memory connector for blob storage workflows where persistence is not required. It is suited to local development, automated testing, and fast feedback loops that benefit from isolated, ephemeral storage.
 
 ## Installation
 
