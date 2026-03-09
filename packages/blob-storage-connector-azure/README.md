@@ -13,7 +13,8 @@ npm install @twin.org/blob-storage-connector-azure
 To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-docker run -d --name twin-blob-storage-azure -p 20610:10000 -e AZURITE_ACCOUNTS=testAccount:testKey mcr.microsoft.com/azure-storage/azurite:latest
+docker pull mcr.microsoft.com/azure-storage/azurite:latest
+docker run -d --name twin-blob-storage-azure -p 20610:10000 -e AZURITE_ACCOUNTS=testAccount:testKey mcr.microsoft.com/azure-storage/azurite:latest azurite --skipApiVersionCheck
 ```
 
 ## Examples
