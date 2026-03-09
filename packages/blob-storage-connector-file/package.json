@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/blob-storage-connector-file",
 	"version": "0.0.3-next.7",
-	"description": "Blob Storage connector implementation using file storage",
+	"description": "File system connector for storing blobs on local or mounted volumes",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/blob-storage.git",

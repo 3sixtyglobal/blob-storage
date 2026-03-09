@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/blob-storage-connector-memory",
 	"version": "0.0.3-next.7",
-	"description": "Blob Storage connector implementation using in-memory storage",
+	"description": "In-memory connector for local development and testing workflows",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/blob-storage.git",

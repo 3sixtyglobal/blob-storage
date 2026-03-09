@@ -1,25 +1,11 @@
 # TWIN Blob Storage Connector IPFS
 
-Blob Storage connector implementation using [IPFS](https://ipfs.tech/).
+Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. This package integrates blob workflows with [IPFS](https://ipfs.tech/) for decentralised storage and content-addressed retrieval.
 
 ## Installation
 
 ```shell
 npm install @twin.org/blob-storage-connector-ipfs
-```
-
-## Testing
-
-The tests developed are functional tests and need an instance of IPFS up and running. To run IPFS locally:
-
-```shell
-docker run -p 4001:4001 -p 4001:4001/udp -p 8080:8080 -p 5001:5001 --name twin-blob-ipfs --hostname ipfs -d ipfs/kubo:latest
-```
-
-Afterwards you can run the tests as follows:
-
-```shell
-npm run test
 ```
 
 ## Examples

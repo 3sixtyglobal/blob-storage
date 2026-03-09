@@ -1,7 +1,7 @@
 {
 	"name": "@twin.org/blob-storage-models",
 	"version": "0.0.3-next.7",
-	"description": "Models which define the structure of the blob storage contracts and connectors",
+	"description": "Shared models that define blob storage contracts and connector interfaces",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/twinfoundation/blob-storage.git",
