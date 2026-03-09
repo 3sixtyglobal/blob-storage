@@ -47,7 +47,7 @@ runs:
           --name azurite \
           -p 20610:10000 \
           -e AZURITE_ACCOUNTS=testAccount:testKey \
-          mcr.microsoft.com/azure-storage/azurite:latest
+          mcr.microsoft.com/azure-storage/azurite:latest \
           azurite --skipApiVersionCheck
 
     - name: Start GCP Storage Emulator
