@@ -7,15 +7,7 @@ runs:
     - name: Teardown Docker Test Environment
       shell: bash
       run: |
-        docker stop ipfs 2>/dev/null || true
-        docker rm ipfs 2>/dev/null || true
-        docker rmi ipfs/kubo:latest || true
-        docker stop localstack 2>/dev/null || true
-        docker rm localstack 2>/dev/null || true
-        docker rmi localstack/localstack:latest || true
-        docker stop azurite 2>/dev/null || true
-        docker rm azurite 2>/dev/null || true
-        docker rmi mcr.microsoft.com/azure-storage/azurite:latest || true
-        docker stop gcp-storage-emulator 2>/dev/null || true
-        docker rm gcp-storage-emulator 2>/dev/null || true
-        docker rmi fsouza/fake-gcs-server:latest || true
+        docker stop $(docker ps -aq) || true
+        docker rm $(docker ps -aq) || true
+        docker rmi -f $(docker images -aq) || true
+        docker system prune -a --volumes -f || true
