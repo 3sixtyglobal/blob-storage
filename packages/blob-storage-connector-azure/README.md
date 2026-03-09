@@ -1,11 +1,19 @@
 # TWIN Blob Storage Connector Azure
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. This package integrates blob workflows with [Azure Blob Storage](https://learn.microsoft.com/azure/storage/blobs/storage-blobs-introduction) for managed object storage.
+Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
 
 ## Installation
 
 ```shell
 npm install @twin.org/blob-storage-connector-azure
+```
+
+## Docker
+
+To perform testing of this component it may be necessary to launch a local instance to communicate with.
+
+```shell
+docker run -d --name twin-blob-storage-azure -p 20610:10000 -e AZURITE_ACCOUNTS=testAccount:testKey mcr.microsoft.com/azure-storage/azurite:latest
 ```
 
 ## Examples

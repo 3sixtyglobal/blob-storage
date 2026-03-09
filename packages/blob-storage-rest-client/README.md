@@ -1,6 +1,6 @@
 # TWIN Blob Storage REST Client
 
-Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. This package provides a REST client layer for interacting with blob storage service endpoints from consuming applications.
+Blob Storage packages provide interoperable contracts and connectors for managing binary content across local, decentralised, and cloud environments. They share common conventions so blob identifiers, metadata, and lifecycle operations remain consistent across services, clients, and storage back ends.
 
 ## Installation
 

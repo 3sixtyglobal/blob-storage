@@ -17,7 +17,18 @@
 		"eslint.config*",
 		"**/wordlists/**"
 	],
-	"words": ["abbrev", "autorelease", "IIPFS", "IPFS", "jsonld", "kubo", "nameof", "Stiftung"],
+	"words": [
+		"abbrev",
+		"autorelease",
+		"fsouza",
+		"IIPFS",
+		"IPFS",
+		"jsonld",
+		"kubo",
+		"localstack",
+		"nameof",
+		"Stiftung"
+	],
 	"ignoreRegExpList": [
 		"/from\\s+(['\"]).*\\1/",
 		"/eslint-disable.*/",
