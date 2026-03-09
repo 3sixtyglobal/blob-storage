@@ -14,7 +14,7 @@ To perform testing of this component it may be necessary to launch a local insta
 
 ```shell
 docker pull mcr.microsoft.com/azure-storage/azurite:latest
-docker run -d --name twin-blob-storage-azure -p 20620:10000 -e AZURITE_ACCOUNTS=testAccount:testKey mcr.microsoft.com/azure-storage/azurite:latest azurite --skipApiVersionCheck
+docker run -d --name twin-blob-storage-azure -p 20620:10000 -e AZURITE_ACCOUNTS=testAccount:testKey mcr.microsoft.com/azure-storage/azurite:latest azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
 ```
 
 ## Examples
