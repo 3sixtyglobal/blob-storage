@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-connector-aws-s3 - Changelog
+# Changelog
 
 ## [0.0.3-next.7](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-aws-s3-v0.0.3-next.6...blob-storage-connector-aws-s3-v0.0.3-next.7) (2026-02-25)
 

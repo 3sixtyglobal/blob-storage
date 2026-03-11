@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-connector-memory - Changelog
+# Changelog
 
 ## [0.0.3-next.7](https://github.com/twinfoundation/blob-storage/compare/blob-storage-connector-memory-v0.0.3-next.6...blob-storage-connector-memory-v0.0.3-next.7) (2026-02-25)
 
