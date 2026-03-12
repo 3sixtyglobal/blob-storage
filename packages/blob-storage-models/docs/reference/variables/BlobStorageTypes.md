@@ -6,13 +6,13 @@ The types of blob storage data.
 
 ## Type Declaration
 
-### Entry
+### Entry {#entry}
 
 > `readonly` **Entry**: `"BlobStorageEntry"` = `"BlobStorageEntry"`
 
 Represents blob storage entry.
 
-### CompressionType
+### CompressionType {#compressiontype}
 
 > `readonly` **CompressionType**: `"BlobStorageCompressionType"` = `"BlobStorageCompressionType"`
 

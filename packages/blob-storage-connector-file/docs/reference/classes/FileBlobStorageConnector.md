@@ -28,7 +28,7 @@ The options for the connector.
 
 ## Properties
 
-### NAMESPACE
+### NAMESPACE {#namespace}
 
 > `readonly` `static` **NAMESPACE**: `string` = `"file"`
 
@@ -36,7 +36,7 @@ The namespace for the items.
 
 ***
 
-### CLASS\_NAME
+### CLASS\_NAME {#class_name}
 
 > `readonly` `static` **CLASS\_NAME**: `string`
 
@@ -44,7 +44,7 @@ Runtime name for the class.
 
 ## Methods
 
-### className()
+### className() {#classname}
 
 > **className**(): `string`
 
@@ -62,7 +62,7 @@ The class name of the component.
 
 ***
 
-### bootstrap()
+### bootstrap() {#bootstrap}
 
 > **bootstrap**(`nodeLoggingComponentType?`): `Promise`\<`boolean`\>
 
@@ -88,7 +88,7 @@ True if the bootstrapping process was successful.
 
 ***
 
-### set()
+### set() {#set}
 
 > **set**(`blob`): `Promise`\<`string`\>
 
@@ -114,7 +114,7 @@ The id of the stored blob in urn format.
 
 ***
 
-### get()
+### get() {#get}
 
 > **get**(`id`): `Promise`\<`Uint8Array`\<`ArrayBufferLike`\> \| `undefined`\>
 
@@ -140,7 +140,7 @@ The data for the blob if it can be found or undefined.
 
 ***
 
-### remove()
+### remove() {#remove}
 
 > **remove**(`id`): `Promise`\<`boolean`\>
 

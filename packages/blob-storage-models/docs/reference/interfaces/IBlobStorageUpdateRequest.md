@@ -4,7 +4,7 @@ Request to update a blob entry.
 
 ## Properties
 
-### pathParams
+### pathParams {#pathparams}
 
 > **pathParams**: `object`
 
@@ -18,7 +18,7 @@ The id of the blob to get in urn format.
 
 ***
 
-### body
+### body {#body}
 
 > **body**: `object`
 

@@ -4,7 +4,7 @@ Configuration for the blob storage service.
 
 ## Properties
 
-### vaultKeyId?
+### vaultKeyId? {#vaultkeyid}
 
 > `optional` **vaultKeyId**: `string`
 
@@ -12,7 +12,7 @@ The name of the vault key to use for encryption, if not configured no encryption
 
 ***
 
-### defaultNamespace?
+### defaultNamespace? {#defaultnamespace}
 
 > `optional` **defaultNamespace**: `string`
 

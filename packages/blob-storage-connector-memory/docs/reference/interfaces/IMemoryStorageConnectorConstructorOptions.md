@@ -4,7 +4,7 @@ Options for the Memory Blob Storage Connector constructor.
 
 ## Properties
 
-### partitionContextIds?
+### partitionContextIds? {#partitioncontextids}
 
 > `optional` **partitionContextIds**: `string`[]
 

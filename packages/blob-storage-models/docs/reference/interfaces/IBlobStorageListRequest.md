@@ -4,7 +4,7 @@ Query the entries from blob storage.
 
 ## Properties
 
-### headers?
+### headers? {#headers}
 
 > `optional` **headers**: `object`
 
@@ -16,7 +16,7 @@ The headers which can be used to determine the response data type.
 
 ***
 
-### query?
+### query? {#query}
 
 > `optional` **query**: `object`
 

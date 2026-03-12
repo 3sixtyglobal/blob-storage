@@ -4,7 +4,7 @@ Configuration for the GCP Blob Storage Connector.
 
 ## Properties
 
-### projectId
+### projectId {#projectid}
 
 > **projectId**: `string`
 
@@ -12,7 +12,7 @@ The GCP project ID.
 
 ***
 
-### credentials?
+### credentials? {#credentials}
 
 > `optional` **credentials**: `string`
 
@@ -20,7 +20,7 @@ The GCP credentials, a base64 encoded version of the JWTInput data type.
 
 ***
 
-### bucketName
+### bucketName {#bucketname}
 
 > **bucketName**: `string`
 
@@ -28,7 +28,7 @@ The GCP bucket name.
 
 ***
 
-### apiEndpoint?
+### apiEndpoint? {#apiendpoint}
 
 > `optional` **apiEndpoint**: `string`
 

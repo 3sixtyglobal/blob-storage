@@ -8,7 +8,7 @@ Interface describing an blob storage component.
 
 ## Methods
 
-### create()
+### create() {#create}
 
 > **create**(`blob`, `encodingFormat?`, `fileExtension?`, `metadata?`, `options?`): `Promise`\<`string`\>
 
@@ -76,7 +76,7 @@ The id of the stored blob in urn format.
 
 ***
 
-### get()
+### get() {#get}
 
 > **get**(`id`, `options?`): `Promise`\<[`IBlobStorageEntry`](IBlobStorageEntry.md)\>
 
@@ -124,7 +124,7 @@ Not found error if the blob cannot be found.
 
 ***
 
-### update()
+### update() {#update}
 
 > **update**(`id`, `encodingFormat?`, `fileExtension?`, `metadata?`): `Promise`\<`void`\>
 
@@ -168,7 +168,7 @@ Not found error if the blob cannot be found.
 
 ***
 
-### remove()
+### remove() {#remove}
 
 > **remove**(`id`): `Promise`\<`void`\>
 
@@ -194,7 +194,7 @@ Not found error if the blob cannot be found.
 
 ***
 
-### query()
+### query() {#query}
 
 > **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `limit?`): `Promise`\<\{ `entries`: [`IBlobStorageEntryList`](IBlobStorageEntryList.md); `cursor?`: `string`; \}\>
 

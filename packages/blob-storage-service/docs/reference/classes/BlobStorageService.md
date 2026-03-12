@@ -28,7 +28,7 @@ The options for the service.
 
 ## Properties
 
-### CLASS\_NAME
+### CLASS\_NAME {#class_name}
 
 > `readonly` `static` **CLASS\_NAME**: `string`
 
@@ -36,7 +36,7 @@ Runtime name for the class.
 
 ## Methods
 
-### className()
+### className() {#classname}
 
 > **className**(): `string`
 
@@ -54,7 +54,7 @@ The class name of the component.
 
 ***
 
-### create()
+### create() {#create}
 
 > **create**(`blob`, `encodingFormat?`, `fileExtension?`, `metadata?`, `options?`): `Promise`\<`string`\>
 
@@ -126,7 +126,7 @@ The id of the stored blob in urn format.
 
 ***
 
-### get()
+### get() {#get}
 
 > **get**(`id`, `options?`): `Promise`\<`IBlobStorageEntry`\>
 
@@ -178,7 +178,7 @@ Not found error if the blob cannot be found.
 
 ***
 
-### update()
+### update() {#update}
 
 > **update**(`id`, `encodingFormat?`, `fileExtension?`, `metadata?`): `Promise`\<`void`\>
 
@@ -226,7 +226,7 @@ Not found error if the blob cannot be found.
 
 ***
 
-### remove()
+### remove() {#remove}
 
 > **remove**(`id`): `Promise`\<`void`\>
 
@@ -252,7 +252,7 @@ Nothing.
 
 ***
 
-### query()
+### query() {#query}
 
 > **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `limit?`): `Promise`\<\{ `entries`: `IBlobStorageEntryList`; `cursor?`: `string`; \}\>
 

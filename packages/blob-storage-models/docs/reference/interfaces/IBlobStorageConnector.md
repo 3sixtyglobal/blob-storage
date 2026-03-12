@@ -8,7 +8,7 @@ Interface describing an blob storage connector.
 
 ## Methods
 
-### set()
+### set() {#set}
 
 > **set**(`blob`): `Promise`\<`string`\>
 
@@ -30,7 +30,7 @@ The id of the stored blob in urn format.
 
 ***
 
-### get()
+### get() {#get}
 
 > **get**(`id`): `Promise`\<`Uint8Array`\<`ArrayBufferLike`\> \| `undefined`\>
 
@@ -52,7 +52,7 @@ The data for the blob if it can be found or undefined.
 
 ***
 
-### remove()
+### remove() {#remove}
 
 > **remove**(`id`): `Promise`\<`boolean`\>
 

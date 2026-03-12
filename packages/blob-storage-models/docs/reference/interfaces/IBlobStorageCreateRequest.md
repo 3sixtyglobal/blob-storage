@@ -4,7 +4,7 @@ Request to create an entry in blob storage.
 
 ## Properties
 
-### body
+### body {#body}
 
 > **body**: `object`
 
@@ -40,12 +40,6 @@ Custom metadata to associate with the blob as JSON-LD.
 
 Disables encryption if enabled by default.
 
-##### Default
-
-```ts
-false
-```
-
 #### compress?
 
 > `optional` **compress**: [`BlobStorageCompressionType`](../type-aliases/BlobStorageCompressionType.md)
@@ -57,12 +51,6 @@ Optional compression type to use for the blob, defaults to no compression.
 > `optional` **overrideVaultKeyId**: `string`
 
 Use a different vault key id for encryption, if not provided the default vault key id will be used.
-
-##### Default
-
-```ts
-undefined
-```
 
 #### namespace?
 
