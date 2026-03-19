@@ -38,7 +38,7 @@ The date/time when the entry was created.
 
 ### dateModified? {#datemodified}
 
-> `optional` **dateModified**: `string`
+> `optional` **dateModified?**: `string`
 
 The date/time when the entry was modified.
 
@@ -62,7 +62,7 @@ The integrity of the data in the blob.
 
 ### encodingFormat? {#encodingformat}
 
-> `optional` **encodingFormat**: `string`
+> `optional` **encodingFormat?**: `string`
 
 The mime type for the blob.
 
@@ -70,7 +70,7 @@ The mime type for the blob.
 
 ### isEncrypted? {#isencrypted}
 
-> `optional` **isEncrypted**: `boolean`
+> `optional` **isEncrypted?**: `boolean`
 
 Indicates if the blob is encrypted.
 
@@ -78,7 +78,7 @@ Indicates if the blob is encrypted.
 
 ### compression? {#compression}
 
-> `optional` **compression**: [`BlobStorageCompressionType`](../type-aliases/BlobStorageCompressionType.md)
+> `optional` **compression?**: [`BlobStorageCompressionType`](../type-aliases/BlobStorageCompressionType.md)
 
 The type of compression used for the blob, if not set it is not stored with compression.
 
@@ -86,7 +86,7 @@ The type of compression used for the blob, if not set it is not stored with comp
 
 ### fileExtension? {#fileextension}
 
-> `optional` **fileExtension**: `string`
+> `optional` **fileExtension?**: `string`
 
 The extension.
 
@@ -94,7 +94,7 @@ The extension.
 
 ### metadata? {#metadata}
 
-> `optional` **metadata**: `IJsonLdNodeObject`
+> `optional` **metadata?**: `IJsonLdNodeObject`
 
 The metadata for the blob as JSON-LD.
 
@@ -102,6 +102,6 @@ The metadata for the blob as JSON-LD.
 
 ### blob? {#blob}
 
-> `optional` **blob**: `string`
+> `optional` **blob?**: `string`
 
 The blob in base64 format, included if the includeContent flag was set in the request.

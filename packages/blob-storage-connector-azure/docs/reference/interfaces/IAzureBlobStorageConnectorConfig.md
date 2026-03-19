@@ -30,7 +30,7 @@ The Azure container name.
 
 ### endpoint? {#endpoint}
 
-> `optional` **endpoint**: `string`
+> `optional` **endpoint?**: `string`
 
 Endpoint defaults to `https://{accountName}.blob.core.windows.net/` where accountName will be
 substituted.

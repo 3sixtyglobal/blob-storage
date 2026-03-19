@@ -14,6 +14,6 @@ The url for API calls.
 
 ### bearerToken? {#bearertoken}
 
-> `optional` **bearerToken**: `string`
+> `optional` **bearerToken?**: `string`
 
 The bearer token for authentication to the API.

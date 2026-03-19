@@ -149,7 +149,6 @@
 						"in": "query",
 						"required": false,
 						"schema": {
-							"type": "string",
 							"enum": [
 								"dateCreated",
 								"dateModified"
@@ -915,19 +914,17 @@
 	"components": {
 		"schemas": {
 			"BlobStorageCompressionType": {
+				"description": "The types of compression for blob storage data.",
 				"anyOf": [
 					{
-						"type": "string",
 						"const": "gzip",
 						"description": "Gzip."
 					},
 					{
-						"type": "string",
 						"const": "deflate",
 						"description": "Deflate."
 					}
-				],
-				"description": "The types of compression for blob storage data."
+				]
 			},
 			"BlobStorageCreateRequest": {
 				"type": "object",
@@ -971,28 +968,26 @@
 				"description": "The body parameters."
 			},
 			"BlobStorageEntry": {
+				"description": "Interface describing a blob storage entry.",
 				"type": "object",
 				"properties": {
 					"@context": {
 						"type": "array",
-						"minItems": 2,
-						"description": "JSON-LD Context.",
 						"prefixItems": [
 							{
-								"type": "string",
 								"const": "https://schema.twindev.org/blob-storage/"
 							},
 							{
-								"type": "string",
 								"const": "https://schema.twindev.org/common/"
 							}
 						],
 						"items": {
 							"$ref": "https://schema.twindev.org/json-ld/JsonLdContextDefinitionElement"
-						}
+						},
+						"minItems": 2,
+						"description": "JSON-LD Context."
 					},
 					"type": {
-						"type": "string",
 						"const": "BlobStorageEntry",
 						"description": "JSON-LD Type."
 					},
@@ -1046,36 +1041,32 @@
 					"dateCreated",
 					"blobSize",
 					"integrity"
-				],
-				"description": "Interface describing a blob storage entry."
+				]
 			},
 			"BlobStorageEntryList": {
+				"description": "Interface describing an blob storage entry list.",
 				"type": "object",
 				"properties": {
 					"@context": {
 						"type": "array",
-						"minItems": 3,
-						"description": "JSON-LD Context.",
 						"prefixItems": [
 							{
-								"type": "string",
 								"const": "https://schema.org"
 							},
 							{
-								"type": "string",
 								"const": "https://schema.twindev.org/blob-storage/"
 							},
 							{
-								"type": "string",
 								"const": "https://schema.twindev.org/common/"
 							}
 						],
 						"items": {
 							"$ref": "https://schema.twindev.org/json-ld/JsonLdContextDefinitionElement"
-						}
+						},
+						"minItems": 3,
+						"description": "JSON-LD Context."
 					},
 					"type": {
-						"type": "string",
 						"const": "ItemList",
 						"description": "JSON-LD Type."
 					},
@@ -1091,8 +1082,7 @@
 					"@context",
 					"type",
 					"itemListElement"
-				],
-				"description": "Interface describing an blob storage entry list."
+				]
 			},
 			"BlobStorageUpdateRequest": {
 				"type": "object",
@@ -1112,6 +1102,7 @@
 				"description": "The body parameters."
 			},
 			"Error": {
+				"description": "Model to describe serialized error.",
 				"type": "object",
 				"properties": {
 					"name": {
@@ -1142,8 +1133,7 @@
 				"required": [
 					"name",
 					"message"
-				],
-				"description": "Model to describe serialized error."
+				]
 			},
 			"NotFoundResponse": {
 				"type": "object",
@@ -1151,52 +1141,27 @@
 					"notFoundId": {
 						"type": "string",
 						"description": "The id if the item that was not found."
-					},
-					"name": {
-						"type": "string",
-						"description": "The name for the error."
-					},
-					"message": {
-						"type": "string",
-						"description": "The message for the error."
-					},
-					"source": {
-						"type": "string",
-						"description": "The source of the error."
-					},
-					"properties": {
-						"type": "object",
-						"additionalProperties": {},
-						"description": "Any additional information for the error."
-					},
-					"stack": {
-						"type": "string",
-						"description": "The stack trace for the error."
-					},
-					"cause": {
-						"$ref": "#/components/schemas/Error"
 					}
 				},
-				"required": [
-					"message",
-					"name"
+				"allOf": [
+					{
+						"$ref": "#/components/schemas/Error"
+					}
 				],
 				"description": "The body which contains the error."
 			},
 			"SortDirection": {
+				"description": "The sort directions.",
 				"anyOf": [
 					{
-						"type": "string",
 						"const": "asc",
 						"description": "Ascending."
 					},
 					{
-						"type": "string",
 						"const": "desc",
 						"description": "Descending."
 					}
-				],
-				"description": "The sort directions."
+				]
 			}
 		},
 		"securitySchemes": {

@@ -210,9 +210,9 @@ The conditions to match for the entries.
 
 ##### orderBy?
 
-The order for the results, defaults to created.
+`"dateCreated"` \| `"dateModified"`
 
-`"dateCreated"` | `"dateModified"`
+The order for the results, defaults to created.
 
 ##### orderByDirection?
 

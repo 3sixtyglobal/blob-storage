@@ -6,15 +6,21 @@ Options for the Blob Storage Service constructor.
 
 ### entryEntityStorageType? {#entryentitystoragetype}
 
-> `optional` **entryEntityStorageType**: `string`
+> `optional` **entryEntityStorageType?**: `string`
 
 The type of the storage connector for the metadata.
+
+#### Default
+
+```ts
+blob-storage-entry
+```
 
 ***
 
 ### vaultConnectorType? {#vaultconnectortype}
 
-> `optional` **vaultConnectorType**: `string`
+> `optional` **vaultConnectorType?**: `string`
 
 The type of the vault connector for encryption.
 
@@ -22,6 +28,6 @@ The type of the vault connector for encryption.
 
 ### config? {#config}
 
-> `optional` **config**: [`IBlobStorageServiceConfig`](IBlobStorageServiceConfig.md)
+> `optional` **config?**: [`IBlobStorageServiceConfig`](IBlobStorageServiceConfig.md)
 
 The configuration for the service.

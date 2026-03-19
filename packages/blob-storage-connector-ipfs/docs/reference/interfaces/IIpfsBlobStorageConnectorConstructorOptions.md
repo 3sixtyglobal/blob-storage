@@ -6,7 +6,7 @@ Options for the IPFS Blob Storage Connector constructor.
 
 ### partitionContextIds? {#partitioncontextids}
 
-> `optional` **partitionContextIds**: `string`[]
+> `optional` **partitionContextIds?**: `string`[]
 
 The keys to use from the context ids to create partitions.
 
