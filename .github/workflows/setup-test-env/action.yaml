@@ -6,10 +6,20 @@ inputs:
     description: 'The package to set up the test environment for.'
     required: true
     default: 'all'
+  test_env_vars:
+    description: 'Newline-separated KEY=VALUE pairs to inject as environment variables into the test services.'
+    required: false
+    default: ''
 
 runs:
   using: 'composite'
   steps:
+    - name: Write Test Environment Variables
+      if: inputs.package == 'packages/messaging-connector-aws' || inputs.package == 'all'
+      shell: bash
+      run: |
+        echo "${{ inputs.test_env_vars }}" > /tmp/test_env_vars.txt
+
     - name: Start IPFS Kubo
       if: inputs.package == 'packages/blob-storage-connector-ipfs' || inputs.package == 'all'
       shell: bash
@@ -38,6 +48,7 @@ runs:
           -e AWS_ACCESS_KEY_ID=test \
           -e AWS_SECRET_ACCESS_KEY=test \
           -e SERVICES=s3 \
+          --env-file=/tmp/test_env_vars.txt \
           localstack/localstack:latest
 
     - name: Start Azurite
