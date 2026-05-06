@@ -4,7 +4,7 @@
 	"description": "Offers client utilities for calling blob service endpoints with consistent request handling.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/twinfoundation/blob-storage.git",
+		"url": "git+https://github.com/iotaledger/blob-storage.git",
 		"directory": "packages/blob-storage-rest-client"
 	},
 	"author": "martyn.janes@iota.org",
@@ -80,7 +80,7 @@
 		"binary"
 	],
 	"bugs": {
-		"url": "git+https://github.com/twinfoundation/blob-storage/issues"
+		"url": "git+https://github.com/iotaledger/blob-storage/issues"
 	},
 	"homepage": "https://twindev.org"
 }

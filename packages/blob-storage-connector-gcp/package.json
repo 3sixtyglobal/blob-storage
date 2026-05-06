@@ -4,7 +4,7 @@
 	"description": "Stores and retrieves blobs in Google Cloud Storage buckets.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/twinfoundation/blob-storage.git",
+		"url": "git+https://github.com/iotaledger/blob-storage.git",
 		"directory": "packages/blob-storage-connector-gcp"
 	},
 	"author": "cornel.filip@iota.org",
@@ -84,7 +84,7 @@
 		"integration"
 	],
 	"bugs": {
-		"url": "git+https://github.com/twinfoundation/blob-storage/issues"
+		"url": "git+https://github.com/iotaledger/blob-storage/issues"
 	},
 	"homepage": "https://twindev.org"
 }

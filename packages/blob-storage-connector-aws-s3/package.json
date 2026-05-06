@@ -4,7 +4,7 @@
 	"description": "Stores and retrieves blobs in Amazon S3 and S3-compatible object storage.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/twinfoundation/blob-storage.git",
+		"url": "git+https://github.com/iotaledger/blob-storage.git",
 		"directory": "packages/blob-storage-connector-aws-s3"
 	},
 	"author": "martyn.janes@iota.org",
@@ -84,7 +84,7 @@
 		"integration"
 	],
 	"bugs": {
-		"url": "git+https://github.com/twinfoundation/blob-storage/issues"
+		"url": "git+https://github.com/iotaledger/blob-storage/issues"
 	},
 	"homepage": "https://twindev.org"
 }
