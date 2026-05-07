@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.0.3-next.9](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-gcp-v0.0.3-next.8...blob-storage-connector-gcp-v0.0.3-next.9) (2026-05-07)
+
+
+### Features
+
+* add context id features ([#30](https://github.com/iotaledger/twin-blob-storage/issues/30)) ([fbf1c92](https://github.com/iotaledger/twin-blob-storage/commit/fbf1c9276424c841ef5ef3f4de8469ab3fba7e9c))
+* Add GCP blob storage connector ([#8](https://github.com/iotaledger/twin-blob-storage/issues/8)) ([4f6d579](https://github.com/iotaledger/twin-blob-storage/commit/4f6d579c01b3ae13ebcd9029b279da62e4fde859))
+* add validate-locales ([f20fcec](https://github.com/iotaledger/twin-blob-storage/commit/f20fceced91e39a0c9edb770b2e43ce944c92f3c))
+* eslint migration to flat config ([e4239dd](https://github.com/iotaledger/twin-blob-storage/commit/e4239dd1c721955cff7f0357255d2bba15319972))
+* health check failure testing ([2107f66](https://github.com/iotaledger/twin-blob-storage/commit/2107f66a418ecf5e78e86319af3d2113d9f09cc6))
+* health checks ([#44](https://github.com/iotaledger/twin-blob-storage/issues/44)) ([4a4041c](https://github.com/iotaledger/twin-blob-storage/commit/4a4041c19b68c40ed1aba6d1cdb4318ac4208b7d))
+* update dependencies ([56f0094](https://github.com/iotaledger/twin-blob-storage/commit/56f0094b68d8bd22864cd899ac1b61d95540f719))
+* update framework core ([ff339fe](https://github.com/iotaledger/twin-blob-storage/commit/ff339fe7e3f09ddff429907834bdf43617e9c05e))
+* use shared store mechanism ([#12](https://github.com/iotaledger/twin-blob-storage/issues/12)) ([cae8110](https://github.com/iotaledger/twin-blob-storage/commit/cae8110681847a1ac4fcac968b8196694e49c320))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.8 to 0.0.3-next.9
+
 ## [0.0.3-next.8](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-gcp-v0.0.3-next.7...blob-storage-connector-gcp-v0.0.3-next.8) (2026-05-07)
 
 
