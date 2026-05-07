@@ -11,7 +11,7 @@ import {
 	type IHealth
 } from "@twin.org/core";
 import { nameof } from "@twin.org/nameof";
-import { HeaderHelper, HeaderTypes, MimeTypes } from "@twin.org/web";
+import { HeaderHelper, HeaderTypes, HttpMethod, MimeTypes } from "@twin.org/web";
 import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig.js";
 import type { IIpfsBlobStorageConnectorConstructorOptions } from "./models/IIpfsBlobStorageConnectorConstructorOptions.js";
 
@@ -79,7 +79,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	public async health(): Promise<IHealth[]> {
 		try {
 			const fetchOptions: RequestInit = {
-				method: "POST",
+				method: HttpMethod.POST,
 				headers: {
 					accept: MimeTypes.Json
 				}
@@ -120,7 +120,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 			formData.append("file", formBlob);
 
 			const fetchOptions: RequestInit = {
-				method: "POST",
+				method: HttpMethod.POST,
 				body: formData,
 				headers: {
 					[HeaderTypes.Accept]: MimeTypes.Json,
@@ -167,7 +167,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 		try {
 			const fetchOptions: RequestInit = {
-				method: "POST",
+				method: HttpMethod.POST,
 				headers: {
 					accept: MimeTypes.Json
 				}
@@ -226,7 +226,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 		try {
 			const fetchOptions: RequestInit = {
-				method: "POST",
+				method: HttpMethod.POST,
 				headers: {
 					accept: MimeTypes.Json
 				}
