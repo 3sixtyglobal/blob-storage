@@ -15,7 +15,7 @@ runs:
   using: 'composite'
   steps:
     - name: Write Test Environment Variables
-      if: inputs.package == 'packages/blob-storage-connector-aws' || inputs.package == 'all'
+      if: inputs.package == 'packages/blob-storage-connector-aws-s3' || inputs.package == 'all'
       shell: bash
       run: |
         echo "${{ inputs.test_env_vars }}" > /tmp/test_env_vars.txt
