@@ -7,8 +7,8 @@
 	},
 	"health": {
 		"s3BlobStorageConnector": {
-			"healthDescription": "S3 blob storage connector is healthy",
-			"healthCheckFailed": "Failed to connect to S3 bucket"
+			"healthDescription": "S3 blob storage connector is healthy, bucket \"{bucketName}\" in region \"{region}\"",
+			"healthCheckFailed": "Failed to connect to S3 bucket \"{bucketName}\" in region \"{region}\""
 		}
 	},
 	"error": {

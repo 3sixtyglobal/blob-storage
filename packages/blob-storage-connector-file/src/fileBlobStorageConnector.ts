@@ -87,7 +87,10 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 				{
 					source: FileBlobStorageConnector.CLASS_NAME,
 					status: HealthStatus.Ok,
-					description: "healthDescription"
+					description: "healthDescription",
+					data: {
+						directory: this._directory
+					}
 				}
 			];
 		}
@@ -96,7 +99,10 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 				source: FileBlobStorageConnector.CLASS_NAME,
 				status: HealthStatus.Error,
 				description: "healthDescription",
-				message: "healthCheckFailed"
+				message: "healthCheckFailed",
+				data: {
+					directory: this._directory
+				}
 			}
 		];
 	}

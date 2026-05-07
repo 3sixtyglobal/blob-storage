@@ -59,7 +59,10 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 			{
 				source: MemoryBlobStorageConnector.CLASS_NAME,
 				status: HealthStatus.Ok,
-				description: "healthDescription"
+				description: "healthDescription",
+				data: {
+					storedItemCount: Object.keys(this._store).length
+				}
 			}
 		];
 	}

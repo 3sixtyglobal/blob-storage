@@ -119,7 +119,11 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 				{
 					source: GcpBlobStorageConnector.CLASS_NAME,
 					status: HealthStatus.Ok,
-					description: "healthDescription"
+					description: "healthDescription",
+					data: {
+						bucketName: this._config.bucketName,
+						projectId: this._config.projectId
+					}
 				}
 			];
 		} catch {
@@ -128,7 +132,11 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 					source: GcpBlobStorageConnector.CLASS_NAME,
 					status: HealthStatus.Error,
 					description: "healthDescription",
-					message: "healthCheckFailed"
+					message: "healthCheckFailed",
+					data: {
+						bucketName: this._config.bucketName,
+						projectId: this._config.projectId
+					}
 				}
 			];
 		}

@@ -133,7 +133,11 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 				{
 					source: S3BlobStorageConnector.CLASS_NAME,
 					status: HealthStatus.Ok,
-					description: "healthDescription"
+					description: "healthDescription",
+					data: {
+						bucketName: this._config.bucketName,
+						region: this._config.region
+					}
 				}
 			];
 		} catch {
@@ -142,7 +146,11 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 					source: S3BlobStorageConnector.CLASS_NAME,
 					status: HealthStatus.Error,
 					description: "healthDescription",
-					message: "healthCheckFailed"
+					message: "healthCheckFailed",
+					data: {
+						bucketName: this._config.bucketName,
+						region: this._config.region
+					}
 				}
 			];
 		}

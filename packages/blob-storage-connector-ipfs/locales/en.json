@@ -1,8 +1,8 @@
 {
 	"health": {
 		"ipfsBlobStorageConnector": {
-			"healthDescription": "IPFS blob storage connector is healthy",
-			"healthCheckFailed": "Failed to connect to IPFS node"
+			"healthDescription": "IPFS blob storage connector is healthy, connected to \"{apiUrl}\"",
+			"healthCheckFailed": "Failed to connect to IPFS node at \"{apiUrl}\""
 		}
 	},
 	"error": {

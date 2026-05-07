@@ -91,7 +91,10 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 					{
 						source: IpfsBlobStorageConnector.CLASS_NAME,
 						status: HealthStatus.Ok,
-						description: "healthDescription"
+						description: "healthDescription",
+						data: {
+							apiUrl: this._config.apiUrl
+						}
 					}
 				];
 			}
@@ -101,7 +104,10 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 				source: IpfsBlobStorageConnector.CLASS_NAME,
 				status: HealthStatus.Error,
 				description: "healthDescription",
-				message: "healthCheckFailed"
+				message: "healthCheckFailed",
+				data: {
+					apiUrl: this._config.apiUrl
+				}
 			}
 		];
 	}

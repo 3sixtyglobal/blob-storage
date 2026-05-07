@@ -1,7 +1,7 @@
 {
 	"health": {
 		"memoryBlobStorageConnector": {
-			"healthDescription": "Memory blob storage connector is healthy"
+			"healthDescription": "Memory blob storage connector is healthy, storing \"{storedItemCount}\" items"
 		}
 	},
 	"error": {

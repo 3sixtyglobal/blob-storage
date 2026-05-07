@@ -7,8 +7,8 @@
 	},
 	"health": {
 		"azureBlobStorageConnector": {
-			"healthDescription": "Azure blob storage connector is healthy",
-			"healthCheckFailed": "Failed to connect to Azure blob storage container"
+			"healthDescription": "Azure blob storage connector is healthy, container \"{containerName}\" in account \"{accountName}\"",
+			"healthCheckFailed": "Failed to connect to Azure blob storage container \"{containerName}\" in account \"{accountName}\""
 		}
 	},
 	"error": {

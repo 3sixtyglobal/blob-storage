@@ -7,8 +7,8 @@
 	},
 	"health": {
 		"fileBlobStorageConnector": {
-			"healthDescription": "File blob storage connector is healthy",
-			"healthCheckFailed": "Failed to access the storage directory"
+			"healthDescription": "File blob storage connector is healthy, directory \"{directory}\"",
+			"healthCheckFailed": "Failed to access the storage directory \"{directory}\""
 		}
 	},
 	"error": {

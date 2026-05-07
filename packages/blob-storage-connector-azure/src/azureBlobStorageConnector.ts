@@ -129,7 +129,11 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 				{
 					source: AzureBlobStorageConnector.CLASS_NAME,
 					status: HealthStatus.Ok,
-					description: "healthDescription"
+					description: "healthDescription",
+					data: {
+						containerName: this._config.containerName,
+						accountName: this._config.accountName
+					}
 				}
 			];
 		} catch {
@@ -138,7 +142,11 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 					source: AzureBlobStorageConnector.CLASS_NAME,
 					status: HealthStatus.Error,
 					description: "healthDescription",
-					message: "healthCheckFailed"
+					message: "healthCheckFailed",
+					data: {
+						containerName: this._config.containerName,
+						accountName: this._config.accountName
+					}
 				}
 			];
 		}
