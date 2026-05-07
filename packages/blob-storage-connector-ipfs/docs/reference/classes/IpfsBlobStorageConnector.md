@@ -63,6 +63,24 @@ The class name of the component.
 
 ***
 
+### health() {#health}
+
+> **health**(): `Promise`\<`IHealth`[]\>
+
+Returns the health status of the component.
+
+#### Returns
+
+`Promise`\<`IHealth`[]\>
+
+The health status of the component.
+
+#### Implementation of
+
+`IBlobStorageConnector.health`
+
+***
+
 ### set() {#set}
 
 > **set**(`blob`): `Promise`\<`string`\>
