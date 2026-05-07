@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-connector-gcp",
-	"version": "0.0.3-next.8",
+	"version": "0.0.3-next.9",
 	"description": "Stores and retrieves blobs in Google Cloud Storage buckets.",
 	"repository": {
 		"type": "git",
@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@google-cloud/storage": "7.19.0",
-		"@twin.org/blob-storage-models": "0.0.3-next.8",
+		"@twin.org/blob-storage-models": "0.0.3-next.9",
 		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",

@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.0.3-next.9](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.0.3-next.8...blob-storage-rest-client-v0.0.3-next.9) (2026-05-07)
+
+
+### Features
+
+* add compression support ([67d239b](https://github.com/iotaledger/twin-blob-storage/commit/67d239bca8321bd90bf4ff93167c564130309730))
+* add context id features ([#30](https://github.com/iotaledger/twin-blob-storage/issues/30)) ([fbf1c92](https://github.com/iotaledger/twin-blob-storage/commit/fbf1c9276424c841ef5ef3f4de8469ab3fba7e9c))
+* add validate-locales ([f20fcec](https://github.com/iotaledger/twin-blob-storage/commit/f20fceced91e39a0c9edb770b2e43ce944c92f3c))
+* additional encryption options on per item basis ([4b95a65](https://github.com/iotaledger/twin-blob-storage/commit/4b95a656d19e3b571cea905e36f29b679b13e1e8))
+* eslint migration to flat config ([e4239dd](https://github.com/iotaledger/twin-blob-storage/commit/e4239dd1c721955cff7f0357255d2bba15319972))
+* replace nextItem property with Link header ([#37](https://github.com/iotaledger/twin-blob-storage/issues/37)) ([0b68da5](https://github.com/iotaledger/twin-blob-storage/commit/0b68da58549c9e52eb2313ea5a868573840d5ca6))
+* update dependencies ([56f0094](https://github.com/iotaledger/twin-blob-storage/commit/56f0094b68d8bd22864cd899ac1b61d95540f719))
+* update framework core ([ff339fe](https://github.com/iotaledger/twin-blob-storage/commit/ff339fe7e3f09ddff429907834bdf43617e9c05e))
+* use shared store mechanism ([#12](https://github.com/iotaledger/twin-blob-storage/issues/12)) ([cae8110](https://github.com/iotaledger/twin-blob-storage/commit/cae8110681847a1ac4fcac968b8196694e49c320))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.8 to 0.0.3-next.9
+
 ## [0.0.3-next.8](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.0.3-next.7...blob-storage-rest-client-v0.0.3-next.8) (2026-05-07)
 
 
