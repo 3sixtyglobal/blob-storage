@@ -33,6 +33,21 @@ describe("AzureBlobStorageConnector", () => {
 		expect(health[0].status).toEqual(HealthStatus.Ok);
 	});
 
+	test("can health check fail with unreachable endpoint", async () => {
+		const blobStorage = new AzureBlobStorageConnector({
+			config: {
+				accountName: "testaccount",
+				accountKey: "dGVzdA==",
+				containerName: "test-container",
+				endpoint: "http://localhost:19999/"
+			}
+		});
+		const health = await blobStorage.health();
+		expect(health).toBeDefined();
+		expect(health.length).toEqual(1);
+		expect(health[0].status).toEqual(HealthStatus.Error);
+	});
+
 	test("can fail to set an item with no blob", async () => {
 		const blobStorage = new AzureBlobStorageConnector({ config: TEST_AZURE_CONFIG });
 		await expect(blobStorage.set(undefined as unknown as Uint8Array)).rejects.toMatchObject({

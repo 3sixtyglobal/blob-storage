@@ -34,6 +34,22 @@ describe("S3BlobStorageConnector", () => {
 		expect(health[0].status).toEqual(HealthStatus.Ok);
 	});
 
+	test("can health check fail with unreachable endpoint", async () => {
+		const blobStorage = new S3BlobStorageConnector({
+			config: {
+				endpoint: "http://localhost:19999",
+				region: "us-east-1",
+				bucketName: "test-bucket",
+				accessKeyId: "test-access-key",
+				secretAccessKey: "test-secret-key"
+			}
+		});
+		const health = await blobStorage.health();
+		expect(health).toBeDefined();
+		expect(health.length).toEqual(1);
+		expect(health[0].status).toEqual(HealthStatus.Error);
+	});
+
 	test("can fail to set an item with no blob", async () => {
 		const blobStorage = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
 		await expect(blobStorage.set(undefined as unknown as Uint8Array)).rejects.toMatchObject({
