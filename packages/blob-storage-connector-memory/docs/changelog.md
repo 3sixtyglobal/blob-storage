@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.8](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-memory-v0.0.3-next.7...blob-storage-connector-memory-v0.0.3-next.8) (2026-05-07)
+
+
+### Features
+
+* health checks ([#44](https://github.com/iotaledger/twin-blob-storage/issues/44)) ([4a4041c](https://github.com/iotaledger/twin-blob-storage/commit/4a4041c19b68c40ed1aba6d1cdb4318ac4208b7d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.7 to 0.0.3-next.8
+
 ## [0.0.3-next.7](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-memory-v0.0.3-next.6...blob-storage-connector-memory-v0.0.3-next.7) (2026-02-25)
 
 

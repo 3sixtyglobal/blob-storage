@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3-next.8](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.0.3-next.7...blob-storage-models-v0.0.3-next.8) (2026-05-07)
+
+
+### Bug Fixes
+
+* data validation tests ([556979a](https://github.com/iotaledger/twin-blob-storage/commit/556979a0c36a942f691c971a9bce3a5d72093f52))
+
 ## [0.0.3-next.7](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.0.3-next.6...blob-storage-models-v0.0.3-next.7) (2026-02-25)
 
 
