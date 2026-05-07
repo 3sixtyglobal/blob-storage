@@ -10,8 +10,10 @@ import {
 	Converter,
 	GeneralError,
 	Guards,
+	HealthStatus,
 	Is,
-	Urn
+	Urn,
+	type IHealth
 } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
@@ -73,6 +75,30 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	public className(): string {
 		return FileBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		if (await this.dirExists(this._directory)) {
+			return [
+				{
+					source: FileBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Ok,
+					description: "healthDescription"
+				}
+			];
+		}
+		return [
+			{
+				source: FileBlobStorageConnector.CLASS_NAME,
+				status: HealthStatus.Error,
+				description: "healthDescription",
+				message: "healthCheckFailed"
+			}
+		];
 	}
 
 	/**

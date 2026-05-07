@@ -9,9 +9,11 @@ import {
 	Converter,
 	GeneralError,
 	Guards,
+	HealthStatus,
 	Is,
 	ObjectHelper,
-	Urn
+	Urn,
+	type IHealth
 } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
@@ -104,6 +106,32 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	public className(): string {
 		return GcpBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		try {
+			await this._storage.bucket(this._config.bucketName).exists();
+			return [
+				{
+					source: GcpBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Ok,
+					description: "healthDescription"
+				}
+			];
+		} catch {
+			return [
+				{
+					source: GcpBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Error,
+					description: "healthDescription",
+					message: "healthCheckFailed"
+				}
+			];
+		}
 	}
 
 	/**

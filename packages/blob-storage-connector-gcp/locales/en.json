@@ -5,6 +5,12 @@
 			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
 		}
 	},
+	"health": {
+		"gcpBlobStorageConnector": {
+			"healthDescription": "GCP blob storage connector is healthy",
+			"healthCheckFailed": "Failed to connect to GCP storage bucket"
+		}
+	},
 	"error": {
 		"gcpBlobStorageConnector": {
 			"bucketCreateFailed": "Creating bucket \"{bucket}\" failed",

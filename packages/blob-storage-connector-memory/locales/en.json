@@ -1,4 +1,9 @@
 {
+	"health": {
+		"memoryBlobStorageConnector": {
+			"healthDescription": "Memory blob storage connector is healthy"
+		}
+	},
 	"error": {
 		"memoryBlobStorageConnector": {
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\""

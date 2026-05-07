@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
-import { Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import { Converter, GeneralError, Guards, HealthStatus, Urn, type IHealth } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import { nameof } from "@twin.org/nameof";
 import type { IMemoryStorageConnectorConstructorOptions } from "./models/IMemoryStorageConnectorConstructorOptions.js";
@@ -48,6 +48,20 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	public className(): string {
 		return MemoryBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		return [
+			{
+				source: MemoryBlobStorageConnector.CLASS_NAME,
+				status: HealthStatus.Ok,
+				description: "healthDescription"
+			}
+		];
 	}
 
 	/**

@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ContextIdStore } from "@twin.org/context";
-import { Urn } from "@twin.org/core";
+import { HealthStatus, Urn } from "@twin.org/core";
 import { MemoryBlobStorageConnector } from "../src/memoryBlobStorageConnector.js";
 
 describe("MemoryBlobStorageConnector", () => {
@@ -14,6 +14,14 @@ describe("MemoryBlobStorageConnector", () => {
 	test("can construct", async () => {
 		const blobStorage = new MemoryBlobStorageConnector();
 		expect(blobStorage).toBeDefined();
+	});
+
+	test("can health check", async () => {
+		const blobStorage = new MemoryBlobStorageConnector();
+		const health = await blobStorage.health();
+		expect(health).toBeDefined();
+		expect(health.length).toEqual(1);
+		expect(health[0].status).toEqual(HealthStatus.Ok);
 	});
 
 	test("can fail to set an item with no blob", async () => {

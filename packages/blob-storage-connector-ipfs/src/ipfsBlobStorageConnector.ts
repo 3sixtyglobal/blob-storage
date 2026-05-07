@@ -1,7 +1,15 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { GeneralError, Guards, Is, StringHelper, Urn } from "@twin.org/core";
+import {
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Is,
+	StringHelper,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
 import { nameof } from "@twin.org/nameof";
 import { HeaderHelper, HeaderTypes, MimeTypes } from "@twin.org/web";
 import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig.js";
@@ -62,6 +70,40 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	public className(): string {
 		return IpfsBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		try {
+			const fetchOptions: RequestInit = {
+				method: "POST",
+				headers: {
+					accept: MimeTypes.Json
+				}
+			};
+			this.addSecurity(fetchOptions);
+			const response = await fetch(`${this._config.apiUrl}/version`, fetchOptions);
+			if (response.ok) {
+				return [
+					{
+						source: IpfsBlobStorageConnector.CLASS_NAME,
+						status: HealthStatus.Ok,
+						description: "healthDescription"
+					}
+				];
+			}
+		} catch {}
+		return [
+			{
+				source: IpfsBlobStorageConnector.CLASS_NAME,
+				status: HealthStatus.Error,
+				description: "healthDescription",
+				message: "healthCheckFailed"
+			}
+		];
 	}
 
 	/**

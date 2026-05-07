@@ -17,8 +17,10 @@ import {
 	Converter,
 	GeneralError,
 	Guards,
+	HealthStatus,
 	Is,
-	Urn
+	Urn,
+	type IHealth
 } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
@@ -114,6 +116,32 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	 */
 	public className(): string {
 		return AzureBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		try {
+			await this._azureContainerClient.exists();
+			return [
+				{
+					source: AzureBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Ok,
+					description: "healthDescription"
+				}
+			];
+		} catch {
+			return [
+				{
+					source: AzureBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Error,
+					description: "healthDescription",
+					message: "healthCheckFailed"
+				}
+			];
+		}
 	}
 
 	/**

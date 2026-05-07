@@ -4,6 +4,7 @@ import {
 	CreateBucketCommand,
 	DeleteObjectCommand,
 	GetObjectCommand,
+	HeadBucketCommand,
 	HeadObjectCommand,
 	ListBucketsCommand,
 	PutObjectCommand,
@@ -11,7 +12,16 @@ import {
 } from "@aws-sdk/client-s3";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
-import { BaseError, ComponentFactory, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import {
+	BaseError,
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
@@ -110,6 +120,32 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 */
 	public className(): string {
 		return S3BlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		try {
+			await this._s3Client.send(new HeadBucketCommand({ Bucket: this._config.bucketName }));
+			return [
+				{
+					source: S3BlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Ok,
+					description: "healthDescription"
+				}
+			];
+		} catch {
+			return [
+				{
+					source: S3BlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Error,
+					description: "healthDescription",
+					message: "healthCheckFailed"
+				}
+			];
+		}
 	}
 
 	/**

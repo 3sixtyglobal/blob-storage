@@ -5,6 +5,12 @@
 			"directoryExists": "Skipping create directory \"{directory}\" as it already exists"
 		}
 	},
+	"health": {
+		"fileBlobStorageConnector": {
+			"healthDescription": "File blob storage connector is healthy",
+			"healthCheckFailed": "Failed to access the storage directory"
+		}
+	},
 	"error": {
 		"fileBlobStorageConnector": {
 			"directoryCreateFailed": "Creating directory \"{directory}\" failed",

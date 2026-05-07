@@ -3,7 +3,7 @@
 import { rm, stat } from "node:fs/promises";
 import path from "node:path";
 import { ContextIdStore } from "@twin.org/context";
-import { ComponentFactory, Converter, RandomHelper, Urn } from "@twin.org/core";
+import { ComponentFactory, Converter, HealthStatus, RandomHelper, Urn } from "@twin.org/core";
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
 import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
 import {
@@ -151,6 +151,30 @@ describe("FileBlobStorageConnector", () => {
 		expect(logs).toBeDefined();
 		expect(logs?.length).toEqual(1);
 		expect(logs?.[0].message).toEqual("directoryExists");
+	});
+
+	test("can health check with existing directory", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			config: {
+				directory: TEST_DIRECTORY
+			}
+		});
+		const health = await blobStorage.health();
+		expect(health).toBeDefined();
+		expect(health.length).toEqual(1);
+		expect(health[0].status).toEqual(HealthStatus.Ok);
+	});
+
+	test("can health check with missing directory", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			config: {
+				directory: `${TEST_DIRECTORY_ROOT}does-not-exist`
+			}
+		});
+		const health = await blobStorage.health();
+		expect(health).toBeDefined();
+		expect(health.length).toEqual(1);
+		expect(health[0].status).toEqual(HealthStatus.Error);
 	});
 
 	test("can fail to set an item with no blob", async () => {

@@ -5,6 +5,12 @@
 			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
 		}
 	},
+	"health": {
+		"s3BlobStorageConnector": {
+			"healthDescription": "S3 blob storage connector is healthy",
+			"healthCheckFailed": "Failed to connect to S3 bucket"
+		}
+	},
 	"error": {
 		"s3BlobStorageConnector": {
 			"bucketCreateFailed": "Creating bucket \"{bucket}\" failed",

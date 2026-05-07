@@ -5,6 +5,12 @@
 			"containerExists": "Skipping create container \"{container}\" as it already exists"
 		}
 	},
+	"health": {
+		"azureBlobStorageConnector": {
+			"healthDescription": "Azure blob storage connector is healthy",
+			"healthCheckFailed": "Failed to connect to Azure blob storage container"
+		}
+	},
 	"error": {
 		"azureBlobStorageConnector": {
 			"containerCreateFailed": "Creating container \"{container}\" failed",

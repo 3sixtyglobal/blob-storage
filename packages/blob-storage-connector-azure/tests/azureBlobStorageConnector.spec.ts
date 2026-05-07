@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { ContextIdStore } from "@twin.org/context";
-import { RandomHelper } from "@twin.org/core";
+import { HealthStatus, RandomHelper } from "@twin.org/core";
 import { TEST_AZURE_CONFIG } from "./setupTestEnv.js";
 import { AzureBlobStorageConnector } from "../src/azureBlobStorageConnector.js";
 
@@ -23,6 +23,14 @@ describe("AzureBlobStorageConnector", () => {
 		const blobStorage = new AzureBlobStorageConnector({ config: TEST_AZURE_CONFIG });
 		await blobStorage.bootstrap("logging");
 		expect(blobStorage).toBeDefined();
+	});
+
+	test("can health check", async () => {
+		const blobStorage = new AzureBlobStorageConnector({ config: TEST_AZURE_CONFIG });
+		const health = await blobStorage.health();
+		expect(health).toBeDefined();
+		expect(health.length).toEqual(1);
+		expect(health[0].status).toEqual(HealthStatus.Ok);
 	});
 
 	test("can fail to set an item with no blob", async () => {
