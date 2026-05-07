@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.10](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-ipfs-v0.0.3-next.9...blob-storage-connector-ipfs-v0.0.3-next.10) (2026-05-07)
+
+
+### Features
+
+* additional information in health ([1ef83be](https://github.com/iotaledger/twin-blob-storage/commit/1ef83bef81148489b7950d5131a2af5121910e99))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.9 to 0.0.3-next.10
+
 ## [0.0.3-next.9](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-ipfs-v0.0.3-next.8...blob-storage-connector-ipfs-v0.0.3-next.9) (2026-05-07)
 
 
