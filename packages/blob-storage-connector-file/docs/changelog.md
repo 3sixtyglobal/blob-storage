@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.11](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-file-v0.0.3-next.10...blob-storage-connector-file-v0.0.3-next.11) (2026-05-08)
+
+
+### Features
+
+* add empty and teardown methods ([#49](https://github.com/iotaledger/twin-blob-storage/issues/49)) ([cec6248](https://github.com/iotaledger/twin-blob-storage/commit/cec624809ffd2f2baa4b7b8cbf72a7247b8703ed))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.10 to 0.0.3-next.11
+
 ## [0.0.3-next.10](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-file-v0.0.3-next.9...blob-storage-connector-file-v0.0.3-next.10) (2026-05-07)
 
 
