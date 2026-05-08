@@ -10,6 +10,7 @@ import {
 import type {
 	IBlobStorageComponent,
 	IBlobStorageCreateRequest,
+	IBlobStorageEmptyRequest,
 	IBlobStorageEntry,
 	IBlobStorageEntryList,
 	IBlobStorageGetRequest,
@@ -158,6 +159,14 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 				metadata
 			}
 		});
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	public async empty(): Promise<void> {
+		await this.fetch<IBlobStorageEmptyRequest, INoContentResponse>("/", "DELETE");
 	}
 
 	/**

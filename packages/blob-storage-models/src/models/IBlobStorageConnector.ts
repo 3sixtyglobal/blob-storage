@@ -26,4 +26,10 @@ export interface IBlobStorageConnector extends IComponent {
 	 * @returns True if the blob was found.
 	 */
 	remove(id: string): Promise<boolean>;
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	empty(): Promise<void>;
 }

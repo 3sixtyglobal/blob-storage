@@ -267,6 +267,76 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	}
 
 	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: AzureBlobStorageConnector.CLASS_NAME,
+			message: "containerDeleting",
+			data: {
+				container: this._config.containerName
+			}
+		});
+
+		try {
+			await this._azureContainerClient.delete();
+
+			await nodeLogging?.log({
+				level: "info",
+				source: AzureBlobStorageConnector.CLASS_NAME,
+				message: "containerDeleted",
+				data: {
+					container: this._config.containerName
+				}
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: AzureBlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				data: {
+					container: this._config.containerName
+				},
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+			const prefix = `${partitionKey ?? "root"}/`;
+
+			for await (const blob of this._azureContainerClient.listBlobsFlat({ prefix })) {
+				await this._azureContainerClient.deleteBlob(blob.name);
+			}
+		} catch (err) {
+			throw new GeneralError(
+				AzureBlobStorageConnector.CLASS_NAME,
+				"emptyFailed",
+				{ containerName: this._config.containerName },
+				err
+			);
+		}
+	}
+
+	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
 	 * @returns True if the blob was found.

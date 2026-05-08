@@ -179,4 +179,79 @@ describe("S3BlobStorageConnector", () => {
 		const itemAfterRemove = await blobStorage.get(idUrn);
 		expect(itemAfterRemove).toBeUndefined();
 	});
+
+	test("can not get an item from a different partition", async () => {
+		const blobStorageWithPartition = new S3BlobStorageConnector({
+			partitionContextIds: ["tenant"],
+			config: TEST_S3_CONFIG
+		});
+		const blobStorageNoPartition = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
+
+		const idUrn = await blobStorageWithPartition.set(RandomHelper.generate(32));
+		expect(await blobStorageNoPartition.get(idUrn)).toBeUndefined();
+
+		const idUrn2 = await blobStorageNoPartition.set(RandomHelper.generate(32));
+		expect(await blobStorageWithPartition.get(idUrn2)).toBeUndefined();
+	});
+
+	test("can not remove an item from a different partition", async () => {
+		const blobStorageWithPartition = new S3BlobStorageConnector({
+			partitionContextIds: ["tenant"],
+			config: TEST_S3_CONFIG
+		});
+		const blobStorageNoPartition = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
+
+		const idUrn = await blobStorageWithPartition.set(RandomHelper.generate(32));
+		expect(await blobStorageNoPartition.remove(idUrn)).toBe(false);
+
+		const idUrn2 = await blobStorageNoPartition.set(RandomHelper.generate(32));
+		expect(await blobStorageWithPartition.remove(idUrn2)).toBe(false);
+	});
+
+	test("can empty with no items", async () => {
+		const blobStorage = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
+		await blobStorage.empty();
+	});
+
+	test("can empty all items", async () => {
+		const blobStorage = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
+		const idUrn1 = await blobStorage.set(TEST_DATA);
+		const idUrn2 = await blobStorage.set(TEST_DATA_2);
+
+		expect(await blobStorage.get(idUrn1)).toBeDefined();
+		expect(await blobStorage.get(idUrn2)).toBeDefined();
+
+		await blobStorage.empty();
+
+		expect(await blobStorage.get(idUrn1)).toBeUndefined();
+		expect(await blobStorage.get(idUrn2)).toBeUndefined();
+	});
+
+	test("can empty all items with a partitionKey", async () => {
+		const blobStorage = new S3BlobStorageConnector({
+			partitionContextIds: ["node", "tenant", "user"],
+			config: TEST_S3_CONFIG
+		});
+		const idUrn1 = await blobStorage.set(TEST_DATA);
+		const idUrn2 = await blobStorage.set(TEST_DATA_2);
+
+		expect(await blobStorage.get(idUrn1)).toBeDefined();
+		expect(await blobStorage.get(idUrn2)).toBeDefined();
+
+		await blobStorage.empty();
+
+		expect(await blobStorage.get(idUrn1)).toBeUndefined();
+		expect(await blobStorage.get(idUrn2)).toBeUndefined();
+	});
+
+	test("can teardown the store", async () => {
+		const blobStorage = new S3BlobStorageConnector({ config: TEST_S3_CONFIG });
+		await blobStorage.set(TEST_DATA);
+
+		const result = await blobStorage.teardown();
+		expect(result).toBe(true);
+
+		const health = await blobStorage.health();
+		expect(health[0].status).toEqual(HealthStatus.Error);
+	});
 });

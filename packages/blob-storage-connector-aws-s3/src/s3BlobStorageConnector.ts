@@ -2,11 +2,14 @@
 // SPDX-License-Identifier: Apache-2.0.
 import {
 	CreateBucketCommand,
+	DeleteBucketCommand,
 	DeleteObjectCommand,
+	DeleteObjectsCommand,
 	GetObjectCommand,
 	HeadBucketCommand,
 	HeadObjectCommand,
 	ListBucketsCommand,
+	ListObjectsV2Command,
 	PutObjectCommand,
 	S3Client
 } from "@aws-sdk/client-s3";
@@ -281,6 +284,119 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 					id,
 					namespace: S3BlobStorageConnector.NAMESPACE
 				},
+				err
+			);
+		}
+	}
+
+	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: S3BlobStorageConnector.CLASS_NAME,
+			message: "bucketDeleting",
+			data: {
+				bucket: this._config.bucketName
+			}
+		});
+
+		try {
+			let continuationToken: string | undefined;
+			do {
+				const listCommand = new ListObjectsV2Command({
+					Bucket: this._config.bucketName,
+					ContinuationToken: continuationToken
+				});
+				const listResponse = await this._s3Client.send(listCommand);
+
+				if (listResponse.Contents && listResponse.Contents.length > 0) {
+					const deleteCommand = new DeleteObjectsCommand({
+						Bucket: this._config.bucketName,
+						Delete: {
+							Objects: listResponse.Contents.map(obj => ({ Key: obj.Key }))
+						}
+					});
+					await this._s3Client.send(deleteCommand);
+				}
+
+				continuationToken = listResponse.IsTruncated
+					? listResponse.NextContinuationToken
+					: undefined;
+			} while (continuationToken);
+
+			await this._s3Client.send(new DeleteBucketCommand({ Bucket: this._config.bucketName }));
+
+			await nodeLogging?.log({
+				level: "info",
+				source: S3BlobStorageConnector.CLASS_NAME,
+				message: "bucketDeleted",
+				data: {
+					bucket: this._config.bucketName
+				}
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: S3BlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				data: {
+					bucket: this._config.bucketName
+				},
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+			const prefix = `${partitionKey ?? "root"}/`;
+
+			let continuationToken: string | undefined;
+			do {
+				const listCommand = new ListObjectsV2Command({
+					Bucket: this._config.bucketName,
+					Prefix: prefix,
+					ContinuationToken: continuationToken
+				});
+				const listResponse = await this._s3Client.send(listCommand);
+
+				if (listResponse.Contents && listResponse.Contents.length > 0) {
+					const deleteCommand = new DeleteObjectsCommand({
+						Bucket: this._config.bucketName,
+						Delete: {
+							Objects: listResponse.Contents.map(obj => ({ Key: obj.Key }))
+						}
+					});
+					await this._s3Client.send(deleteCommand);
+				}
+
+				continuationToken = listResponse.IsTruncated
+					? listResponse.NextContinuationToken
+					: undefined;
+			} while (continuationToken);
+		} catch (err) {
+			throw new GeneralError(
+				S3BlobStorageConnector.CLASS_NAME,
+				"emptyFailed",
+				{ bucketName: this._config.bucketName },
 				err
 			);
 		}

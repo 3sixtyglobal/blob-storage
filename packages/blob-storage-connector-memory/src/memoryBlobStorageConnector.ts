@@ -2,8 +2,17 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
-import { Converter, GeneralError, Guards, HealthStatus, Urn, type IHealth } from "@twin.org/core";
+import {
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
 import type { IMemoryStorageConnectorConstructorOptions } from "./models/IMemoryStorageConnectorConstructorOptions.js";
 
@@ -138,6 +147,55 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: MemoryBlobStorageConnector.CLASS_NAME,
+			message: "storeTearingDown"
+		});
+
+		for (const key of Object.keys(this._store)) {
+			delete this._store[key];
+		}
+
+		await nodeLogging?.log({
+			level: "info",
+			source: MemoryBlobStorageConnector.CLASS_NAME,
+			message: "storeTornDown"
+		});
+
+		return true;
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+			const prefix = `${partitionKey ?? "root"}/`;
+			for (const key of Object.keys(this._store)) {
+				if (key.startsWith(prefix)) {
+					delete this._store[key];
+				}
+			}
+		} catch (err) {
+			throw new GeneralError(MemoryBlobStorageConnector.CLASS_NAME, "emptyFailed", undefined, err);
+		}
 	}
 
 	/**

@@ -3,6 +3,7 @@
 export * from "./dataTypes/blobStorageDataTypes.js";
 export * from "./factories/blobStorageConnectorFactory.js";
 export * from "./models/api/IBlobStorageCreateRequest.js";
+export * from "./models/api/IBlobStorageEmptyRequest.js";
 export * from "./models/api/IBlobStorageGetContentRequest.js";
 export * from "./models/api/IBlobStorageGetContentResponse.js";
 export * from "./models/api/IBlobStorageGetRequest.js";

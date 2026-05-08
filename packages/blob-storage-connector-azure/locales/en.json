@@ -2,7 +2,9 @@
 	"info": {
 		"azureBlobStorageConnector": {
 			"containerCreating": "Creating container \"{container}\"",
-			"containerExists": "Skipping create container \"{container}\" as it already exists"
+			"containerExists": "Skipping create container \"{container}\" as it already exists",
+			"containerDeleting": "Deleting container \"{container}\"",
+			"containerDeleted": "Container \"{container}\" deleted"
 		}
 	},
 	"health": {
@@ -14,10 +16,12 @@
 	"error": {
 		"azureBlobStorageConnector": {
 			"containerCreateFailed": "Creating container \"{container}\" failed",
+			"teardownFailed": "Failed to teardown Azure blob storage container \"{container}\"",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
 			"getBlobFailed": "Failed to get blob in Azure",
 			"setBlobFailed": "Failed to set blob in Azure",
-			"removeBlobFailed": "Failed to remove blob in Azure"
+			"removeBlobFailed": "Failed to remove blob in Azure",
+			"emptyFailed": "Failed to empty Azure blob storage container \"{containerName}\""
 		}
 	}
 }

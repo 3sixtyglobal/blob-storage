@@ -422,6 +422,112 @@ describe("FileBlobStorageConnector", () => {
 		const itemAfterRemove = await blobStorage.get(idUrn);
 		expect(itemAfterRemove).toBeUndefined();
 	});
+
+	test("can not get an item from a different partition", async () => {
+		const blobStorageWithPartition = new FileBlobStorageConnector({
+			partitionContextIds: ["tenant"],
+			config: { directory: TEST_DIRECTORY }
+		});
+		const blobStorageNoPartition = new FileBlobStorageConnector({
+			config: { directory: TEST_DIRECTORY }
+		});
+
+		const idUrn = await blobStorageWithPartition.set(RandomHelper.generate(32));
+		expect(await blobStorageNoPartition.get(idUrn)).toBeUndefined();
+
+		const idUrn2 = await blobStorageNoPartition.set(RandomHelper.generate(32));
+		expect(await blobStorageWithPartition.get(idUrn2)).toBeUndefined();
+	});
+
+	test("can not remove an item from a different partition", async () => {
+		const blobStorageWithPartition = new FileBlobStorageConnector({
+			partitionContextIds: ["tenant"],
+			config: { directory: TEST_DIRECTORY }
+		});
+		const blobStorageNoPartition = new FileBlobStorageConnector({
+			config: { directory: TEST_DIRECTORY }
+		});
+
+		const idUrn = await blobStorageWithPartition.set(RandomHelper.generate(32));
+		expect(await blobStorageNoPartition.remove(idUrn)).toBe(false);
+
+		const idUrn2 = await blobStorageNoPartition.set(RandomHelper.generate(32));
+		expect(await blobStorageWithPartition.remove(idUrn2)).toBe(false);
+	});
+
+	test("can empty with no items", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			config: {
+				directory: TEST_DIRECTORY
+			}
+		});
+		await blobStorage.empty();
+	});
+
+	test("can empty all items", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			config: {
+				directory: TEST_DIRECTORY
+			}
+		});
+		const idUrn1 = await blobStorage.set(new Uint8Array([1, 2, 3]));
+		const idUrn2 = await blobStorage.set(new Uint8Array([4, 5, 6]));
+
+		expect(await blobStorage.get(idUrn1)).toBeDefined();
+		expect(await blobStorage.get(idUrn2)).toBeDefined();
+
+		await blobStorage.empty();
+
+		expect(await blobStorage.get(idUrn1)).toBeUndefined();
+		expect(await blobStorage.get(idUrn2)).toBeUndefined();
+	});
+
+	test("can empty all items with a partitionKey", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			partitionContextIds: ["node", "tenant", "user"],
+			config: {
+				directory: TEST_DIRECTORY
+			}
+		});
+		const idUrn1 = await blobStorage.set(new Uint8Array([1, 2, 3]));
+		const idUrn2 = await blobStorage.set(new Uint8Array([4, 5, 6]));
+
+		expect(await blobStorage.get(idUrn1)).toBeDefined();
+		expect(await blobStorage.get(idUrn2)).toBeDefined();
+
+		await blobStorage.empty();
+
+		expect(await blobStorage.get(idUrn1)).toBeUndefined();
+		expect(await blobStorage.get(idUrn2)).toBeUndefined();
+	});
+
+	test("can fail to empty with non-existent directory", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			config: {
+				directory: `${TEST_DIRECTORY_ROOT}does-not-exist-for-empty`
+			}
+		});
+
+		await expect(blobStorage.empty()).rejects.toMatchObject({
+			name: "GeneralError",
+			message: "fileBlobStorageConnector.emptyFailed"
+		});
+	});
+
+	test("can teardown the store", async () => {
+		const blobStorage = new FileBlobStorageConnector({
+			config: {
+				directory: TEST_DIRECTORY
+			}
+		});
+		await blobStorage.set(new Uint8Array([1, 2, 3]));
+
+		const result = await blobStorage.teardown();
+		expect(result).toBe(true);
+
+		const health = await blobStorage.health();
+		expect(health[0].status).toEqual(HealthStatus.Error);
+	});
 });
 
 /**

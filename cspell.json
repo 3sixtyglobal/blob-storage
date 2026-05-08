@@ -27,7 +27,8 @@
 		"kubo",
 		"localstack",
 		"nameof",
-		"Stiftung"
+		"Stiftung",
+		"teardown"
 	],
 	"ignoreRegExpList": [
 		"/from\\s+(['\"]).*\\1/",

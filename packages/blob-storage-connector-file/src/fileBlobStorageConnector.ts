@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { access, mkdir, readFile, unlink, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, readdir, rm, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
@@ -243,6 +243,82 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 				return false;
 			}
 			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "removeBlobFailed", { id }, err);
+		}
+	}
+
+	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: FileBlobStorageConnector.CLASS_NAME,
+			message: "directoryRemoving",
+			data: {
+				directory: this._directory
+			}
+		});
+
+		try {
+			await rm(this._directory, { recursive: true, force: true });
+
+			await nodeLogging?.log({
+				level: "info",
+				source: FileBlobStorageConnector.CLASS_NAME,
+				message: "directoryRemoved",
+				data: {
+					directory: this._directory
+				}
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: FileBlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				data: {
+					directory: this._directory
+				},
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+
+			if (Is.stringValue(partitionKey)) {
+				const partitionDir = path.join(this._directory, partitionKey);
+				await rm(partitionDir, { recursive: true, force: true });
+			} else {
+				const entries = await readdir(this._directory, { withFileTypes: true });
+				for (const entry of entries) {
+					const fullPath = path.join(this._directory, entry.name);
+					await rm(fullPath, { recursive: true, force: true });
+				}
+			}
+		} catch (err) {
+			throw new GeneralError(
+				FileBlobStorageConnector.CLASS_NAME,
+				"emptyFailed",
+				{ directory: this._directory },
+				err
+			);
 		}
 	}
 

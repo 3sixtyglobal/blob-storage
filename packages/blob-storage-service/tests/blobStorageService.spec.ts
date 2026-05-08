@@ -624,6 +624,29 @@ describe("blob-storage-service", () => {
 		);
 	});
 
+	test("can empty with no files", async () => {
+		const service = new BlobStorageService();
+		await service.empty();
+		expect(entityStorage.getStore()).toEqual([]);
+		expect(blobStorage.getStore()).toEqual({});
+	});
+
+	test("can empty all files", async () => {
+		const service = new BlobStorageService();
+		const dataBytes1 = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
+		const dataBytes2 = Converter.utf8ToBytes("Another blob to be stored and removed");
+		await service.create(Converter.bytesToBase64(dataBytes1));
+		await service.create(Converter.bytesToBase64(dataBytes2));
+
+		expect(entityStorage.getStore().length).toEqual(2);
+		expect(Object.keys(blobStorage.getStore()).length).toEqual(2);
+
+		await service.empty();
+
+		expect(entityStorage.getStore()).toEqual([]);
+		expect(blobStorage.getStore()).toEqual({});
+	});
+
 	test("can add a file with compression", async () => {
 		const service = new BlobStorageService({
 			config: {}

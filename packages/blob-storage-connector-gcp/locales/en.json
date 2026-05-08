@@ -2,7 +2,9 @@
 	"info": {
 		"gcpBlobStorageConnector": {
 			"bucketCreating": "Creating bucket \"{bucket}\"",
-			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
+			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists",
+			"bucketDeleting": "Deleting bucket \"{bucket}\"",
+			"bucketDeleted": "Bucket \"{bucket}\" deleted"
 		}
 	},
 	"health": {
@@ -14,10 +16,12 @@
 	"error": {
 		"gcpBlobStorageConnector": {
 			"bucketCreateFailed": "Creating bucket \"{bucket}\" failed",
+			"teardownFailed": "Failed to teardown GCP storage bucket \"{bucket}\"",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
 			"getBlobFailed": "Failed to get blob in GCP",
 			"setBlobFailed": "Failed to set blob in GCP",
-			"removeBlobFailed": "Failed to remove blob in GCP"
+			"removeBlobFailed": "Failed to remove blob in GCP",
+			"emptyFailed": "Failed to empty GCP storage bucket \"{bucketName}\""
 		}
 	}
 }

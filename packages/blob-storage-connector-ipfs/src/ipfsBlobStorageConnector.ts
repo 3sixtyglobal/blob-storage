@@ -1,7 +1,11 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
 import {
+	BaseError,
+	ComponentFactory,
+	Converter,
 	GeneralError,
 	Guards,
 	HealthStatus,
@@ -10,6 +14,8 @@ import {
 	Urn,
 	type IHealth
 } from "@twin.org/core";
+import { Blake2b } from "@twin.org/crypto";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
 import { HeaderHelper, HeaderTypes, HttpMethod, MimeTypes } from "@twin.org/web";
 import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig.js";
@@ -145,7 +151,12 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 					Size: string;
 				};
 
-				return `blob:${new Urn(IpfsBlobStorageConnector.NAMESPACE, result.Hash).toString()}`;
+				const partitionSegment = await this.buildPartitionSegment();
+				const urnParts = Is.stringValue(partitionSegment)
+					? [result.Hash, partitionSegment]
+					: [result.Hash];
+
+				return `blob:${new Urn(IpfsBlobStorageConnector.NAMESPACE, urnParts).toString()}`;
 			}
 
 			const error = await response.json();
@@ -171,6 +182,17 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 			});
 		}
 
+		const partitionSegment = await this.buildPartitionSegment();
+		const storedPartitionSegment = Is.stringValue(urnParsed.namespaceSpecific(2))
+			? urnParsed.namespaceSpecific(2)
+			: undefined;
+
+		if (partitionSegment !== storedPartitionSegment) {
+			return undefined;
+		}
+
+		const ipfsHash = urnParsed.namespaceSpecific(1).split(":")[0];
+
 		try {
 			const fetchOptions: RequestInit = {
 				method: HttpMethod.POST,
@@ -182,7 +204,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 			this.addSecurity(fetchOptions);
 
 			const responseStat = await fetch(
-				`${this._config.apiUrl}/block/stat?arg=${urnParsed.namespaceSpecific(1)}&local=true`,
+				`${this._config.apiUrl}/block/stat?arg=${ipfsHash}&local=true`,
 				fetchOptions
 			);
 
@@ -197,10 +219,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 				}
 			}
 
-			const response = await fetch(
-				`${this._config.apiUrl}/cat?arg=${urnParsed.namespaceSpecific(1)}`,
-				fetchOptions
-			);
+			const response = await fetch(`${this._config.apiUrl}/cat?arg=${ipfsHash}`, fetchOptions);
 
 			if (response.ok) {
 				const result = await response.arrayBuffer();
@@ -211,6 +230,109 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "fetchFail", error);
 		} catch (err) {
 			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "getBlobFailed", undefined, err);
+		}
+	}
+
+	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: IpfsBlobStorageConnector.CLASS_NAME,
+			message: "storeTearingDown"
+		});
+
+		try {
+			const fetchOptions: RequestInit = {
+				method: HttpMethod.POST,
+				headers: {
+					accept: MimeTypes.Json
+				}
+			};
+			this.addSecurity(fetchOptions);
+
+			const response = await fetch(`${this._config.apiUrl}/pin/ls`, fetchOptions);
+
+			if (response.ok) {
+				const result = (await response.json()) as { Keys: { [cid: string]: unknown } };
+
+				for (const cid of Object.keys(result.Keys)) {
+					const unpinFetchOptions: RequestInit = {
+						method: HttpMethod.POST,
+						headers: {
+							accept: MimeTypes.Json
+						}
+					};
+					this.addSecurity(unpinFetchOptions);
+					await fetch(`${this._config.apiUrl}/pin/rm?arg=${cid}`, unpinFetchOptions);
+				}
+			}
+
+			await nodeLogging?.log({
+				level: "info",
+				source: IpfsBlobStorageConnector.CLASS_NAME,
+				message: "storeTornDown"
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: IpfsBlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const fetchOptions: RequestInit = {
+				method: HttpMethod.POST,
+				headers: {
+					accept: MimeTypes.Json
+				}
+			};
+			this.addSecurity(fetchOptions);
+
+			const response = await fetch(`${this._config.apiUrl}/pin/ls`, fetchOptions);
+
+			if (response.ok) {
+				const result = (await response.json()) as { Keys: { [cid: string]: unknown } };
+
+				for (const cid of Object.keys(result.Keys)) {
+					const unpinFetchOptions: RequestInit = {
+						method: HttpMethod.POST,
+						headers: {
+							accept: MimeTypes.Json
+						}
+					};
+					this.addSecurity(unpinFetchOptions);
+					await fetch(`${this._config.apiUrl}/pin/rm?arg=${cid}`, unpinFetchOptions);
+				}
+			}
+
+			const gcFetchOptions: RequestInit = {
+				method: HttpMethod.POST,
+				headers: {
+					accept: MimeTypes.Json
+				}
+			};
+			this.addSecurity(gcFetchOptions);
+			const gcResponse = await fetch(`${this._config.apiUrl}/repo/gc`, gcFetchOptions);
+			await gcResponse.text();
+		} catch (err) {
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "emptyFailed", undefined, err);
 		}
 	}
 
@@ -230,6 +352,17 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 			});
 		}
 
+		const partitionSegment = await this.buildPartitionSegment();
+		const storedPartitionSegment = Is.stringValue(urnParsed.namespaceSpecific(2))
+			? urnParsed.namespaceSpecific(2)
+			: undefined;
+
+		if (partitionSegment !== storedPartitionSegment) {
+			return false;
+		}
+
+		const ipfsHash = urnParsed.namespaceSpecific(1).split(":")[0];
+
 		try {
 			const fetchOptions: RequestInit = {
 				method: HttpMethod.POST,
@@ -240,10 +373,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 			this.addSecurity(fetchOptions);
 
-			const response = await fetch(
-				`${this._config.apiUrl}/pin/rm?arg=${urnParsed.namespaceSpecific(1)}`,
-				fetchOptions
-			);
+			const response = await fetch(`${this._config.apiUrl}/pin/rm?arg=${ipfsHash}`, fetchOptions);
 
 			if (response.ok) {
 				return true;
@@ -273,5 +403,19 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 				[HeaderTypes.Authorization]: HeaderHelper.createBearer(this._config.bearerToken)
 			};
 		}
+	}
+
+	/**
+	 * Build the partition segment from the current context.
+	 * @returns The hex-encoded Blake2b hash of the partition key, or undefined if no partition applies.
+	 * @internal
+	 */
+	private async buildPartitionSegment(): Promise<string | undefined> {
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+		if (Is.stringValue(partitionKey)) {
+			return Converter.bytesToHex(Blake2b.sum256(Converter.utf8ToBytes(partitionKey)));
+		}
+		return undefined;
 	}
 }

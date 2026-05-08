@@ -255,6 +255,77 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	}
 
 	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: GcpBlobStorageConnector.CLASS_NAME,
+			message: "bucketDeleting",
+			data: {
+				bucket: this._config.bucketName
+			}
+		});
+
+		try {
+			const bucket = this._storage.bucket(this._config.bucketName);
+			await bucket.deleteFiles({ force: true });
+			await bucket.delete();
+
+			await nodeLogging?.log({
+				level: "info",
+				source: GcpBlobStorageConnector.CLASS_NAME,
+				message: "bucketDeleted",
+				data: {
+					bucket: this._config.bucketName
+				}
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: GcpBlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				data: {
+					bucket: this._config.bucketName
+				},
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+			const prefix = `${partitionKey ?? "root"}/`;
+
+			const bucket = this._storage.bucket(this._config.bucketName);
+			await bucket.deleteFiles({ force: true, prefix });
+		} catch (err) {
+			throw new GeneralError(
+				GcpBlobStorageConnector.CLASS_NAME,
+				"emptyFailed",
+				{ bucketName: this._config.bucketName },
+				err
+			);
+		}
+	}
+
+	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
 	 * @returns True if the blob was found.

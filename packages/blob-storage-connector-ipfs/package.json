@@ -29,6 +29,7 @@
 	},
 	"dependencies": {
 		"@twin.org/blob-storage-models": "0.0.3-next.10",
+		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
 		"@twin.org/nameof": "next",

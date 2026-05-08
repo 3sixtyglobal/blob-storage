@@ -180,4 +180,82 @@ describe("MemoryBlobStorageConnector", () => {
 		store = blobStorage.getStore();
 		expect(store).toEqual({});
 	});
+
+	test("can not get an item from a different partition", async () => {
+		const blobStorageWithPartition = new MemoryBlobStorageConnector({
+			partitionContextIds: ["tenant"]
+		});
+		const blobStorageNoPartition = new MemoryBlobStorageConnector();
+
+		const idUrn = await blobStorageWithPartition.set(new Uint8Array([7, 8, 9]));
+		expect(await blobStorageNoPartition.get(idUrn)).toBeUndefined();
+
+		const idUrn2 = await blobStorageNoPartition.set(new Uint8Array([10, 11, 12]));
+		expect(await blobStorageWithPartition.get(idUrn2)).toBeUndefined();
+	});
+
+	test("can not remove an item from a different partition", async () => {
+		const blobStorageWithPartition = new MemoryBlobStorageConnector({
+			partitionContextIds: ["tenant"]
+		});
+		const blobStorageNoPartition = new MemoryBlobStorageConnector();
+
+		const idUrn = await blobStorageWithPartition.set(new Uint8Array([7, 8, 9]));
+		expect(await blobStorageNoPartition.remove(idUrn)).toBe(false);
+
+		const idUrn2 = await blobStorageNoPartition.set(new Uint8Array([10, 11, 12]));
+		expect(await blobStorageWithPartition.remove(idUrn2)).toBe(false);
+	});
+
+	test("can empty with no items", async () => {
+		const blobStorage = new MemoryBlobStorageConnector();
+		await blobStorage.empty();
+		const store = blobStorage.getStore();
+		expect(store).toEqual({});
+	});
+
+	test("can empty all items", async () => {
+		const blobStorage = new MemoryBlobStorageConnector();
+		await blobStorage.set(new Uint8Array([1, 2, 3]));
+		await blobStorage.set(new Uint8Array([4, 5, 6]));
+
+		let store = blobStorage.getStore();
+		expect(Object.keys(store).length).toEqual(2);
+
+		await blobStorage.empty();
+
+		store = blobStorage.getStore();
+		expect(store).toEqual({});
+	});
+
+	test("can empty all items with a partitionKey", async () => {
+		const blobStorage = new MemoryBlobStorageConnector({
+			partitionContextIds: ["node", "tenant", "user"]
+		});
+		await blobStorage.set(new Uint8Array([1, 2, 3]));
+		await blobStorage.set(new Uint8Array([4, 5, 6]));
+
+		let store = blobStorage.getStore();
+		expect(Object.keys(store).length).toEqual(2);
+
+		await blobStorage.empty();
+
+		store = blobStorage.getStore();
+		expect(store).toEqual({});
+	});
+
+	test("can teardown the store", async () => {
+		const blobStorage = new MemoryBlobStorageConnector();
+		await blobStorage.set(new Uint8Array([1, 2, 3]));
+		await blobStorage.set(new Uint8Array([4, 5, 6]));
+
+		let store = blobStorage.getStore();
+		expect(Object.keys(store).length).toEqual(2);
+
+		const result = await blobStorage.teardown();
+		expect(result).toBe(true);
+
+		store = blobStorage.getStore();
+		expect(store).toEqual({});
+	});
 });

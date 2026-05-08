@@ -347,6 +347,38 @@ export class BlobStorageService implements IBlobStorageComponent {
 	}
 
 	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			let moreData = true;
+			while (moreData) {
+				const result = await this._entryEntityStorage.query(
+					undefined,
+					undefined,
+					undefined,
+					undefined,
+					100
+				);
+
+				if (result.entities.length === 0) {
+					moreData = false;
+				} else {
+					for (const entity of result.entities) {
+						const entry = entity as BlobStorageEntry;
+						const blobStorageConnector = this.getConnector(entry.id);
+						await blobStorageConnector.remove(entry.id);
+						await this._entryEntityStorage.remove(entry.id);
+					}
+				}
+			}
+		} catch (error) {
+			throw new GeneralError(BlobStorageService.CLASS_NAME, "emptyFailed", undefined, error);
+		}
+	}
+
+	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
 	 * @returns Nothing.

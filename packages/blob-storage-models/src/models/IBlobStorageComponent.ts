@@ -81,6 +81,12 @@ export interface IBlobStorageComponent extends IComponent {
 	remove(id: string): Promise<void>;
 
 	/**
+	 * Remove all blobs from the storage.
+	 * @returns Nothing.
+	 */
+	empty(): Promise<void>;
+
+	/**
 	 * Query all the blob storage entries which match the conditions.
 	 * @param conditions The conditions to match for the entries.
 	 * @param orderBy The order for the results, defaults to created.

@@ -1,12 +1,20 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import { ContextIdStore } from "@twin.org/context";
 import { HealthStatus, RandomHelper, Urn } from "@twin.org/core";
 import { TEST_IPFS_CONFIG, TEST_IPFS_PUBLIC_GATEWAY } from "./setupTestEnv.js";
 import { IpfsBlobStorageConnector } from "../src/ipfsBlobStorageConnector.js";
 
 const TEST_DATA = RandomHelper.generate(32);
+const TEST_DATA_2 = RandomHelper.generate(32);
 
 describe("IpfsBlobStorageConnector", () => {
+	beforeAll(async () => {
+		ContextIdStore.getContextIds = vi
+			.fn()
+			.mockImplementation(() => ({ node: "node", tenant: "tenant", user: "user" }));
+	});
+
 	test("can construct", async () => {
 		const blobStorage = new IpfsBlobStorageConnector({ config: TEST_IPFS_CONFIG });
 		expect(blobStorage).toBeDefined();
@@ -89,7 +97,8 @@ describe("IpfsBlobStorageConnector", () => {
 		const blobStorage = new IpfsBlobStorageConnector({ config: TEST_IPFS_CONFIG });
 		const idUrn = await blobStorage.set(TEST_DATA);
 
-		const errorUri = `${idUrn}-2`;
+		const ipfsHash = Urn.fromValidString(idUrn).namespaceSpecific(1);
+		const errorUri = `blob:ipfs:${ipfsHash}-2`;
 
 		await expect(blobStorage.get(errorUri)).rejects.toMatchObject({
 			name: "GeneralError",
@@ -98,7 +107,7 @@ describe("IpfsBlobStorageConnector", () => {
 				name: "GeneralError",
 				message: "ipfsBlobStorageConnector.fetchFail",
 				properties: {
-					Message: `invalid path "${Urn.fromValidString(errorUri).namespaceSpecificParts(1).join(",")}": path does not have enough components`,
+					Message: `invalid path "${ipfsHash}-2": path does not have enough components`,
 					Code: 0,
 					Type: "error"
 				}
@@ -142,7 +151,9 @@ describe("IpfsBlobStorageConnector", () => {
 		const blobStorage = new IpfsBlobStorageConnector({ config: TEST_IPFS_CONFIG });
 		const idUrn = await blobStorage.set(TEST_DATA);
 
-		const errorUri = `${idUrn}-2`;
+		const ipfsHash = Urn.fromValidString(idUrn).namespaceSpecific(1);
+		const errorUri = `blob:ipfs:${ipfsHash}-2`;
+
 		await expect(blobStorage.remove(errorUri)).rejects.toMatchObject({
 			name: "GeneralError",
 			message: "ipfsBlobStorageConnector.removeBlobFailed",
@@ -150,7 +161,7 @@ describe("IpfsBlobStorageConnector", () => {
 				name: "GeneralError",
 				message: "ipfsBlobStorageConnector.fetchFail",
 				properties: {
-					Message: `invalid path "${Urn.fromValidString(errorUri).namespaceSpecificParts(1).join(",")}": path does not have enough components`,
+					Message: `invalid path "${ipfsHash}-2": path does not have enough components`,
 					Code: 0,
 					Type: "error"
 				}
@@ -163,5 +174,85 @@ describe("IpfsBlobStorageConnector", () => {
 		const idUrn = await blobStorage.set(TEST_DATA);
 		const removed = await blobStorage.remove(idUrn);
 		expect(removed).toBe(true);
+	});
+
+	test("can empty all items", async () => {
+		const blobStorage = new IpfsBlobStorageConnector({ config: TEST_IPFS_CONFIG });
+		const idUrn1 = await blobStorage.set(TEST_DATA);
+		const idUrn2 = await blobStorage.set(TEST_DATA_2);
+
+		expect(await blobStorage.get(idUrn1)).toBeDefined();
+		expect(await blobStorage.get(idUrn2)).toBeDefined();
+
+		await blobStorage.empty();
+
+		expect(await blobStorage.get(idUrn1)).toBeUndefined();
+		expect(await blobStorage.get(idUrn2)).toBeUndefined();
+	});
+
+	test("can set and get an item with a partitionKey", async () => {
+		const blobStorage = new IpfsBlobStorageConnector({
+			partitionContextIds: ["tenant"],
+			config: TEST_IPFS_CONFIG
+		});
+		const idUrn = await blobStorage.set(TEST_DATA);
+
+		const urnParsed = Urn.fromValidString(idUrn);
+		expect(urnParsed.namespaceSpecific(1)).toBeDefined();
+		expect(urnParsed.namespaceSpecific(2)).toBeDefined();
+
+		const item = await blobStorage.get(idUrn);
+		expect(item).toBeDefined();
+		expect(item).toEqual(TEST_DATA);
+	});
+
+	test("can not get an item with mismatched partition", async () => {
+		const blobStorage = new IpfsBlobStorageConnector({
+			partitionContextIds: ["tenant"],
+			config: TEST_IPFS_CONFIG
+		});
+		const idUrn = await blobStorage.set(TEST_DATA);
+
+		const urnParsed = Urn.fromValidString(idUrn);
+		const ipfsHash = urnParsed.namespaceSpecific(1).split(":")[0];
+		const idWithoutPartition = `blob:ipfs:${ipfsHash}`;
+
+		const item = await blobStorage.get(idWithoutPartition);
+		expect(item).toBeUndefined();
+	});
+
+	test("can remove an item with a partitionKey", async () => {
+		const blobStorage = new IpfsBlobStorageConnector({
+			partitionContextIds: ["tenant"],
+			config: TEST_IPFS_CONFIG
+		});
+		const idUrn = await blobStorage.set(TEST_DATA_2);
+
+		const removed = await blobStorage.remove(idUrn);
+		expect(removed).toBe(true);
+	});
+
+	test("can not remove an item with mismatched partition", async () => {
+		const blobStorage = new IpfsBlobStorageConnector({
+			partitionContextIds: ["tenant"],
+			config: TEST_IPFS_CONFIG
+		});
+		const idUrn = await blobStorage.set(TEST_DATA_2);
+
+		const urnParsed = Urn.fromValidString(idUrn);
+		const ipfsHash = urnParsed.namespaceSpecific(1).split(":")[0];
+		const idWithoutPartition = `blob:ipfs:${ipfsHash}`;
+
+		const removed = await blobStorage.remove(idWithoutPartition);
+		expect(removed).toBe(false);
+	});
+
+	test("can teardown the store", async () => {
+		const blobStorage = new IpfsBlobStorageConnector({ config: TEST_IPFS_CONFIG });
+		await blobStorage.set(TEST_DATA);
+		await blobStorage.set(TEST_DATA_2);
+
+		const result = await blobStorage.teardown();
+		expect(result).toBe(true);
 	});
 });

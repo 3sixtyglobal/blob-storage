@@ -21,6 +21,7 @@ import {
 	type IBlobStorageGetContentResponse,
 	type IBlobStorageGetRequest,
 	type IBlobStorageGetResponse,
+	type IBlobStorageEmptyRequest,
 	type IBlobStorageListRequest,
 	type IBlobStorageListResponse,
 	type IBlobStorageRemoveRequest,
@@ -324,6 +325,30 @@ export function generateRestRoutesBlobStorage(
 		]
 	};
 
+	const blobStorageEmptyRoute: IRestRoute<IBlobStorageEmptyRequest, INoContentResponse> = {
+		operationId: `${camelTypeName}Empty`,
+		summary: `Remove all entries from ${lowerName}`,
+		tag: options?.tagName ?? tagsBlobStorage[0].name,
+		method: "DELETE",
+		path: `${baseRouteName}/`,
+		handler: async (httpRequestContext, request) =>
+			blobStorageEmpty(httpRequestContext, componentName, request),
+		requestType: {
+			type: nameof<IBlobStorageEmptyRequest>(),
+			examples: [
+				{
+					id: `${camelTypeName}EmptyRequestExample`,
+					request: {}
+				}
+			]
+		},
+		responseType: [
+			{
+				type: nameof<INoContentResponse>()
+			}
+		]
+	};
+
 	const blobStorageListRoute: IRestRoute<IBlobStorageListRequest, IBlobStorageListResponse> = {
 		operationId: `${camelTypeName}Query`,
 		summary: `Query the items from ${lowerName}`,
@@ -435,6 +460,7 @@ export function generateRestRoutesBlobStorage(
 		blobStorageGetContentRoute,
 		blobStorageUpdateRoute,
 		blobStorageRemoveRoute,
+		blobStorageEmptyRoute,
 		blobStorageListRoute
 	];
 }
@@ -636,6 +662,25 @@ export async function blobStorageRemove(
 
 	await component.remove(request.pathParams.id);
 
+	return {
+		statusCode: HttpStatusCode.noContent
+	};
+}
+
+/**
+ * Remove all entries from blob storage.
+ * @param httpRequestContext The request context for the API.
+ * @param componentName The name of the component to use in the routes.
+ * @param request The request.
+ * @returns The response object with additional http response properties.
+ */
+export async function blobStorageEmpty(
+	httpRequestContext: IHttpRequestContext,
+	componentName: string,
+	request: IBlobStorageEmptyRequest
+): Promise<INoContentResponse> {
+	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
+	await component.empty();
 	return {
 		statusCode: HttpStatusCode.noContent
 	};
