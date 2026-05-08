@@ -159,6 +159,50 @@ The data for the blob if it can be found or undefined.
 
 ***
 
+### teardown() {#teardown}
+
+> **teardown**(`nodeLoggingComponentType?`): `Promise`\<`boolean`\>
+
+Teardown the component and remove any resources it created.
+
+#### Parameters
+
+##### nodeLoggingComponentType?
+
+`string`
+
+The node logging component type.
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+True if the teardown process was successful.
+
+#### Implementation of
+
+`IBlobStorageConnector.teardown`
+
+***
+
+### empty() {#empty}
+
+> **empty**(): `Promise`\<`void`\>
+
+Remove all blobs from the storage.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+Nothing.
+
+#### Implementation of
+
+`IBlobStorageConnector.empty`
+
+***
+
 ### remove() {#remove}
 
 > **remove**(`id`): `Promise`\<`boolean`\>

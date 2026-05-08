@@ -228,6 +228,24 @@ Not found error if the blob cannot be found.
 
 ***
 
+### empty() {#empty}
+
+> **empty**(): `Promise`\<`void`\>
+
+Remove all blobs from the storage.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+Nothing.
+
+#### Implementation of
+
+`IBlobStorageComponent.empty`
+
+***
+
 ### remove() {#remove}
 
 > **remove**(`id`): `Promise`\<`void`\>

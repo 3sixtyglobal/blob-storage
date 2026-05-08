@@ -71,3 +71,17 @@ The id of the blob to remove in urn format.
 `Promise`\<`boolean`\>
 
 True if the blob was found.
+
+***
+
+### empty() {#empty}
+
+> **empty**(): `Promise`\<`void`\>
+
+Remove all blobs from the storage.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+Nothing.

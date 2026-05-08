@@ -23,5 +23,6 @@
 - [blobStorageGetContent](functions/blobStorageGetContent.md)
 - [blobStorageUpdate](functions/blobStorageUpdate.md)
 - [blobStorageRemove](functions/blobStorageRemove.md)
+- [blobStorageEmpty](functions/blobStorageEmpty.md)
 - [blobStorageList](functions/blobStorageList.md)
 - [initSchema](functions/initSchema.md)

@@ -194,6 +194,20 @@ Not found error if the blob cannot be found.
 
 ***
 
+### empty() {#empty}
+
+> **empty**(): `Promise`\<`void`\>
+
+Remove all blobs from the storage.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+Nothing.
+
+***
+
 ### query() {#query}
 
 > **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `limit?`): `Promise`\<\{ `entries`: [`IBlobStorageEntryList`](IBlobStorageEntryList.md); `cursor?`: `string`; \}\>
