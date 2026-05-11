@@ -13,7 +13,7 @@ npm install @twin.org/blob-storage-connector-aws-s3
 To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-docker run -d --name twin-blob-storage-aws-s3 -p 4566:4566 -p 4571:4571 -e AWS_DEFAULT_REGION=eu-central-1 -e AWS_ACCESS_KEY_ID=test -e AWS_SECRET_ACCESS_KEY=test -e SERVICES=s3 -e LOCALSTACK_AUTH_TOKEN=ls-********* localstack/localstack:latest
+docker run -d --name twin-blob-storage-aws-s3 -p 5000:5000 motoserver/moto:latest
 ```
 
 ## Examples

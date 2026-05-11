@@ -14,12 +14,6 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Write Test Environment Variables
-      if: inputs.package == 'packages/blob-storage-connector-aws-s3' || inputs.package == 'all'
-      shell: bash
-      run: |
-        echo "${{ inputs.test_env_vars }}" > /tmp/test_env_vars.txt
-
     - name: Start IPFS Kubo
       if: inputs.package == 'packages/blob-storage-connector-ipfs' || inputs.package == 'all'
       shell: bash
@@ -34,22 +28,16 @@ runs:
           -p 5001:5001 \
           ipfs/kubo:latest
 
-    - name: Start LocalStack
+    - name: Start Moto Server
       if: inputs.package == 'packages/blob-storage-connector-aws-s3' || inputs.package == 'all'
       shell: bash
       run: |
-        docker rmi localstack/localstack:latest || true
-        docker pull localstack/localstack:latest
+        docker rmi motoserver/moto:latest || true
+        docker pull motoserver/moto:latest
         docker run -d \
-          --name localstack \
-          -p 4566:4566 \
-          -p 4571:4571 \
-          -e AWS_DEFAULT_REGION=eu-central-1 \
-          -e AWS_ACCESS_KEY_ID=test \
-          -e AWS_SECRET_ACCESS_KEY=test \
-          -e SERVICES=s3 \
-          --env-file=/tmp/test_env_vars.txt \
-          localstack/localstack:latest
+          --name motoserver \
+          -p 5000:5000 \
+          motoserver/moto:latest
 
     - name: Start Azurite
       if: inputs.package == 'packages/blob-storage-connector-azure' || inputs.package == 'all'
