@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { DataTypeHandlerFactory, type IJsonSchema } from "@twin.org/data-core";
+import { DataTypeHandlerFactory } from "@twin.org/data-core";
 import { BlobStorageContexts } from "../models/blobStorageContexts.js";
 import { BlobStorageTypes } from "../models/blobStorageTypes.js";
 import BlobStorageCompressionTypeSchema from "../schemas/BlobStorageCompressionType.json" with { type: "json" };
@@ -20,7 +20,7 @@ export class BlobStorageDataTypes {
 				namespace: BlobStorageContexts.Namespace,
 				type: BlobStorageTypes.Entry,
 				defaultValue: {},
-				jsonSchema: async () => BlobStorageEntrySchema as IJsonSchema
+				jsonSchema: async () => BlobStorageEntrySchema
 			})
 		);
 
@@ -30,7 +30,7 @@ export class BlobStorageDataTypes {
 				namespace: BlobStorageContexts.Namespace,
 				type: BlobStorageTypes.CompressionType,
 				defaultValue: {},
-				jsonSchema: async () => BlobStorageCompressionTypeSchema as IJsonSchema
+				jsonSchema: async () => BlobStorageCompressionTypeSchema
 			})
 		);
 	}
