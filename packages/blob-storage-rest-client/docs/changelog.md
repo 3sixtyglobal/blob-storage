@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.12](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.0.3-next.11...blob-storage-rest-client-v0.0.3-next.12) (2026-05-11)
+
+
+### Features
+
+* typescript 6 update ([4eed54f](https://github.com/iotaledger/twin-blob-storage/commit/4eed54f5ce2dc697c06597269c97ad4cad108be5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.11 to 0.0.3-next.12
+
 ## [0.0.3-next.11](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.0.3-next.10...blob-storage-rest-client-v0.0.3-next.11) (2026-05-08)
 
 

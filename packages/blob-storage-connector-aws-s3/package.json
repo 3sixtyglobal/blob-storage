@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-connector-aws-s3",
-	"version": "0.0.3-next.11",
+	"version": "0.0.3-next.12",
 	"description": "Stores and retrieves blobs in Amazon S3 and S3-compatible object storage.",
 	"repository": {
 		"type": "git",
@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@aws-sdk/client-s3": "3.1045.0",
-		"@twin.org/blob-storage-models": "0.0.3-next.11",
+		"@twin.org/blob-storage-models": "0.0.3-next.12",
 		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
