@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-connector-ipfs",
-	"version": "0.0.3-next.12",
+	"version": "0.0.3-next.13",
 	"description": "Stores and retrieves blobs through IPFS for content-addressed and distributed workflows.",
 	"repository": {
 		"type": "git",
@@ -28,7 +28,7 @@
 		"dist:no-test": "npm run clean && npm run build && npm run test:build"
 	},
 	"dependencies": {
-		"@twin.org/blob-storage-models": "0.0.3-next.12",
+		"@twin.org/blob-storage-models": "0.0.3-next.13",
 		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
