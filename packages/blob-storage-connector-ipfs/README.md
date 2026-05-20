@@ -13,7 +13,7 @@ npm install @twin.org/blob-storage-connector-ipfs
 To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-docker run -d --name twin-blob-storage-ipfs -p 4001:4001 -p 4001:4001/udp -p 8080:8080 -p 5001:5001 ipfs/kubo:latest
+docker run -d --name twin-blob-storage-ipfs -p 4001:4001 -p 4001:4001/udp -p 18080:8080 -p 5001:5001 ipfs/kubo:latest
 ```
 
 ## Examples
