@@ -469,6 +469,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * Get the connector from the uri.
 	 * @param id The id of the blob storage item in urn format.
 	 * @returns The connector.
+	 * @throws {GeneralError} If the namespace does not match.
 	 * @internal
 	 */
 	private getConnector(id: string): IBlobStorageConnector {
@@ -486,9 +487,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 	/**
 	 * Get an entity.
-	 * @param id The id of the entity to get, or the index value if secondaryIndex is set.
-	 * @param secondaryIndex Get the item using a secondary index.
-	 * @param partitionKey The optional partition key to use.
+	 * @param id The id of the entity to get.
 	 * @returns The object if it can be found or throws.
 	 * @internal
 	 */
