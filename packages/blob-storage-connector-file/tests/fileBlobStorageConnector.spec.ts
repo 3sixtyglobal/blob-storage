@@ -32,7 +32,21 @@ describe("FileBlobStorageConnector", () => {
 			entitySchema: nameof<LogEntry>()
 		});
 		EntityStorageConnectorFactory.register("log-entry", () => memoryEntityStorage);
-		LoggingConnectorFactory.register("logging", () => new EntityStorageLoggingConnector());
+		ComponentFactory.register("platform", () => ({
+			className: () => "MockPlatform",
+			isMultiTenant: () => false,
+			execute: async (method: () => Promise<void>) => method()
+		}));
+		LoggingConnectorFactory.register(
+			"logging",
+			() =>
+				new EntityStorageLoggingConnector({
+					config: {
+						batchSize: 0,
+						batchIntervalMs: 0
+					}
+				})
+		);
 		ComponentFactory.register("logging", () => new LoggingService());
 
 		ContextIdStore.getContextIds = vi
