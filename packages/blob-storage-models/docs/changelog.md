@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.0.3-next.14](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.0.3-next.13...blob-storage-models-v0.0.3-next.14) (2026-06-11)
+
+
+### Miscellaneous Chores
+
+* **blob-storage-models:** Synchronize repo versions
+
 ## [0.0.3-next.13](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.0.3-next.12...blob-storage-models-v0.0.3-next.13) (2026-05-20)
 
 

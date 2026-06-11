@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.14](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-file-v0.0.3-next.13...blob-storage-connector-file-v0.0.3-next.14) (2026-06-11)
+
+
+### Bug Fixes
+
+* register platform mock in file blob storage connector tests ([#55](https://github.com/iotaledger/twin-blob-storage/issues/55)) ([fb83b24](https://github.com/iotaledger/twin-blob-storage/commit/fb83b2467daa74b2d45e32775ace42a5c4262768))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.13 to 0.0.3-next.14
+
 ## [0.0.3-next.13](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-file-v0.0.3-next.12...blob-storage-connector-file-v0.0.3-next.13) (2026-05-20)
 
 
