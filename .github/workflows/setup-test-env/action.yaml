@@ -22,10 +22,10 @@ runs:
         docker pull ipfs/kubo:latest
         docker run -d \
           --name ipfs \
-          -p 4001:4001 \
-          -p 4001:4001/udp \
+          -p 14001:14001 \
+          -p 14001:14001/udp \
           -p 18080:8080 \
-          -p 5001:5001 \
+          -p 15001:5001 \
           ipfs/kubo:latest
 
     - name: Start Moto Server
@@ -59,7 +59,7 @@ runs:
         docker rmi fsouza/fake-gcs-server:latest || true
         docker pull fsouza/fake-gcs-server:latest
         docker run -d \
-          -p 4443:4443 \
+          -p 14443:4443 \
           --name gcp-storage-emulator \
           fsouza/fake-gcs-server:latest \
           -scheme http
