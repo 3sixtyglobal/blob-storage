@@ -62,4 +62,5 @@ runs:
           -p 14443:4443 \
           --name gcp-storage-emulator \
           fsouza/fake-gcs-server:latest \
+          -external-url http://localhost:14443 \
           -scheme http
