@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.0.3-next.15](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.0.3-next.14...blob-storage-service-v0.0.3-next.15) (2026-06-15)
+
+
+### Features
+
+* async getStore ([#59](https://github.com/iotaledger/twin-blob-storage/issues/59)) ([2de1ae5](https://github.com/iotaledger/twin-blob-storage/commit/2de1ae5c274b84a2320f75ac4628b81e9459c540))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.14 to 0.0.3-next.15
+  * devDependencies
+    * @twin.org/blob-storage-connector-memory bumped from 0.0.3-next.14 to 0.0.3-next.15
+
 ## [0.0.3-next.14](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.0.3-next.13...blob-storage-service-v0.0.3-next.14) (2026-06-11)
 
 

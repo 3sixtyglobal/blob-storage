@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3-next.15](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.0.3-next.14...blob-storage-rest-client-v0.0.3-next.15) (2026-06-15)
+
+
+### Miscellaneous Chores
+
+* **blob-storage-rest-client:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.14 to 0.0.3-next.15
+
 ## [0.0.3-next.14](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.0.3-next.13...blob-storage-rest-client-v0.0.3-next.14) (2026-06-11)
 
 
