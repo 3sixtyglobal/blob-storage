@@ -1,6 +1,6 @@
 # Interface: IBlobStorageConnector
 
-Interface describing an blob storage connector.
+Interface describing a blob storage connector.
 
 ## Extends
 
@@ -84,4 +84,4 @@ Remove all blobs from the storage.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when all blobs have been removed.

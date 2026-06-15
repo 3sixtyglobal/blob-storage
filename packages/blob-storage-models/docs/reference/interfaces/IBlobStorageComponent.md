@@ -1,6 +1,6 @@
 # Interface: IBlobStorageComponent
 
-Interface describing an blob storage component.
+Interface describing a blob storage component.
 
 ## Extends
 
@@ -160,7 +160,7 @@ Data for the custom metadata as JSON-LD.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the blob metadata has been updated.
 
 #### Throws
 
@@ -186,7 +186,7 @@ The id of the blob to remove in urn format.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the blob has been removed.
 
 #### Throws
 
@@ -204,7 +204,7 @@ Remove all blobs from the storage.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when all blobs have been removed.
 
 ***
 

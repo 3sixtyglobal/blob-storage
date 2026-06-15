@@ -1133,7 +1133,7 @@
 				]
 			},
 			"BlobStorageEntryList": {
-				"description": "Interface describing an blob storage entry list.",
+				"description": "Interface describing a blob storage entry list.",
 				"type": "object",
 				"properties": {
 					"@context": {

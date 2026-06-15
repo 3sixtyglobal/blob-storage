@@ -42,7 +42,7 @@ The date/time when the entry was modified.
 
 > **blobSize**: `number`
 
-The length of the data in the blob.
+The size of the data in the blob.
 
 ***
 
@@ -90,4 +90,4 @@ Is the entry encrypted.
 
 > `optional` **compression?**: `BlobStorageCompressionType`
 
-Is the entry compressed.
+The compression type applied to the entry, if any.

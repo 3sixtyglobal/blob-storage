@@ -169,7 +169,7 @@ Remove all blobs from the storage.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when all pinned blobs have been unpinned and garbage collected.
 
 #### Implementation of
 

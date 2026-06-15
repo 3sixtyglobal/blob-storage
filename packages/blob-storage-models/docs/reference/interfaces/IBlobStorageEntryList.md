@@ -1,6 +1,6 @@
 # Interface: IBlobStorageEntryList
 
-Interface describing an blob storage entry list.
+Interface describing a blob storage entry list.
 
 ## Properties
 

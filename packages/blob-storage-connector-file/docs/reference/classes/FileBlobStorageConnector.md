@@ -220,7 +220,7 @@ Remove all blobs from the storage.
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when all blobs in the current partition have been removed.
 
 #### Implementation of
 
