@@ -34,7 +34,8 @@ describe("blob-storage-service", () => {
 		);
 
 		entityStorage = new MemoryEntityStorageConnector<BlobStorageEntry>({
-			entitySchema: nameof<BlobStorageEntry>()
+			entitySchema: nameof<BlobStorageEntry>(),
+			config: { storageKey: "blob-storage-entry" }
 		});
 		await entityStorage.teardown();
 
@@ -489,11 +490,13 @@ describe("blob-storage-service", () => {
 
 	test("can add a file with encryption", async () => {
 		const vaultKeyEntityStorageConnector = new MemoryEntityStorageConnector<VaultKey>({
-			entitySchema: nameof<VaultKey>()
+			entitySchema: nameof<VaultKey>(),
+			config: { storageKey: "vault-key" }
 		});
 
 		const vaultSecretEntityStorageConnector = new MemoryEntityStorageConnector<VaultSecret>({
-			entitySchema: nameof<VaultSecret>()
+			entitySchema: nameof<VaultSecret>(),
+			config: { storageKey: "vault-secret" }
 		});
 
 		EntityStorageConnectorFactory.register("vault-key", () => vaultKeyEntityStorageConnector);
@@ -534,11 +537,13 @@ describe("blob-storage-service", () => {
 
 	test("can add a file with encryption with disable option", async () => {
 		const vaultKeyEntityStorageConnector = new MemoryEntityStorageConnector<VaultKey>({
-			entitySchema: nameof<VaultKey>()
+			entitySchema: nameof<VaultKey>(),
+			config: { storageKey: "vault-key" }
 		});
 
 		const vaultSecretEntityStorageConnector = new MemoryEntityStorageConnector<VaultSecret>({
-			entitySchema: nameof<VaultSecret>()
+			entitySchema: nameof<VaultSecret>(),
+			config: { storageKey: "vault-secret" }
 		});
 
 		EntityStorageConnectorFactory.register("vault-key", () => vaultKeyEntityStorageConnector);
@@ -581,11 +586,13 @@ describe("blob-storage-service", () => {
 
 	test("can add a file with encryption with override key option", async () => {
 		const vaultKeyEntityStorageConnector = new MemoryEntityStorageConnector<VaultKey>({
-			entitySchema: nameof<VaultKey>()
+			entitySchema: nameof<VaultKey>(),
+			config: { storageKey: "vault-key" }
 		});
 
 		const vaultSecretEntityStorageConnector = new MemoryEntityStorageConnector<VaultSecret>({
-			entitySchema: nameof<VaultSecret>()
+			entitySchema: nameof<VaultSecret>(),
+			config: { storageKey: "vault-secret" }
 		});
 
 		EntityStorageConnectorFactory.register("vault-key", () => vaultKeyEntityStorageConnector);
