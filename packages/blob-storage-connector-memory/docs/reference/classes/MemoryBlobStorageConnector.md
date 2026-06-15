@@ -204,12 +204,12 @@ A promise that resolves when all blobs in the current partition have been remove
 
 ### getStore() {#getstore}
 
-> **getStore**(): `object`
+> **getStore**(): `Promise`\<\{\[`id`: `string`\]: `Uint8Array`\<`ArrayBufferLike`\>; \}\>
 
 Get the memory store.
 
 #### Returns
 
-`object`
+`Promise`\<\{\[`id`: `string`\]: `Uint8Array`\<`ArrayBufferLike`\>; \}\>
 
 The store.
