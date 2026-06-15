@@ -546,7 +546,7 @@ export async function blobStorageGet(
 }
 
 /**
- * Get the blob from storage.
+ * Get the raw content of a blob from storage.
  * @param httpRequestContext The request context for the API.
  * @param componentName The name of the component to use in the routes.
  * @param request The request.

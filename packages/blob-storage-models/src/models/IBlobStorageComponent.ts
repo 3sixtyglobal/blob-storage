@@ -8,7 +8,7 @@ import type { IBlobStorageEntry } from "./IBlobStorageEntry.js";
 import type { IBlobStorageEntryList } from "./IBlobStorageEntryList.js";
 
 /**
- * Interface describing an blob storage component.
+ * Interface describing a blob storage component.
  */
 export interface IBlobStorageComponent extends IComponent {
 	/**
@@ -62,7 +62,7 @@ export interface IBlobStorageComponent extends IComponent {
 	 * @param encodingFormat Mime type for the blob, will be detected if left undefined.
 	 * @param fileExtension Extension for the blob, will be detected if left undefined.
 	 * @param metadata Data for the custom metadata as JSON-LD.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the blob metadata has been updated.
 	 * @throws Not found error if the blob cannot be found.
 	 */
 	update(
@@ -75,14 +75,14 @@ export interface IBlobStorageComponent extends IComponent {
 	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the blob has been removed.
 	 * @throws Not found error if the blob cannot be found.
 	 */
 	remove(id: string): Promise<void>;
 
 	/**
 	 * Remove all blobs from the storage.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when all blobs have been removed.
 	 */
 	empty(): Promise<void>;
 

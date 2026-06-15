@@ -312,7 +312,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Remove all blobs from the storage.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when all blobs in the current partition have been removed.
 	 */
 	public async empty(): Promise<void> {
 		try {

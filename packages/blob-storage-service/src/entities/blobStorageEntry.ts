@@ -33,7 +33,7 @@ export class BlobStorageEntry {
 	public dateModified?: string;
 
 	/**
-	 * The length of the data in the blob.
+	 * The size of the data in the blob.
 	 */
 	@property({ type: "number" })
 	public blobSize!: number;
@@ -69,7 +69,7 @@ export class BlobStorageEntry {
 	public isEncrypted!: boolean;
 
 	/**
-	 * Is the entry compressed.
+	 * The compression type applied to the entry, if any.
 	 */
 	@property({ type: "string", optional: true })
 	public compression?: BlobStorageCompressionType;

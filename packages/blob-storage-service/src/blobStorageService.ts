@@ -298,7 +298,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * @param encodingFormat Mime type for the blob, will be detected if left undefined.
 	 * @param fileExtension Extension for the blob, will be detected if left undefined.
 	 * @param metadata Data for the custom metadata as JSON-LD.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the blob metadata has been updated.
 	 * @throws Not found error if the blob cannot be found.
 	 */
 	public async update(
@@ -348,7 +348,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 	/**
 	 * Remove all blobs from the storage.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when all blobs have been removed.
 	 */
 	public async empty(): Promise<void> {
 		try {
@@ -381,7 +381,8 @@ export class BlobStorageService implements IBlobStorageComponent {
 	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the blob has been removed.
+	 * @throws Not found error if the blob cannot be found.
 	 */
 	public async remove(id: string): Promise<void> {
 		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);

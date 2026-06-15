@@ -293,7 +293,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Remove all blobs from the storage.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when all pinned blobs have been unpinned and garbage collected.
 	 */
 	public async empty(): Promise<void> {
 		try {
@@ -392,8 +392,8 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	}
 
 	/**
-	 * Add the security to the request.
-	 * @param requestInit The request options.
+	 * Add the security headers to the request if a bearer token is configured.
+	 * @param requestInit The request options to augment with security headers.
 	 * @internal
 	 */
 	private addSecurity(requestInit: RequestInit): void {

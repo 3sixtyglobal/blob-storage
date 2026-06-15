@@ -6,7 +6,7 @@ import type { BlobStorageContexts } from "./blobStorageContexts.js";
 import type { IBlobStorageEntry } from "./IBlobStorageEntry.js";
 
 /**
- * Interface describing an blob storage entry list.
+ * Interface describing a blob storage entry list.
  */
 export interface IBlobStorageEntryList {
 	/**

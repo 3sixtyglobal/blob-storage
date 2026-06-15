@@ -4,9 +4,9 @@ import type { IRestRouteEntryPoint } from "@twin.org/api-models";
 import { generateRestRoutesBlobStorage, tagsBlobStorage } from "./blobStorageRoutes.js";
 
 /**
- * These are dummy entry points for the blob storage service.
- * In reality your application would create its own entry points based on the
- * blob types it wants to store, using a custom defaultBaseRoute.
+ * Default REST route entry points for the blob storage service.
+ * Applications should create their own entry points based on the blob types
+ * they want to store, using a custom defaultBaseRoute.
  */
 export const restEntryPoints: IRestRouteEntryPoint[] = [
 	{

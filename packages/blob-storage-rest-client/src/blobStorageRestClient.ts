@@ -138,7 +138,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	 * @param encodingFormat Mime type for the blob, will be detected if left undefined.
 	 * @param fileExtension Extension for the blob, will be detected if left undefined.
 	 * @param metadata Data for the custom metadata as JSON-LD.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the blob metadata has been updated.
 	 * @throws Not found error if the blob cannot be found.
 	 */
 	public async update(
@@ -163,7 +163,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 
 	/**
 	 * Remove all blobs from the storage.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when all blobs have been removed.
 	 */
 	public async empty(): Promise<void> {
 		await this.fetch<IBlobStorageEmptyRequest, INoContentResponse>("/", "DELETE");
@@ -172,7 +172,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the blob has been removed.
 	 */
 	public async remove(id: string): Promise<void> {
 		Urn.guard(BlobStorageRestClient.CLASS_NAME, nameof(id), id);
