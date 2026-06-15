@@ -203,20 +203,13 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 			this.addSecurity(fetchOptions);
 
-			const responseStat = await fetch(
-				`${this._config.apiUrl}/block/stat?arg=${ipfsHash}&local=true`,
+			const pinResponse = await fetch(
+				`${this._config.apiUrl}/pin/ls?arg=${ipfsHash}`,
 				fetchOptions
 			);
 
-			if (!responseStat.ok) {
-				const resp = await responseStat.json();
-				if (
-					Is.object<{ Message: string }>(resp) &&
-					Is.stringValue(resp.Message) &&
-					resp.Message.includes("not found")
-				) {
-					return;
-				}
+			if (!pinResponse.ok) {
+				return undefined;
 			}
 
 			const response = await fetch(`${this._config.apiUrl}/cat?arg=${ipfsHash}`, fetchOptions);
@@ -379,8 +372,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 				return true;
 			}
 
-			const error = await response.json();
-			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "fetchFail", error);
+			return false;
 		} catch (err) {
 			throw new GeneralError(
 				IpfsBlobStorageConnector.CLASS_NAME,

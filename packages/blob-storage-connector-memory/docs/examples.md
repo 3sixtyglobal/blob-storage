@@ -27,7 +27,7 @@ console.log(blobId); // blob:urn:blob:memory:...
 const storedBlob = await connector.get(blobId);
 console.log(storedBlob?.length); // 14
 
-const currentStore = connector.getStore();
+const currentStore = await connector.getStore();
 console.log(Object.keys(currentStore).length); // 1
 
 const removed = await connector.remove(blobId);

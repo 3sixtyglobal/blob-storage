@@ -203,7 +203,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 		try {
 			const fullPath = this.createFullPath(urnParsed.namespaceSpecific(1), partitionKey);
 
-			return await readFile(fullPath);
+			return new Uint8Array(await readFile(fullPath));
 		} catch (err) {
 			if (BaseError.isErrorCode(err, "ENOENT")) {
 				return;

@@ -28,7 +28,7 @@ let entityStorage: MemoryEntityStorageConnector<BlobStorageEntry>;
 let blobStorage: MemoryBlobStorageConnector;
 
 describe("blob-storage-service", () => {
-	beforeEach(() => {
+	beforeEach(async () => {
 		EntitySchemaFactory.register(nameof<BlobStorageEntry>(), () =>
 			EntitySchemaHelper.getSchema(BlobStorageEntry)
 		);
@@ -36,6 +36,7 @@ describe("blob-storage-service", () => {
 		entityStorage = new MemoryEntityStorageConnector<BlobStorageEntry>({
 			entitySchema: nameof<BlobStorageEntry>()
 		});
+		await entityStorage.teardown();
 
 		EntityStorageConnectorFactory.register("blob-storage-entry", () => entityStorage);
 
@@ -56,6 +57,10 @@ describe("blob-storage-service", () => {
 		}));
 	});
 
+	afterEach(async () => {
+		await entityStorage.teardown();
+	});
+
 	test("can create the service", async () => {
 		const service = new BlobStorageService();
 		expect(service).toBeDefined();
@@ -66,7 +71,7 @@ describe("blob-storage-service", () => {
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
 		await service.create(data);
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 				blobSize: 43,
@@ -77,7 +82,7 @@ describe("blob-storage-service", () => {
 				isEncrypted: false
 			}
 		]);
-		expect(blobStorage.getStore()).toEqual({
+		expect(await blobStorage.getStore()).toEqual({
 			"root/d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592": dataBytes
 		});
 	});
@@ -87,7 +92,7 @@ describe("blob-storage-service", () => {
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
 		await service.create(data, undefined, undefined, undefined, undefined);
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 				blobSize: 43,
@@ -98,7 +103,7 @@ describe("blob-storage-service", () => {
 				isEncrypted: false
 			}
 		]);
-		expect(blobStorage.getStore()).toEqual({
+		expect(await blobStorage.getStore()).toEqual({
 			"root/d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592": dataBytes
 		});
 	});
@@ -112,7 +117,7 @@ describe("blob-storage-service", () => {
 			"@type": "CreativeWork",
 			name: "Test"
 		});
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 				blobSize: 43,
@@ -128,7 +133,7 @@ describe("blob-storage-service", () => {
 				}
 			}
 		]);
-		expect(blobStorage.getStore()).toEqual({
+		expect(await blobStorage.getStore()).toEqual({
 			"root/d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592": dataBytes
 		});
 	});
@@ -278,7 +283,7 @@ describe("blob-storage-service", () => {
 			"@type": "CreativeWork",
 			name: "Test2"
 		});
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 				fileExtension: "txt",
@@ -308,7 +313,7 @@ describe("blob-storage-service", () => {
 			"@type": "CreativeWork",
 			name: "Test2"
 		});
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 				fileExtension: "txt",
@@ -338,8 +343,8 @@ describe("blob-storage-service", () => {
 		});
 
 		await service.remove(id);
-		expect(entityStorage.getStore()).toEqual([]);
-		expect(blobStorage.getStore()).toEqual({});
+		expect(await entityStorage.getStore()).toEqual([]);
+		expect(await blobStorage.getStore()).toEqual({});
 	});
 
 	test("can remove a file with metadata with userId and nodeId", async () => {
@@ -353,8 +358,8 @@ describe("blob-storage-service", () => {
 		});
 
 		await service.remove(id);
-		expect(entityStorage.getStore()).toEqual([]);
-		expect(blobStorage.getStore()).toEqual({});
+		expect(await entityStorage.getStore()).toEqual([]);
+		expect(await blobStorage.getStore()).toEqual({});
 	});
 
 	test("can query the entries", async () => {
@@ -379,8 +384,8 @@ describe("blob-storage-service", () => {
 			});
 		}
 
-		expect(entityStorage.getStore().length).toEqual(3);
-		expect(Object.keys(blobStorage.getStore()).length).toEqual(3);
+		expect((await entityStorage.getStore()).length).toEqual(3);
+		expect(Object.keys(await blobStorage.getStore()).length).toEqual(3);
 
 		const entriesAndCursor = await service.query();
 
@@ -509,12 +514,12 @@ describe("blob-storage-service", () => {
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
 		const result = await service.create(data);
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: result,
 				blobSize: 43,
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
-				dateCreated: "2024-08-22T11:55:16.271Z",
+				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
 				isEncrypted: true
@@ -556,12 +561,12 @@ describe("blob-storage-service", () => {
 		const result = await service.create(data, undefined, undefined, undefined, {
 			disableEncryption: true
 		});
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: result,
 				blobSize: 43,
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
-				dateCreated: "2024-08-22T11:55:16.271Z",
+				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
 				isEncrypted: false
@@ -603,12 +608,12 @@ describe("blob-storage-service", () => {
 		const result = await service.create(data, undefined, undefined, undefined, {
 			overrideVaultKeyId: "my-key"
 		});
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: result,
 				blobSize: 43,
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
-				dateCreated: "2024-08-22T11:55:16.271Z",
+				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
 				encodingFormat: "text/plain",
 				isEncrypted: true
@@ -627,8 +632,8 @@ describe("blob-storage-service", () => {
 	test("can empty with no files", async () => {
 		const service = new BlobStorageService();
 		await service.empty();
-		expect(entityStorage.getStore()).toEqual([]);
-		expect(blobStorage.getStore()).toEqual({});
+		expect(await entityStorage.getStore()).toEqual([]);
+		expect(await blobStorage.getStore()).toEqual({});
 	});
 
 	test("can empty all files", async () => {
@@ -638,13 +643,13 @@ describe("blob-storage-service", () => {
 		await service.create(Converter.bytesToBase64(dataBytes1));
 		await service.create(Converter.bytesToBase64(dataBytes2));
 
-		expect(entityStorage.getStore().length).toEqual(2);
-		expect(Object.keys(blobStorage.getStore()).length).toEqual(2);
+		expect((await entityStorage.getStore()).length).toEqual(2);
+		expect(Object.keys(await blobStorage.getStore()).length).toEqual(2);
 
 		await service.empty();
 
-		expect(entityStorage.getStore()).toEqual([]);
-		expect(blobStorage.getStore()).toEqual({});
+		expect(await entityStorage.getStore()).toEqual([]);
+		expect(await blobStorage.getStore()).toEqual({});
 	});
 
 	test("can add a file with compression", async () => {
@@ -656,7 +661,7 @@ describe("blob-storage-service", () => {
 		const result = await service.create(data, undefined, undefined, undefined, {
 			compress: BlobStorageCompressionType.Gzip
 		});
-		expect(entityStorage.getStore()).toEqual([
+		expect(await entityStorage.getStore()).toEqual([
 			{
 				id: result,
 				blobSize: 43,

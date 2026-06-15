@@ -202,7 +202,7 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	 * Get the memory store.
 	 * @returns The store.
 	 */
-	public getStore(): { [id: string]: Uint8Array } {
+	public async getStore(): Promise<{ [id: string]: Uint8Array }> {
 		return this._store;
 	}
 }
