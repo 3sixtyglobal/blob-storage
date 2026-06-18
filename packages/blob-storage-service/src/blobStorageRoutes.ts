@@ -1,8 +1,9 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
+	HttpContextIdKeys,
 	HttpParameterHelper,
-	type IHostingComponent,
+	HttpUrlHelper,
 	type ICreatedResponse,
 	type IHttpRequestContext,
 	type INoContentResponse,
@@ -17,16 +18,17 @@ import {
 	BlobStorageTypes,
 	type IBlobStorageComponent,
 	type IBlobStorageCreateRequest,
+	type IBlobStorageEmptyRequest,
 	type IBlobStorageGetContentRequest,
 	type IBlobStorageGetContentResponse,
 	type IBlobStorageGetRequest,
 	type IBlobStorageGetResponse,
-	type IBlobStorageEmptyRequest,
 	type IBlobStorageListRequest,
 	type IBlobStorageListResponse,
 	type IBlobStorageRemoveRequest,
 	type IBlobStorageUpdateRequest
 } from "@twin.org/blob-storage-models";
+import { ContextIdStore } from "@twin.org/context";
 import { Coerce, ComponentFactory, Converter, Guards, Is, StringHelper } from "@twin.org/core";
 import { nameof } from "@twin.org/nameof";
 import { SchemaOrgContexts, SchemaOrgTypes } from "@twin.org/standards-schema-org";
@@ -700,10 +702,6 @@ export async function blobStorageList(
 ): Promise<IBlobStorageListResponse> {
 	Guards.object<IBlobStorageListRequest>(ROUTES_SOURCE, nameof(request), request);
 
-	const hostingComponent = ComponentFactory.get<IHostingComponent>(
-		httpRequestContext.hostingComponentType ?? "hosting"
-	);
-
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
 	const result = await component.query(
@@ -720,8 +718,12 @@ export async function blobStorageList(
 	};
 
 	if (Is.stringValue(result.cursor)) {
+		const contextIds = await ContextIdStore.getContextIds();
 		headers[HeaderTypes.Link] = HeaderHelper.createLinkHeader(
-			await hostingComponent.buildPublicUrl(httpRequestContext.serverRequest.url),
+			HttpUrlHelper.replaceOrigin(
+				httpRequestContext.serverRequest.url,
+				contextIds?.[HttpContextIdKeys.PublicOrigin]
+			),
 			{ cursor: result.cursor },
 			"next"
 		);
