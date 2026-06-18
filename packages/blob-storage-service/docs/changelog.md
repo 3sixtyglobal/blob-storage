@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.0.3-next.16](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.0.3-next.15...blob-storage-service-v0.0.3-next.16) (2026-06-18)
+
+
+### Features
+
+* remove hosting component ([#63](https://github.com/iotaledger/twin-blob-storage/issues/63)) ([215b744](https://github.com/iotaledger/twin-blob-storage/commit/215b7446fa94485fd4c87225746345f05773fb9b))
+
+
+### Bug Fixes
+
+* use async getStore in tests ([b6b347f](https://github.com/iotaledger/twin-blob-storage/commit/b6b347f3db578b0e3d7c171a65e8dc31062ba5aa))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.0.3-next.15 to 0.0.3-next.16
+  * devDependencies
+    * @twin.org/blob-storage-connector-memory bumped from 0.0.3-next.15 to 0.0.3-next.16
+
 ## [0.0.3-next.15](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.0.3-next.14...blob-storage-service-v0.0.3-next.15) (2026-06-15)
 
 
