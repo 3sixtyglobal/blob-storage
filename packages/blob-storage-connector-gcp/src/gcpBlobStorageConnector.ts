@@ -314,7 +314,10 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 			const prefix = `${partitionKey ?? "root"}/`;
 
 			const bucket = this._storage.bucket(this._config.bucketName);
-			await bucket.deleteFiles({ prefix });
+			const [probe] = await bucket.getFiles({ prefix, maxResults: 1 });
+			if (probe.length > 0) {
+				await bucket.deleteFiles({ prefix });
+			}
 		} catch (err) {
 			throw new GeneralError(
 				GcpBlobStorageConnector.CLASS_NAME,
