@@ -26,6 +26,10 @@ The options for the service.
 
 `BlobStorageService`
 
+#### Throws
+
+If no blob storage connectors are registered.
+
 ## Properties
 
 ### CLASS\_NAME {#class_name}
