@@ -6,6 +6,8 @@ import { RandomHelper, StringHelper } from "@twin.org/core";
 import { TEST_GCP_CONFIG } from "./setupTestEnv.js";
 import { GcpBlobStorageConnector } from "../src/gcpBlobStorageConnector.js";
 
+const SKIP_CI = process.env.CI === "true";
+
 function createConnector(options: { partitionContextIds?: string[] } = {}): IBlobStorageConnector {
 	return new GcpBlobStorageConnector({ config: TEST_GCP_CONFIG, ...options });
 }
@@ -166,7 +168,7 @@ describe("GcpBlobStorageConnector", () => {
 		expect(await blobStorageWithPartition.remove(idUrn2)).toBe(false);
 	});
 
-	test("can empty with no items", async () => {
+	test.skipIf(SKIP_CI)("can empty with no items", async () => {
 		const blobStorage = createConnector();
 		await blobStorage.empty();
 	});

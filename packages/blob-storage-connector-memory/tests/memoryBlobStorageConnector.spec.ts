@@ -5,6 +5,8 @@ import { ContextIdStore } from "@twin.org/context";
 import { RandomHelper, StringHelper } from "@twin.org/core";
 import { MemoryBlobStorageConnector } from "../src/memoryBlobStorageConnector.js";
 
+const SKIP_CI = false;
+
 function createConnector(options: { partitionContextIds?: string[] } = {}): IBlobStorageConnector {
 	return new MemoryBlobStorageConnector(options);
 }
@@ -165,7 +167,7 @@ describe("MemoryBlobStorageConnector", () => {
 		expect(await blobStorageWithPartition.remove(idUrn2)).toBe(false);
 	});
 
-	test("can empty with no items", async () => {
+	test.skipIf(SKIP_CI)("can empty with no items", async () => {
 		const blobStorage = createConnector();
 		await blobStorage.empty();
 	});

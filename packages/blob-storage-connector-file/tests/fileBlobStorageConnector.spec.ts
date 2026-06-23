@@ -6,6 +6,8 @@ import { ContextIdStore } from "@twin.org/context";
 import { Converter, RandomHelper, StringHelper } from "@twin.org/core";
 import { FileBlobStorageConnector } from "../src/fileBlobStorageConnector.js";
 
+const SKIP_CI = false;
+
 const TEST_DIRECTORY = `./.tmp/test-data-${Converter.bytesToHex(RandomHelper.generate(8))}`;
 
 function createConnector(options: { partitionContextIds?: string[] } = {}): IBlobStorageConnector {
@@ -174,7 +176,7 @@ describe("FileBlobStorageConnector", () => {
 		expect(await blobStorageWithPartition.remove(idUrn2)).toBe(false);
 	});
 
-	test("can empty with no items", async () => {
+	test.skipIf(SKIP_CI)("can empty with no items", async () => {
 		const blobStorage = createConnector();
 		await blobStorage.empty();
 	});

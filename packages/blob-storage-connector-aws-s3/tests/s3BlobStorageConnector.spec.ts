@@ -6,6 +6,8 @@ import { RandomHelper, StringHelper } from "@twin.org/core";
 import { TEST_S3_CONFIG } from "./setupTestEnv.js";
 import { S3BlobStorageConnector } from "../src/s3BlobStorageConnector.js";
 
+const SKIP_CI = false;
+
 function createConnector(options: { partitionContextIds?: string[] } = {}): IBlobStorageConnector {
 	return new S3BlobStorageConnector({ config: TEST_S3_CONFIG, ...options });
 }
@@ -166,7 +168,7 @@ describe("S3BlobStorageConnector", () => {
 		expect(await blobStorageWithPartition.remove(idUrn2)).toBe(false);
 	});
 
-	test("can empty with no items", async () => {
+	test.skipIf(SKIP_CI)("can empty with no items", async () => {
 		const blobStorage = createConnector();
 		await blobStorage.empty();
 	});

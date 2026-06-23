@@ -6,6 +6,8 @@ import { RandomHelper, StringHelper } from "@twin.org/core";
 import { TEST_AZURE_CONFIG } from "./setupTestEnv.js";
 import { AzureBlobStorageConnector } from "../src/azureBlobStorageConnector.js";
 
+const SKIP_CI = false;
+
 function createConnector(options: { partitionContextIds?: string[] } = {}): IBlobStorageConnector {
 	return new AzureBlobStorageConnector({ config: TEST_AZURE_CONFIG, ...options });
 }
@@ -166,7 +168,7 @@ describe("AzureBlobStorageConnector", () => {
 		expect(await blobStorageWithPartition.remove(idUrn2)).toBe(false);
 	});
 
-	test("can empty with no items", async () => {
+	test.skipIf(SKIP_CI)("can empty with no items", async () => {
 		const blobStorage = createConnector();
 		await blobStorage.empty();
 	});
