@@ -93,6 +93,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	/**
 	 * Create a new instance of BlobStorageService.
 	 * @param options The options for the service.
+	 * @throws {GeneralError} If no blob storage connectors are registered.
 	 */
 	constructor(options?: IBlobStorageServiceConstructorOptions) {
 		const names = BlobStorageConnectorFactory.names();
