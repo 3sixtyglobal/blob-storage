@@ -173,7 +173,7 @@ describe("GcpBlobStorageConnector", () => {
 		await blobStorage.empty();
 	});
 
-	test("can empty all items", async () => {
+	test.skipIf(SKIP_CI)("can empty all items", async () => {
 		const blobStorage = createConnector();
 		const idUrn1 = await blobStorage.set(TEST_DATA);
 		const idUrn2 = await blobStorage.set(TEST_DATA_2);
@@ -184,7 +184,7 @@ describe("GcpBlobStorageConnector", () => {
 		expect(await blobStorage.get(idUrn2)).toBeUndefined();
 	});
 
-	test("can empty all items with a partitionKey", async () => {
+	test.skipIf(SKIP_CI)("can empty all items with a partitionKey", async () => {
 		const blobStorage = createConnector({ partitionContextIds: ["node", "tenant", "user"] });
 		const idUrn1 = await blobStorage.set(TEST_DATA);
 		const idUrn2 = await blobStorage.set(TEST_DATA_2);
@@ -195,7 +195,7 @@ describe("GcpBlobStorageConnector", () => {
 		expect(await blobStorage.get(idUrn2)).toBeUndefined();
 	});
 
-	test("can teardown the store", async () => {
+	test.skipIf(SKIP_CI)("can teardown the store", async () => {
 		const blobStorage = createConnector();
 		await blobStorage.set(TEST_DATA);
 		const result = await blobStorage.teardown?.();
