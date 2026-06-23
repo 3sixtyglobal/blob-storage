@@ -59,8 +59,8 @@ runs:
         docker rmi fsouza/fake-gcs-server:latest || true
         docker pull fsouza/fake-gcs-server:latest
         docker run -d \
-          -p 24443:4443 \
+          -p 4443:4443 \
           --name gcp-storage-emulator \
           fsouza/fake-gcs-server:latest \
-          -external-url http://localhost:24443 \
+          -external-url http://localhost:4443 \
           -scheme http

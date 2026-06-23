@@ -13,7 +13,7 @@ npm install @twin.org/blob-storage-connector-gcp
 To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-docker run -d --name twin-blob-storage-gcp -p 24443:4443 fsouza/fake-gcs-server:latest -scheme http -external-url http://localhost:24443
+docker run -d --name twin-blob-storage-gcp -p 4443:4443 fsouza/fake-gcs-server:latest -scheme http -external-url http://localhost:4443
 ```
 
 ## Examples
