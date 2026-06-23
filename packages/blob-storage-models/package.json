@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-models",
-	"version": "0.9.0-next.0",
+	"version": "0.9.0-next.1",
 	"description": "Defines shared contracts, schemas, and interfaces for blob content, metadata, and connector behaviour.",
 	"repository": {
 		"type": "git",
