@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.9.0](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-memory-v0.9.0...blob-storage-connector-memory-v0.9.0) (2026-06-24)
+
+
+### Features
+
+* release to production ([eacfe75](https://github.com/iotaledger/twin-blob-storage/commit/eacfe754a0dcd9243d9e13d86422327d0a605164))
+* release to production ([#70](https://github.com/iotaledger/twin-blob-storage/issues/70)) ([6a38fe5](https://github.com/iotaledger/twin-blob-storage/commit/6a38fe583076baf1fc53d1d891d294b75ebbefd1))
+
 ## [0.9.0-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-memory-v0.9.0-next.0...blob-storage-connector-memory-v0.9.0-next.1) (2026-06-23)
 
 
