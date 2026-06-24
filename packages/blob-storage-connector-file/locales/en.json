@@ -2,8 +2,15 @@
 	"info": {
 		"fileBlobStorageConnector": {
 			"directoryCreating": "Creating directory \"{directory}\"",
-			"directoryCreated": "Created directory \"{directory}\"",
-			"directoryExists": "Skipping create directory \"{directory}\" as it already exists"
+			"directoryExists": "Skipping create directory \"{directory}\" as it already exists",
+			"directoryRemoving": "Removing directory \"{directory}\"",
+			"directoryRemoved": "Directory \"{directory}\" removed"
+		}
+	},
+	"health": {
+		"fileBlobStorageConnector": {
+			"healthDescription": "File blob storage connector is healthy, directory \"{directory}\"",
+			"healthCheckFailed": "Failed to access the storage directory \"{directory}\""
 		}
 	},
 	"error": {
@@ -12,6 +19,8 @@
 			"getBlobFailed": "Unable to get blob \"{id}\"",
 			"setBlobFailed": "Unable to set blob",
 			"removeBlobFailed": "Unable to remove blob",
+			"emptyFailed": "Failed to empty file blob storage directory \"{directory}\"",
+			"teardownFailed": "Failed to teardown file blob storage directory \"{directory}\"",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\""
 		}
 	}

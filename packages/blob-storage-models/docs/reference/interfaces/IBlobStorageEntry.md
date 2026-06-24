@@ -4,7 +4,7 @@ Interface describing a blob storage entry.
 
 ## Properties
 
-### @context
+### @context {#context}
 
 > **@context**: \[`"https://schema.twindev.org/blob-storage/"`, `"https://schema.twindev.org/common/"`, `...IJsonLdContextDefinitionElement[]`\]
 
@@ -12,7 +12,7 @@ JSON-LD Context.
 
 ***
 
-### type
+### type {#type}
 
 > **type**: `"BlobStorageEntry"`
 
@@ -20,7 +20,7 @@ JSON-LD Type.
 
 ***
 
-### id
+### id {#id}
 
 > **id**: `string`
 
@@ -28,7 +28,7 @@ The id for the blob.
 
 ***
 
-### dateCreated
+### dateCreated {#datecreated}
 
 > **dateCreated**: `string`
 
@@ -36,15 +36,15 @@ The date/time when the entry was created.
 
 ***
 
-### dateModified?
+### dateModified? {#datemodified}
 
-> `optional` **dateModified**: `string`
+> `optional` **dateModified?**: `string`
 
 The date/time when the entry was modified.
 
 ***
 
-### blobSize
+### blobSize {#blobsize}
 
 > **blobSize**: `number`
 
@@ -52,56 +52,56 @@ The size of the data in the blob.
 
 ***
 
-### blobHash
+### integrity {#integrity}
 
-> **blobHash**: `string`
+> **integrity**: `string`
 
-The hash of the data in the blob.
+The integrity of the data in the blob.
 
 ***
 
-### encodingFormat?
+### encodingFormat? {#encodingformat}
 
-> `optional` **encodingFormat**: `string`
+> `optional` **encodingFormat?**: `string`
 
 The mime type for the blob.
 
 ***
 
-### isEncrypted?
+### isEncrypted? {#isencrypted}
 
-> `optional` **isEncrypted**: `boolean`
+> `optional` **isEncrypted?**: `boolean`
 
 Indicates if the blob is encrypted.
 
 ***
 
-### compression?
+### compression? {#compression}
 
-> `optional` **compression**: [`BlobStorageCompressionType`](../type-aliases/BlobStorageCompressionType.md)
+> `optional` **compression?**: [`BlobStorageCompressionType`](../type-aliases/BlobStorageCompressionType.md)
 
 The type of compression used for the blob, if not set it is not stored with compression.
 
 ***
 
-### fileExtension?
+### fileExtension? {#fileextension}
 
-> `optional` **fileExtension**: `string`
+> `optional` **fileExtension?**: `string`
 
 The extension.
 
 ***
 
-### metadata?
+### metadata? {#metadata}
 
-> `optional` **metadata**: `IJsonLdNodeObject`
+> `optional` **metadata?**: `IJsonLdNodeObject`
 
 The metadata for the blob as JSON-LD.
 
 ***
 
-### blob?
+### blob? {#blob}
 
-> `optional` **blob**: `string`
+> `optional` **blob?**: `string`
 
 The blob in base64 format, included if the includeContent flag was set in the request.

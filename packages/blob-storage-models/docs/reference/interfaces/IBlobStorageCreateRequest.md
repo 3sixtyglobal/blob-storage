@@ -4,7 +4,7 @@ Request to create an entry in blob storage.
 
 ## Properties
 
-### body
+### body {#body}
 
 > **body**: `object`
 
@@ -18,25 +18,25 @@ The data to store in base64 encoding.
 
 #### encodingFormat?
 
-> `optional` **encodingFormat**: `string`
+> `optional` **encodingFormat?**: `string`
 
 The mime type of the blob, will be detected if left undefined.
 
 #### fileExtension?
 
-> `optional` **fileExtension**: `string`
+> `optional` **fileExtension?**: `string`
 
 The extension of the blob, will be detected if left undefined.
 
 #### metadata?
 
-> `optional` **metadata**: `IJsonLdNodeObject`
+> `optional` **metadata?**: `IJsonLdNodeObject`
 
 Custom metadata to associate with the blob as JSON-LD.
 
 #### disableEncryption?
 
-> `optional` **disableEncryption**: `boolean`
+> `optional` **disableEncryption?**: `boolean`
 
 Disables encryption if enabled by default.
 
@@ -48,13 +48,13 @@ false
 
 #### compress?
 
-> `optional` **compress**: [`BlobStorageCompressionType`](../type-aliases/BlobStorageCompressionType.md)
+> `optional` **compress?**: [`BlobStorageCompressionType`](../type-aliases/BlobStorageCompressionType.md)
 
 Optional compression type to use for the blob, defaults to no compression.
 
 #### overrideVaultKeyId?
 
-> `optional` **overrideVaultKeyId**: `string`
+> `optional` **overrideVaultKeyId?**: `string`
 
 Use a different vault key id for encryption, if not provided the default vault key id will be used.
 
@@ -66,6 +66,6 @@ undefined
 
 #### namespace?
 
-> `optional` **namespace**: `string`
+> `optional` **namespace?**: `string`
 
 The namespace to store the data in, defaults to component configured namespace.

@@ -3,9 +3,9 @@
 import type { IValidationFailure } from "@twin.org/core";
 import { DataTypeHelper } from "@twin.org/data-core";
 import { JsonLdDataTypes } from "@twin.org/data-json-ld";
-import { BlobStorageDataTypes } from "../../src/dataTypes/blobStorageDataTypes";
-import { BlobStorageContexts } from "../../src/models/blobStorageContexts";
-import { BlobStorageTypes } from "../../src/models/blobStorageTypes";
+import { BlobStorageDataTypes } from "../../src/dataTypes/blobStorageDataTypes.js";
+import { BlobStorageContexts } from "../../src/models/blobStorageContexts.js";
+import { BlobStorageTypes } from "../../src/models/blobStorageTypes.js";
 
 describe("BlobStorageDataTypes", () => {
 	beforeAll(async () => {
@@ -17,12 +17,12 @@ describe("BlobStorageDataTypes", () => {
 		const validationFailures: IValidationFailure[] = [];
 		const isValid = await DataTypeHelper.validate(
 			"",
-			`${BlobStorageContexts.ContextRoot}${BlobStorageTypes.Entry}`,
+			`${BlobStorageContexts.Namespace}${BlobStorageTypes.Entry}`,
 			{},
 			validationFailures
 		);
 
-		expect(validationFailures.length).toEqual(1);
+		expect(validationFailures.length).toEqual(6);
 		expect(isValid).toEqual(false);
 	});
 
@@ -30,14 +30,14 @@ describe("BlobStorageDataTypes", () => {
 		const validationFailures: IValidationFailure[] = [];
 		const isValid = await DataTypeHelper.validate(
 			"",
-			`${BlobStorageContexts.ContextRoot}${BlobStorageTypes.Entry}`,
+			`${BlobStorageContexts.Namespace}${BlobStorageTypes.Entry}`,
 			{
-				"@context": [BlobStorageContexts.ContextRoot, BlobStorageContexts.ContextRootCommon],
+				"@context": [BlobStorageContexts.Context, BlobStorageContexts.ContextCommon],
 				type: BlobStorageTypes.Entry,
 				dateCreated: new Date().toISOString(),
 				id: "1111",
 				blobSize: 100,
-				blobHash: "abc"
+				integrity: "abc"
 			},
 			validationFailures
 		);

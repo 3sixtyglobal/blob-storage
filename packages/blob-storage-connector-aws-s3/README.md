@@ -1,6 +1,6 @@
 # TWIN Blob Storage Connector AWS S3
 
-Blob Storage connector implementation using [AWS S3](https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/).
+This package integrates blob storage workflows with [Amazon S3](https://aws.amazon.com/s3/) and compatible object storage services. It is suited to deployments that need durable, managed cloud object storage.
 
 ## Installation
 
@@ -8,18 +8,12 @@ Blob Storage connector implementation using [AWS S3](https://docs.aws.amazon.com
 npm install @twin.org/blob-storage-connector-aws-s3
 ```
 
-## Testing
+## Docker
 
-The tests developed are functional tests and need an instance of AWS S3 up and running. To run AWS S3 locally using local stack:
-
-```shell
-docker run -p 4566:4566 -p 4510-4559:4510-4559 --name twin-blob-aws-s3 -d localstack/localstack -e AWS_DEFAULT_REGION='eu-central-1' -e AWS_ACCESS_KEY_ID='test' -e AWS_SECRET_ACCESS_KEY='test' -e SERVICE='S3'
-```
-
-Afterwards you can run the tests as follows:
+To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-npm run test
+docker run -d --name twin-blob-storage-aws-s3 -p 5000:5000 motoserver/moto:latest
 ```
 
 ## Examples

@@ -2,17 +2,26 @@
 	"info": {
 		"s3BlobStorageConnector": {
 			"bucketCreating": "Creating bucket \"{bucket}\"",
-			"bucketCreated": "Created bucket \"{bucket}\"",
-			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists"
+			"bucketExists": "Skipping create bucket \"{bucket}\" as it already exists",
+			"bucketDeleting": "Deleting bucket \"{bucket}\"",
+			"bucketDeleted": "Bucket \"{bucket}\" deleted"
+		}
+	},
+	"health": {
+		"s3BlobStorageConnector": {
+			"healthDescription": "S3 blob storage connector is healthy, bucket \"{bucketName}\" in region \"{region}\"",
+			"healthCheckFailed": "Failed to connect to S3 bucket \"{bucketName}\" in region \"{region}\""
 		}
 	},
 	"error": {
 		"s3BlobStorageConnector": {
 			"bucketCreateFailed": "Creating bucket \"{bucket}\" failed",
+			"teardownFailed": "Failed to teardown S3 bucket \"{bucket}\"",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
 			"getBlobFailed": "Failed to get blob in S3",
 			"setBlobFailed": "Failed to set blob in S3",
-			"removeBlobFailed": "Failed to remove blob in S3"
+			"removeBlobFailed": "Failed to remove blob in S3",
+			"emptyFailed": "Failed to empty S3 bucket \"{bucketName}\""
 		}
 	}
 }

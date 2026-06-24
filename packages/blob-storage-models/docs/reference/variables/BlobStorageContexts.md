@@ -4,16 +4,40 @@
 
 The contexts of blob storage data.
 
-## Type declaration
+## Type Declaration
 
-### ContextRoot
+### Namespace {#namespace}
 
-> `readonly` **ContextRoot**: `"https://schema.twindev.org/blob-storage/"` = `"https://schema.twindev.org/blob-storage/"`
+> `readonly` **Namespace**: `"https://schema.twindev.org/blob-storage/"` = `"https://schema.twindev.org/blob-storage/"`
 
-The context root for the blob storage types.
+The canonical RDF namespace URI for Blob Storage.
 
-### ContextRootCommon
+### Context {#context}
 
-> `readonly` **ContextRootCommon**: `"https://schema.twindev.org/common/"` = `"https://schema.twindev.org/common/"`
+> `readonly` **Context**: `"https://schema.twindev.org/blob-storage/"` = `"https://schema.twindev.org/blob-storage/"`
 
-The context root for the common types.
+The value to use in JSON-LD context for Blob Storage.
+
+### JsonLdContext {#jsonldcontext}
+
+> `readonly` **JsonLdContext**: `"https://schema.twindev.org/blob-storage/types.jsonld"` = `"https://schema.twindev.org/blob-storage/types.jsonld"`
+
+The JSON-LD Context URL.
+
+### NamespaceCommon {#namespacecommon}
+
+> `readonly` **NamespaceCommon**: `"https://schema.twindev.org/common/"` = `"https://schema.twindev.org/common/"`
+
+The canonical RDF namespace URI for TWIN Common.
+
+### ContextCommon {#contextcommon}
+
+> `readonly` **ContextCommon**: `"https://schema.twindev.org/common/"` = `"https://schema.twindev.org/common/"`
+
+The value to use in JSON-LD context for TWIN Common.
+
+### JsonLdContextCommon {#jsonldcontextcommon}
+
+> `readonly` **JsonLdContextCommon**: `"https://schema.twindev.org/common/types.jsonld"` = `"https://schema.twindev.org/common/types.jsonld"`
+
+The JSON-LD Context URL for TWIN Common.

@@ -1,7 +1,19 @@
 {
+	"info": {
+		"memoryBlobStorageConnector": {
+			"storeTearingDown": "Tearing down memory blob storage",
+			"storeTornDown": "Memory blob storage torn down"
+		}
+	},
+	"health": {
+		"memoryBlobStorageConnector": {
+			"healthDescription": "Memory blob storage connector is healthy, storing \"{storedItemCount}\" items"
+		}
+	},
 	"error": {
 		"memoryBlobStorageConnector": {
-			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\""
+			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
+			"emptyFailed": "Failed to empty memory blob storage"
 		}
 	}
 }

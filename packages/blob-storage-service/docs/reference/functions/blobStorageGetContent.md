@@ -2,7 +2,7 @@
 
 > **blobStorageGetContent**(`httpRequestContext`, `componentName`, `request`): `Promise`\<`IBlobStorageGetContentResponse` & `IRestRouteResponseOptions`\>
 
-Get the blob from storage.
+Get the raw content of a blob from storage.
 
 ## Parameters
 

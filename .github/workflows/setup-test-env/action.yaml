@@ -1,0 +1,66 @@
+name: 'Setup Testing Environment'
+description: 'Set up the testing environment for running tests from the build workflow.'
+
+inputs:
+  package:
+    description: 'The package to set up the test environment for.'
+    required: true
+    default: 'all'
+  test_env_vars:
+    description: 'Newline-separated KEY=VALUE pairs to inject as environment variables into the test services.'
+    required: false
+    default: ''
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Start IPFS Kubo
+      if: inputs.package == 'packages/blob-storage-connector-ipfs' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker rmi ipfs/kubo:latest || true
+        docker pull ipfs/kubo:latest
+        docker run -d \
+          --name ipfs \
+          -p 24001:14001 \
+          -p 24001:14001/udp \
+          -p 28080:8080 \
+          -p 25001:5001 \
+          ipfs/kubo:latest
+
+    - name: Start Moto Server
+      if: inputs.package == 'packages/blob-storage-connector-aws-s3' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker rmi motoserver/moto:latest || true
+        docker pull motoserver/moto:latest
+        docker run -d \
+          --name motoserver \
+          -p 5000:5000 \
+          motoserver/moto:latest
+
+    - name: Start Azurite
+      if: inputs.package == 'packages/blob-storage-connector-azure' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker rmi mcr.microsoft.com/azure-storage/azurite:latest || true
+        docker pull mcr.microsoft.com/azure-storage/azurite:latest
+        docker run -d \
+          --name azurite \
+          -p 20620:10000 \
+          -e AZURITE_ACCOUNTS=testAccount:testKey \
+          mcr.microsoft.com/azure-storage/azurite:latest \
+          azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
+
+    - name: Start GCP Storage Emulator
+      if: inputs.package == 'packages/blob-storage-connector-gcp' || inputs.package == 'all'
+      shell: bash
+      run: |
+        docker rmi fsouza/fake-gcs-server:latest || true
+        docker pull fsouza/fake-gcs-server:latest
+        docker run -d \
+          -p 4443:4443 \
+          --name gcp-storage-emulator \
+          fsouza/fake-gcs-server:latest \
+          -external-url http://localhost:4443 \
+          -scheme http

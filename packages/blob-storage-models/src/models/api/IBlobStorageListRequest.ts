@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { SortDirection } from "@twin.org/entity";
 import type { HeaderTypes, MimeTypes } from "@twin.org/web";
-import type { IBlobStorageEntry } from "../IBlobStorageEntry";
+import type { IBlobStorageEntry } from "../IBlobStorageEntry.js";
 
 /**
  * Query the entries from blob storage.
@@ -35,9 +35,9 @@ export interface IBlobStorageListRequest {
 		orderByDirection?: SortDirection;
 
 		/**
-		 * The number of entries to return per page.
+		 * Limit the number of entities to return.
 		 */
-		pageSize?: number | string;
+		limit?: string;
 
 		/**
 		 * The cursor to get next chunk of data, returned in previous response.

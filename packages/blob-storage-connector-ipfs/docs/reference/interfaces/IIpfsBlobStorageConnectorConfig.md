@@ -4,7 +4,7 @@ Configuration for the IPFS Blob Storage Connector.
 
 ## Properties
 
-### apiUrl
+### apiUrl {#apiurl}
 
 > **apiUrl**: `string`
 
@@ -12,8 +12,8 @@ The url for API calls.
 
 ***
 
-### bearerToken?
+### bearerToken? {#bearertoken}
 
-> `optional` **bearerToken**: `string`
+> `optional` **bearerToken?**: `string`
 
 The bearer token for authentication to the API.

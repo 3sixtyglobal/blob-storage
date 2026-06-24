@@ -1,6 +1,6 @@
 # TWIN Blob Storage Connector File
 
-Blob Storage connector implementation using file storage.
+This package stores and retrieves blobs using local file system directories or mounted volumes. It is useful for straightforward deployments and development environments that rely on direct disk-backed storage.
 
 ## Installation
 

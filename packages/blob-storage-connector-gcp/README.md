@@ -1,6 +1,6 @@
-# TWIN Blob Storage Connector Google Cloud Storage
+# TWIN Blob Storage Connector GCP
 
-Blob Storage connector implementation using [Google Cloud Storage](https://cloud.google.com/storage/docs/reference/libraries).
+This package integrates blob storage workflows with [Google Cloud Storage](https://cloud.google.com/storage). It supports deployments that rely on managed GCP buckets for object persistence and retrieval.
 
 ## Installation
 
@@ -8,25 +8,13 @@ Blob Storage connector implementation using [Google Cloud Storage](https://cloud
 npm install @twin.org/blob-storage-connector-gcp
 ```
 
-## Testing
+## Docker
 
-The tests developed are functional tests and need an instance of Google Cloud Storage up and running. For testing purposes, we use [fake-gcs-server](https://github.com/fsouza/fake-gcs-server), which is an emulator for Google Cloud Storage.
-
-To run Google Cloud Storage locally using the emulator with HTTP protocol:
+To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-docker run -p 4443:4443 --name twin-blob-gcp -d fsouza/fake-gcs-server -scheme http
+docker run -d --name twin-blob-storage-gcp -p 4443:4443 fsouza/fake-gcs-server:latest -scheme http -external-url http://localhost:4443
 ```
-
-This command pulls and runs the `fake-gcs-server` Docker image, which provides a local emulation of Google Cloud Storage. We use the `-scheme http` flag to configure the emulator to use HTTP instead of HTTPS for local testing purposes. This simplifies the setup and avoids potential SSL/TLS configuration issues in the local environment.
-
-Afterwards you can run the tests as follows:
-
-```shell
-npm run test
-```
-
-Note that while we use HTTP for local testing, in a production environment, you should always use HTTPS for secure communication with Google Cloud Storage.
 
 ## Examples
 

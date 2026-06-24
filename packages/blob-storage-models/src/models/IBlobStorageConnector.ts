@@ -3,7 +3,7 @@
 import type { IComponent } from "@twin.org/core";
 
 /**
- * Interface describing an blob storage connector.
+ * Interface describing a blob storage connector.
  */
 export interface IBlobStorageConnector extends IComponent {
 	/**
@@ -26,4 +26,10 @@ export interface IBlobStorageConnector extends IComponent {
 	 * @returns True if the blob was found.
 	 */
 	remove(id: string): Promise<boolean>;
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns A promise that resolves when all blobs have been removed.
+	 */
+	empty(): Promise<void>;
 }

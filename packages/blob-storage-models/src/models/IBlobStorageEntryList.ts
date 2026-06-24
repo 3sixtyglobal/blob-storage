@@ -2,20 +2,20 @@
 // SPDX-License-Identifier: Apache-2.0.
 import type { IJsonLdContextDefinitionElement } from "@twin.org/data-json-ld";
 import type { SchemaOrgContexts, SchemaOrgTypes } from "@twin.org/standards-schema-org";
-import type { BlobStorageContexts } from "./blobStorageContexts";
-import type { IBlobStorageEntry } from "./IBlobStorageEntry";
+import type { BlobStorageContexts } from "./blobStorageContexts.js";
+import type { IBlobStorageEntry } from "./IBlobStorageEntry.js";
 
 /**
- * Interface describing an blob storage entry list.
+ * Interface describing a blob storage entry list.
  */
 export interface IBlobStorageEntryList {
 	/**
 	 * JSON-LD Context.
 	 */
 	"@context": [
-		typeof SchemaOrgContexts.ContextRoot,
-		typeof BlobStorageContexts.ContextRoot,
-		typeof BlobStorageContexts.ContextRootCommon,
+		typeof SchemaOrgContexts.Context,
+		typeof BlobStorageContexts.Context,
+		typeof BlobStorageContexts.ContextCommon,
 		...IJsonLdContextDefinitionElement[]
 	];
 
@@ -28,9 +28,4 @@ export interface IBlobStorageEntryList {
 	 * The list of entries.
 	 */
 	[SchemaOrgTypes.ItemListElement]: IBlobStorageEntry[];
-
-	/**
-	 * The cursor to get the next chunk of entries.
-	 */
-	[SchemaOrgTypes.NextItem]?: string;
 }

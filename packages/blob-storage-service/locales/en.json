@@ -6,8 +6,11 @@
 			"getFailed": "There was a problem getting the blob",
 			"updateFailed": "There was a problem updating the blob",
 			"removeFailed": "There was a problem removing the blob",
+			"emptyFailed": "There was a problem emptying the blob storage",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage service \"{namespace}\"",
-			"vaultConnectorNotConfigured": "The vault connector is not configured, but encryption/decryption was requested."
+			"vaultConnectorNotConfigured": "The vault connector is not configured, but encryption/decryption was requested.",
+			"blobNotFound": "The blob with id \"{notFoundId}\" was not found",
+			"entityNotFound": "The entity with id \"{notFoundId}\" was not found"
 		}
 	}
 }

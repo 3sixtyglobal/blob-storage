@@ -2,14 +2,26 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { Storage } from "@google-cloud/storage";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { BaseError, Converter, GeneralError, Guards, Is, ObjectHelper, Urn } from "@twin.org/core";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
+import {
+	BaseError,
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Is,
+	ObjectHelper,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
-import { LoggingConnectorFactory } from "@twin.org/logging-models";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
 import { MimeTypes } from "@twin.org/web";
 import type { JWTInput } from "google-auth-library";
-import type { IGcpBlobStorageConnectorConfig } from "./models/IGcpBlobStorageConnectorConfig";
-import type { IGcpBlobStorageConnectorConstructorOptions } from "./models/IGcpBlobStorageConnectorConstructorOptions";
+import type { IGcpBlobStorageConnectorConfig } from "./models/IGcpBlobStorageConnectorConfig.js";
+import type { IGcpBlobStorageConnectorConstructorOptions } from "./models/IGcpBlobStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations on GCP Storage.
@@ -24,13 +36,19 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<GcpBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<GcpBlobStorageConnector>();
 
 	/**
 	 * The configuration for the connector.
 	 * @internal
 	 */
 	private readonly _config: IGcpBlobStorageConnectorConfig;
+
+	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
 
 	/**
 	 * The GCP Storage client.
@@ -43,18 +61,22 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IGcpBlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(GcpBlobStorageConnector.CLASS_NAME, nameof(options), options);
 		Guards.object<IGcpBlobStorageConnectorConfig>(
-			this.CLASS_NAME,
+			GcpBlobStorageConnector.CLASS_NAME,
 			nameof(options.config),
 			options.config
 		);
-		Guards.stringValue(this.CLASS_NAME, nameof(options.config.projectId), options.config.projectId);
+		Guards.stringValue(
+			GcpBlobStorageConnector.CLASS_NAME,
+			nameof(options.config.projectId),
+			options.config.projectId
+		);
 
 		let credentials: JWTInput | undefined;
 		if (!Is.empty(options.config.credentials)) {
 			Guards.stringBase64(
-				this.CLASS_NAME,
+				GcpBlobStorageConnector.CLASS_NAME,
 				nameof(options.config.credentials),
 				options.config.credentials
 			);
@@ -64,12 +86,13 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 		}
 
 		Guards.stringValue(
-			this.CLASS_NAME,
+			GcpBlobStorageConnector.CLASS_NAME,
 			nameof(options.config.bucketName),
 			options.config.bucketName
 		);
 
 		this._config = options.config;
+		this._partitionContextIds = options.partitionContextIds;
 		this._storage = new Storage({
 			projectId: this._config.projectId,
 			apiEndpoint: this._config.apiEndpoint,
@@ -78,53 +101,83 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	}
 
 	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return GcpBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		try {
+			await this._storage.bucket(this._config.bucketName).exists();
+			return [
+				{
+					source: GcpBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Ok,
+					description: "healthDescription",
+					data: {
+						bucketName: this._config.bucketName,
+						projectId: this._config.projectId
+					}
+				}
+			];
+		} catch {
+			return [
+				{
+					source: GcpBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Error,
+					description: "healthDescription",
+					message: "healthCheckFailed",
+					data: {
+						bucketName: this._config.bucketName,
+						projectId: this._config.projectId
+					}
+				}
+			];
+		}
+	}
+
+	/**
 	 * Bootstrap the component by creating and initializing any resources it needs.
-	 * @param nodeLoggingConnectorType The node logging connector type, defaults to "node-logging".
+	 * @param nodeLoggingComponentType The node logging component type.
 	 * @returns True if the bootstrapping process was successful.
 	 */
-	public async bootstrap(nodeLoggingConnectorType?: string): Promise<boolean> {
-		const nodeLogging = LoggingConnectorFactory.getIfExists(
-			nodeLoggingConnectorType ?? "node-logging"
-		);
+	public async bootstrap(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 
 		try {
-			await nodeLogging?.log({
-				level: "info",
-				source: this.CLASS_NAME,
-				message: "bucketCreating",
-				data: {
-					bucket: this._config.bucketName
-				}
-			});
-
 			const [buckets] = await this._storage.getBuckets();
 			const bucketExists = buckets.some(bucket => bucket.name === this._config.bucketName);
 
 			if (bucketExists) {
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
+					source: GcpBlobStorageConnector.CLASS_NAME,
 					message: "bucketExists",
 					data: {
 						bucket: this._config.bucketName
 					}
 				});
 			} else {
-				await this._storage.createBucket(this._config.bucketName);
-
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
-					message: "bucketCreated",
+					source: GcpBlobStorageConnector.CLASS_NAME,
+					message: "bucketCreating",
 					data: {
 						bucket: this._config.bucketName
 					}
 				});
+				await this._storage.createBucket(this._config.bucketName);
 			}
 		} catch (err) {
 			await nodeLogging?.log({
 				level: "error",
-				source: this.CLASS_NAME,
+				source: GcpBlobStorageConnector.CLASS_NAME,
 				message: "bucketCreateFailed",
 				data: {
 					bucket: this._config.bucketName
@@ -144,12 +197,15 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(GcpBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
 
 		try {
 			const id = Converter.bytesToHex(Sha256.sum256(blob));
 			const bucket = this._storage.bucket(this._config.bucketName);
-			const file = bucket.file(id);
+			const file = bucket.file(`${partitionKey ?? "root"}/${id}`);
 
 			await file.save(blob, {
 				contentType: MimeTypes.OctetStream
@@ -157,7 +213,7 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 
 			return `blob:${new Urn(GcpBlobStorageConnector.NAMESPACE, id).toString()}`;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(GcpBlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -167,11 +223,15 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(GcpBlobStorageConnector.CLASS_NAME, nameof(id), id);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== GcpBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(GcpBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: GcpBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -180,7 +240,7 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 		try {
 			const key = urnParsed.namespaceSpecific(1);
 			const bucket = this._storage.bucket(this._config.bucketName);
-			const file = bucket.file(key);
+			const file = bucket.file(`${partitionKey ?? "root"}/${key}`);
 
 			const [exists] = await file.exists();
 			if (!exists) {
@@ -190,7 +250,78 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 			const [contents] = await file.download();
 			return new Uint8Array(contents);
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "getBlobFailed", { id }, err);
+			throw new GeneralError(GcpBlobStorageConnector.CLASS_NAME, "getBlobFailed", { id }, err);
+		}
+	}
+
+	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: GcpBlobStorageConnector.CLASS_NAME,
+			message: "bucketDeleting",
+			data: {
+				bucket: this._config.bucketName
+			}
+		});
+
+		try {
+			const bucket = this._storage.bucket(this._config.bucketName);
+			await bucket.deleteFiles({ force: true });
+			await bucket.delete();
+
+			await nodeLogging?.log({
+				level: "info",
+				source: GcpBlobStorageConnector.CLASS_NAME,
+				message: "bucketDeleted",
+				data: {
+					bucket: this._config.bucketName
+				}
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: GcpBlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				data: {
+					bucket: this._config.bucketName
+				},
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns A promise that resolves when all blobs in the current partition have been removed.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+			const prefix = `${partitionKey ?? "root"}/`;
+
+			const bucket = this._storage.bucket(this._config.bucketName);
+			await bucket.deleteFiles({ force: true, prefix });
+		} catch (err) {
+			throw new GeneralError(
+				GcpBlobStorageConnector.CLASS_NAME,
+				"emptyFailed",
+				{ bucketName: this._config.bucketName },
+				err
+			);
 		}
 	}
 
@@ -200,11 +331,15 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(GcpBlobStorageConnector.CLASS_NAME, nameof(id), id);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== GcpBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(GcpBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: GcpBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -213,7 +348,7 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 		try {
 			const key = urnParsed.namespaceSpecific(1);
 			const bucket = this._storage.bucket(this._config.bucketName);
-			const file = bucket.file(key);
+			const file = bucket.file(`${partitionKey ?? "root"}/${key}`);
 
 			const [exists] = await file.exists();
 			if (!exists) {
@@ -223,7 +358,7 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 			await file.delete();
 			return true;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", { id }, err);
+			throw new GeneralError(GcpBlobStorageConnector.CLASS_NAME, "removeBlobFailed", { id }, err);
 		}
 	}
 }

@@ -1,6 +1,6 @@
 # Interface: IBlobStorageComponent
 
-Interface describing an blob storage component.
+Interface describing a blob storage component.
 
 ## Extends
 
@@ -8,9 +8,9 @@ Interface describing an blob storage component.
 
 ## Methods
 
-### create()
+### create() {#create}
 
-> **create**(`blob`, `encodingFormat?`, `fileExtension?`, `metadata?`, `options?`, `userIdentity?`, `nodeIdentity?`): `Promise`\<`string`\>
+> **create**(`blob`, `encodingFormat?`, `fileExtension?`, `metadata?`, `options?`): `Promise`\<`string`\>
 
 Create the blob with some metadata.
 
@@ -68,18 +68,6 @@ Optional compression type to use for the blob, defaults to no compression.
 
 The namespace to use for storing, defaults to component configured namespace.
 
-##### userIdentity?
-
-`string`
-
-The user identity to use with storage operations.
-
-##### nodeIdentity?
-
-`string`
-
-The node identity to use with storage operations.
-
 #### Returns
 
 `Promise`\<`string`\>
@@ -88,9 +76,9 @@ The id of the stored blob in urn format.
 
 ***
 
-### get()
+### get() {#get}
 
-> **get**(`id`, `options?`, `userIdentity?`, `nodeIdentity?`): `Promise`\<[`IBlobStorageEntry`](IBlobStorageEntry.md)\>
+> **get**(`id`, `options?`): `Promise`\<[`IBlobStorageEntry`](IBlobStorageEntry.md)\>
 
 Get the blob and metadata.
 
@@ -124,18 +112,6 @@ If the content should be decompressed, if it was compressed when stored, default
 
 Use a different vault key id for decryption, if not provided the default vault key id will be used.
 
-##### userIdentity?
-
-`string`
-
-The user identity to use with storage operations.
-
-##### nodeIdentity?
-
-`string`
-
-The node identity to use with storage operations.
-
 #### Returns
 
 `Promise`\<[`IBlobStorageEntry`](IBlobStorageEntry.md)\>
@@ -148,9 +124,9 @@ Not found error if the blob cannot be found.
 
 ***
 
-### update()
+### update() {#update}
 
-> **update**(`id`, `encodingFormat?`, `fileExtension?`, `metadata?`, `userIdentity?`, `nodeIdentity?`): `Promise`\<`void`\>
+> **update**(`id`, `encodingFormat?`, `fileExtension?`, `metadata?`): `Promise`\<`void`\>
 
 Update the blob with metadata.
 
@@ -180,23 +156,11 @@ Extension for the blob, will be detected if left undefined.
 
 Data for the custom metadata as JSON-LD.
 
-##### userIdentity?
-
-`string`
-
-The user identity to use with storage operations.
-
-##### nodeIdentity?
-
-`string`
-
-The node identity to use with storage operations.
-
 #### Returns
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the blob metadata has been updated.
 
 #### Throws
 
@@ -204,9 +168,9 @@ Not found error if the blob cannot be found.
 
 ***
 
-### remove()
+### remove() {#remove}
 
-> **remove**(`id`, `userIdentity?`, `nodeIdentity?`): `Promise`\<`void`\>
+> **remove**(`id`): `Promise`\<`void`\>
 
 Remove the blob.
 
@@ -218,23 +182,11 @@ Remove the blob.
 
 The id of the blob to remove in urn format.
 
-##### userIdentity?
-
-`string`
-
-The user identity to use with storage operations.
-
-##### nodeIdentity?
-
-`string`
-
-The node identity to use with storage operations.
-
 #### Returns
 
 `Promise`\<`void`\>
 
-Nothing.
+A promise that resolves when the blob has been removed.
 
 #### Throws
 
@@ -242,9 +194,23 @@ Not found error if the blob cannot be found.
 
 ***
 
-### query()
+### empty() {#empty}
 
-> **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `pageSize?`, `userIdentity?`, `nodeIdentity?`): `Promise`\<[`IBlobStorageEntryList`](IBlobStorageEntryList.md)\>
+> **empty**(): `Promise`\<`void`\>
+
+Remove all blobs from the storage.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+A promise that resolves when all blobs have been removed.
+
+***
+
+### query() {#query}
+
+> **query**(`conditions?`, `orderBy?`, `orderByDirection?`, `cursor?`, `limit?`): `Promise`\<\{ `entries`: [`IBlobStorageEntryList`](IBlobStorageEntryList.md); `cursor?`: `string`; \}\>
 
 Query all the blob storage entries which match the conditions.
 
@@ -258,9 +224,9 @@ The conditions to match for the entries.
 
 ##### orderBy?
 
-The order for the results, defaults to created.
+`"dateCreated"` \| `"dateModified"`
 
-`"dateCreated"` | `"dateModified"`
+The order for the results, defaults to created.
 
 ##### orderByDirection?
 
@@ -274,27 +240,15 @@ The direction for the order, defaults to descending.
 
 The cursor to request the next page of entries.
 
-##### pageSize?
+##### limit?
 
 `number`
 
 The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
 
-##### userIdentity?
-
-`string`
-
-The user identity to use with storage operations.
-
-##### nodeIdentity?
-
-`string`
-
-The node identity to use with storage operations.
-
 #### Returns
 
-`Promise`\<[`IBlobStorageEntryList`](IBlobStorageEntryList.md)\>
+`Promise`\<\{ `entries`: [`IBlobStorageEntryList`](IBlobStorageEntryList.md); `cursor?`: `string`; \}\>
 
 All the entries for the storage matching the conditions,
 and a cursor which can be used to request more entities.

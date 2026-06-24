@@ -33,16 +33,16 @@ export class BlobStorageEntry {
 	public dateModified?: string;
 
 	/**
-	 * The length of the data in the blob.
+	 * The size of the data in the blob.
 	 */
 	@property({ type: "number" })
 	public blobSize!: number;
 
 	/**
-	 * The hash of the data in the blob.
+	 * The integrity of the data in the blob.
 	 */
 	@property({ type: "string" })
-	public blobHash!: string;
+	public integrity!: string;
 
 	/**
 	 * The mime type for the blob.
@@ -69,20 +69,8 @@ export class BlobStorageEntry {
 	public isEncrypted!: boolean;
 
 	/**
-	 * Is the entry compressed.
+	 * The compression type applied to the entry, if any.
 	 */
 	@property({ type: "string", optional: true })
 	public compression?: BlobStorageCompressionType;
-
-	/**
-	 * The user identity that created the blob.
-	 */
-	@property({ type: "string", optional: true })
-	public userIdentity?: string;
-
-	/**
-	 * The node identity that created the blob.
-	 */
-	@property({ type: "string", optional: true })
-	public nodeIdentity?: string;
 }

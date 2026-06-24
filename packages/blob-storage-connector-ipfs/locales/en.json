@@ -1,11 +1,25 @@
 {
+	"info": {
+		"ipfsBlobStorageConnector": {
+			"storeTearingDown": "Tearing down IPFS blob storage",
+			"storeTornDown": "IPFS blob storage torn down"
+		}
+	},
+	"health": {
+		"ipfsBlobStorageConnector": {
+			"healthDescription": "IPFS blob storage connector is healthy, connected to \"{apiUrl}\"",
+			"healthCheckFailed": "Failed to connect to IPFS node at \"{apiUrl}\""
+		}
+	},
 	"error": {
 		"ipfsBlobStorageConnector": {
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage \"{namespace}\"",
 			"fetchFail": "Failure during IPFS request",
 			"setBlobFailed": "Failed to store blob in IPFS",
 			"getBlobFailed": "Failed to get blob from IPFS",
-			"removeBlobFailed": "Failed to remove blob from IPFS"
+			"removeBlobFailed": "Failed to remove blob from IPFS",
+			"emptyFailed": "Failed to empty IPFS blob storage",
+			"teardownFailed": "Failed to teardown IPFS blob storage"
 		}
 	}
 }

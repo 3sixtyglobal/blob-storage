@@ -11,6 +11,7 @@
 - [IBlobStorageEntry](interfaces/IBlobStorageEntry.md)
 - [IBlobStorageEntryList](interfaces/IBlobStorageEntryList.md)
 - [IBlobStorageCreateRequest](interfaces/IBlobStorageCreateRequest.md)
+- [IBlobStorageEmptyRequest](interfaces/IBlobStorageEmptyRequest.md)
 - [IBlobStorageGetContentRequest](interfaces/IBlobStorageGetContentRequest.md)
 - [IBlobStorageGetContentResponse](interfaces/IBlobStorageGetContentResponse.md)
 - [IBlobStorageGetRequest](interfaces/IBlobStorageGetRequest.md)

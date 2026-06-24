@@ -4,9 +4,9 @@ Query the entries from blob storage.
 
 ## Properties
 
-### headers?
+### headers? {#headers}
 
-> `optional` **headers**: `object`
+> `optional` **headers?**: `object`
 
 The headers which can be used to determine the response data type.
 
@@ -16,38 +16,38 @@ The headers which can be used to determine the response data type.
 
 ***
 
-### query?
+### query? {#query}
 
-> `optional` **query**: `object`
+> `optional` **query?**: `object`
 
 The parameters from the query.
 
 #### conditions?
 
-> `optional` **conditions**: `string`
+> `optional` **conditions?**: `string`
 
 The condition for the query as JSON version of EntityCondition type.
 
 #### orderBy?
 
-> `optional` **orderBy**: `"dateCreated"` \| `"dateModified"`
+> `optional` **orderBy?**: `"dateCreated"` \| `"dateModified"`
 
 The order for the results, default to created.
 
 #### orderByDirection?
 
-> `optional` **orderByDirection**: `SortDirection`
+> `optional` **orderByDirection?**: `SortDirection`
 
 The direction for the order, defaults to desc.
 
-#### pageSize?
+#### limit?
 
-> `optional` **pageSize**: `string` \| `number`
+> `optional` **limit?**: `string`
 
-The number of entries to return per page.
+Limit the number of entities to return.
 
 #### cursor?
 
-> `optional` **cursor**: `string`
+> `optional` **cursor?**: `string`
 
 The cursor to get next chunk of data, returned in previous response.

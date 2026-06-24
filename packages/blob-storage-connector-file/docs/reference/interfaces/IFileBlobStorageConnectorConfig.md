@@ -4,7 +4,7 @@ Configuration for the File Blob Storage Connector.
 
 ## Properties
 
-### directory
+### directory {#directory}
 
 > **directory**: `string`
 
@@ -12,8 +12,8 @@ The directory to use for storage.
 
 ***
 
-### extension?
+### extension? {#extension}
 
-> `optional` **extension**: `string`
+> `optional` **extension?**: `string`
 
 The extension to add to files when they are stored.

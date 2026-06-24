@@ -3,12 +3,12 @@
 import type { IComponent } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import type { EntityCondition, SortDirection } from "@twin.org/entity";
-import type { BlobStorageCompressionType } from "./blobStorageCompressionType";
-import type { IBlobStorageEntry } from "./IBlobStorageEntry";
-import type { IBlobStorageEntryList } from "./IBlobStorageEntryList";
+import type { BlobStorageCompressionType } from "./blobStorageCompressionType.js";
+import type { IBlobStorageEntry } from "./IBlobStorageEntry.js";
+import type { IBlobStorageEntryList } from "./IBlobStorageEntryList.js";
 
 /**
- * Interface describing an blob storage component.
+ * Interface describing a blob storage component.
  */
 export interface IBlobStorageComponent extends IComponent {
 	/**
@@ -22,8 +22,6 @@ export interface IBlobStorageComponent extends IComponent {
 	 * @param options.overrideVaultKeyId Use a different vault key id for encryption, if not provided the default vault key id will be used.
 	 * @param options.compress Optional compression type to use for the blob, defaults to no compression.
 	 * @param options.namespace The namespace to use for storing, defaults to component configured namespace.
-	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns The id of the stored blob in urn format.
 	 */
 	create(
@@ -36,9 +34,7 @@ export interface IBlobStorageComponent extends IComponent {
 			overrideVaultKeyId?: string;
 			compress?: BlobStorageCompressionType;
 			namespace?: string;
-		},
-		userIdentity?: string,
-		nodeIdentity?: string
+		}
 	): Promise<string>;
 
 	/**
@@ -48,8 +44,6 @@ export interface IBlobStorageComponent extends IComponent {
 	 * @param options.includeContent Include the content, or just get the metadata.
 	 * @param options.overrideVaultKeyId Use a different vault key id for decryption, if not provided the default vault key id will be used.
 	 * @param options.decompress If the content should be decompressed, if it was compressed when stored, defaults to true.
-	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
 	 * @returns The data and metadata for the blob if it can be found.
 	 * @throws Not found error if the blob cannot be found.
 	 */
@@ -59,9 +53,7 @@ export interface IBlobStorageComponent extends IComponent {
 			includeContent?: boolean;
 			decompress?: boolean;
 			overrideVaultKeyId?: string;
-		},
-		userIdentity?: string,
-		nodeIdentity?: string
+		}
 	): Promise<IBlobStorageEntry>;
 
 	/**
@@ -70,29 +62,29 @@ export interface IBlobStorageComponent extends IComponent {
 	 * @param encodingFormat Mime type for the blob, will be detected if left undefined.
 	 * @param fileExtension Extension for the blob, will be detected if left undefined.
 	 * @param metadata Data for the custom metadata as JSON-LD.
-	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the blob metadata has been updated.
 	 * @throws Not found error if the blob cannot be found.
 	 */
 	update(
 		id: string,
 		encodingFormat?: string,
 		fileExtension?: string,
-		metadata?: IJsonLdNodeObject,
-		userIdentity?: string,
-		nodeIdentity?: string
+		metadata?: IJsonLdNodeObject
 	): Promise<void>;
 
 	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
-	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
-	 * @returns Nothing.
+	 * @returns A promise that resolves when the blob has been removed.
 	 * @throws Not found error if the blob cannot be found.
 	 */
-	remove(id: string, userIdentity?: string, nodeIdentity?: string): Promise<void>;
+	remove(id: string): Promise<void>;
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns A promise that resolves when all blobs have been removed.
+	 */
+	empty(): Promise<void>;
 
 	/**
 	 * Query all the blob storage entries which match the conditions.
@@ -100,9 +92,7 @@ export interface IBlobStorageComponent extends IComponent {
 	 * @param orderBy The order for the results, defaults to created.
 	 * @param orderByDirection The direction for the order, defaults to descending.
 	 * @param cursor The cursor to request the next page of entries.
-	 * @param pageSize The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
-	 * @param userIdentity The user identity to use with storage operations.
-	 * @param nodeIdentity The node identity to use with storage operations.
+	 * @param limit The suggested number of entries to return in each chunk, in some scenarios can return a different amount.
 	 * @returns All the entries for the storage matching the conditions,
 	 * and a cursor which can be used to request more entities.
 	 */
@@ -111,8 +101,9 @@ export interface IBlobStorageComponent extends IComponent {
 		orderBy?: keyof Pick<IBlobStorageEntry, "dateCreated" | "dateModified">,
 		orderByDirection?: SortDirection,
 		cursor?: string,
-		pageSize?: number,
-		userIdentity?: string,
-		nodeIdentity?: string
-	): Promise<IBlobStorageEntryList>;
+		limit?: number
+	): Promise<{
+		entries: IBlobStorageEntryList;
+		cursor?: string;
+	}>;
 }

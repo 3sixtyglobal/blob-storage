@@ -2,20 +2,34 @@
 // SPDX-License-Identifier: Apache-2.0.
 import {
 	CreateBucketCommand,
+	DeleteBucketCommand,
 	DeleteObjectCommand,
+	DeleteObjectsCommand,
 	GetObjectCommand,
+	HeadBucketCommand,
 	HeadObjectCommand,
 	ListBucketsCommand,
+	ListObjectsV2Command,
 	PutObjectCommand,
 	S3Client
 } from "@aws-sdk/client-s3";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { BaseError, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
+import {
+	BaseError,
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
-import { LoggingConnectorFactory } from "@twin.org/logging-models";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { IS3BlobStorageConnectorConfig } from "./models/IS3BlobStorageConnectorConfig";
-import type { IS3BlobStorageConnectorConstructorOptions } from "./models/IS3BlobStorageConnectorConstructorOptions";
+import type { IS3BlobStorageConnectorConfig } from "./models/IS3BlobStorageConnectorConfig.js";
+import type { IS3BlobStorageConnectorConstructorOptions } from "./models/IS3BlobStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations on S3.
@@ -30,13 +44,19 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<S3BlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<S3BlobStorageConnector>();
 
 	/**
 	 * The configuration for the connector.
 	 * @internal
 	 */
 	private readonly _config: IS3BlobStorageConnectorConfig;
+
+	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
 
 	/**
 	 * The S3 client.
@@ -49,61 +69,105 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IS3BlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(S3BlobStorageConnector.CLASS_NAME, nameof(options), options);
 		Guards.object<IS3BlobStorageConnectorConfig>(
-			this.CLASS_NAME,
+			S3BlobStorageConnector.CLASS_NAME,
 			nameof(options.config),
 			options.config
 		);
-		Guards.stringValue(this.CLASS_NAME, nameof(options.config.region), options.config.region);
 		Guards.stringValue(
-			this.CLASS_NAME,
+			S3BlobStorageConnector.CLASS_NAME,
+			nameof(options.config.region),
+			options.config.region
+		);
+		Guards.stringValue(
+			S3BlobStorageConnector.CLASS_NAME,
 			nameof(options.config.bucketName),
 			options.config.bucketName
 		);
-		Guards.stringValue(
-			this.CLASS_NAME,
-			nameof(options.config.accessKeyId),
-			options.config.accessKeyId
-		);
-		Guards.stringValue(
-			this.CLASS_NAME,
-			nameof(options.config.secretAccessKey),
-			options.config.secretAccessKey
-		);
+
+		options.config.authMode ??= "credentials";
+
+		let credentials;
+		if (options.config.authMode === "credentials") {
+			Guards.stringValue(
+				S3BlobStorageConnector.CLASS_NAME,
+				nameof(options.config.accessKeyId),
+				options.config.accessKeyId
+			);
+			Guards.stringValue(
+				S3BlobStorageConnector.CLASS_NAME,
+				nameof(options.config.secretAccessKey),
+				options.config.secretAccessKey
+			);
+			credentials = {
+				accessKeyId: options.config.accessKeyId,
+				secretAccessKey: options.config.secretAccessKey
+			};
+		}
+
+		this._partitionContextIds = options.partitionContextIds;
 
 		this._config = options.config;
 		this._s3Client = new S3Client({
 			region: this._config.region,
 			endpoint: this._config.endpoint,
-			credentials: {
-				accessKeyId: this._config.accessKeyId,
-				secretAccessKey: this._config.secretAccessKey
-			},
+			credentials,
 			forcePathStyle: true
 		});
 	}
 
 	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return S3BlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		try {
+			await this._s3Client.send(new HeadBucketCommand({ Bucket: this._config.bucketName }));
+			return [
+				{
+					source: S3BlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Ok,
+					description: "healthDescription",
+					data: {
+						bucketName: this._config.bucketName,
+						region: this._config.region
+					}
+				}
+			];
+		} catch {
+			return [
+				{
+					source: S3BlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Error,
+					description: "healthDescription",
+					message: "healthCheckFailed",
+					data: {
+						bucketName: this._config.bucketName,
+						region: this._config.region
+					}
+				}
+			];
+		}
+	}
+
+	/**
 	 * Bootstrap the component by creating and initializing any resources it needs.
-	 * @param nodeLoggingConnectorType The node logging connector type, defaults to "node-logging".
+	 * @param nodeLoggingComponentType The node logging component type.
 	 * @returns True if the bootstrapping process was successful.
 	 */
-	public async bootstrap(nodeLoggingConnectorType?: string): Promise<boolean> {
-		const nodeLogging = LoggingConnectorFactory.getIfExists(
-			nodeLoggingConnectorType ?? "node-logging"
-		);
+	public async bootstrap(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 
 		try {
-			await nodeLogging?.log({
-				level: "info",
-				source: this.CLASS_NAME,
-				message: "bucketCreating",
-				data: {
-					bucket: this._config.bucketName
-				}
-			});
-
 			const listBucketsCommand = new ListBucketsCommand({});
 			const bucketsList = await this._s3Client.send(listBucketsCommand);
 			const bucketExists = bucketsList.Buckets?.some(
@@ -113,28 +177,27 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			if (bucketExists) {
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
+					source: S3BlobStorageConnector.CLASS_NAME,
 					message: "bucketExists",
 					data: {
 						bucket: this._config.bucketName
 					}
 				});
 			} else {
-				await this._s3Client.send(new CreateBucketCommand({ Bucket: this._config.bucketName }));
-
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
-					message: "bucketCreated",
+					source: S3BlobStorageConnector.CLASS_NAME,
+					message: "bucketCreating",
 					data: {
 						bucket: this._config.bucketName
 					}
 				});
+				await this._s3Client.send(new CreateBucketCommand({ Bucket: this._config.bucketName }));
 			}
 		} catch (err) {
 			await nodeLogging?.log({
 				level: "error",
-				source: this.CLASS_NAME,
+				source: S3BlobStorageConnector.CLASS_NAME,
 				message: "bucketCreateFailed",
 				data: {
 					bucket: this._config.bucketName
@@ -154,14 +217,20 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(S3BlobStorageConnector.CLASS_NAME, nameof(blob), blob);
 
 		try {
 			const id = Converter.bytesToHex(Sha256.sum256(blob));
 
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+
 			const command = new PutObjectCommand({
 				Bucket: this._config.bucketName,
-				Key: id,
+				Key: `${partitionKey ?? "root"}/${id}`,
 				Body: blob
 			});
 
@@ -169,7 +238,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 			return `blob:${new Urn(S3BlobStorageConnector.NAMESPACE, id).toString()}`;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -179,11 +248,14 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(S3BlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		if (urnParsed.namespaceMethod() !== S3BlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: S3BlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -193,7 +265,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			const key = urnParsed.namespaceSpecific(1);
 			const command = new GetObjectCommand({
 				Bucket: this._config.bucketName,
-				Key: key
+				Key: `${partitionKey ?? "root"}/${key}`
 			});
 
 			const response = await this._s3Client.send(command);
@@ -201,7 +273,133 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			if (response.Body) {
 				return new Uint8Array(await response.Body.transformToByteArray());
 			}
-		} catch {}
+		} catch (err) {
+			if (BaseError.isErrorName(err, "NoSuchKey")) {
+				return undefined;
+			}
+			throw new GeneralError(
+				S3BlobStorageConnector.CLASS_NAME,
+				"getBlobFailed",
+				{
+					id,
+					namespace: S3BlobStorageConnector.NAMESPACE
+				},
+				err
+			);
+		}
+	}
+
+	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: S3BlobStorageConnector.CLASS_NAME,
+			message: "bucketDeleting",
+			data: {
+				bucket: this._config.bucketName
+			}
+		});
+
+		try {
+			let continuationToken: string | undefined;
+			do {
+				const listCommand = new ListObjectsV2Command({
+					Bucket: this._config.bucketName,
+					ContinuationToken: continuationToken
+				});
+				const listResponse = await this._s3Client.send(listCommand);
+
+				if (listResponse.Contents && listResponse.Contents.length > 0) {
+					const deleteCommand = new DeleteObjectsCommand({
+						Bucket: this._config.bucketName,
+						Delete: {
+							Objects: listResponse.Contents.map(obj => ({ Key: obj.Key }))
+						}
+					});
+					await this._s3Client.send(deleteCommand);
+				}
+
+				continuationToken = listResponse.IsTruncated
+					? listResponse.NextContinuationToken
+					: undefined;
+			} while (continuationToken);
+
+			await this._s3Client.send(new DeleteBucketCommand({ Bucket: this._config.bucketName }));
+
+			await nodeLogging?.log({
+				level: "info",
+				source: S3BlobStorageConnector.CLASS_NAME,
+				message: "bucketDeleted",
+				data: {
+					bucket: this._config.bucketName
+				}
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: S3BlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				data: {
+					bucket: this._config.bucketName
+				},
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns A promise that resolves when all blobs in the current partition have been removed.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+			const prefix = `${partitionKey ?? "root"}/`;
+
+			let continuationToken: string | undefined;
+			do {
+				const listCommand = new ListObjectsV2Command({
+					Bucket: this._config.bucketName,
+					Prefix: prefix,
+					ContinuationToken: continuationToken
+				});
+				const listResponse = await this._s3Client.send(listCommand);
+
+				if (listResponse.Contents && listResponse.Contents.length > 0) {
+					const deleteCommand = new DeleteObjectsCommand({
+						Bucket: this._config.bucketName,
+						Delete: {
+							Objects: listResponse.Contents.map(obj => ({ Key: obj.Key }))
+						}
+					});
+					await this._s3Client.send(deleteCommand);
+				}
+
+				continuationToken = listResponse.IsTruncated
+					? listResponse.NextContinuationToken
+					: undefined;
+			} while (continuationToken);
+		} catch (err) {
+			throw new GeneralError(
+				S3BlobStorageConnector.CLASS_NAME,
+				"emptyFailed",
+				{ bucketName: this._config.bucketName },
+				err
+			);
+		}
 	}
 
 	/**
@@ -210,11 +408,14 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(S3BlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		if (urnParsed.namespaceMethod() !== S3BlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: S3BlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -225,7 +426,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 			const headCommand = new HeadObjectCommand({
 				Bucket: this._config.bucketName,
-				Key: key
+				Key: `${partitionKey ?? "root"}/${key}`
 			});
 
 			try {
@@ -239,14 +440,14 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 			const deleteCommand = new DeleteObjectCommand({
 				Bucket: this._config.bucketName,
-				Key: key
+				Key: `${partitionKey ?? "root"}/${key}`
 			});
 
 			await this._s3Client.send(deleteCommand);
 
 			return true;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", { id }, err);
+			throw new GeneralError(S3BlobStorageConnector.CLASS_NAME, "removeBlobFailed", { id }, err);
 		}
 	}
 }

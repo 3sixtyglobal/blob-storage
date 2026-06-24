@@ -1,13 +1,24 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { access, mkdir, readFile, unlink, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, readdir, rm, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { BaseError, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
+import {
+	BaseError,
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Is,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
-import { LoggingConnectorFactory } from "@twin.org/logging-models";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { IFileBlobStorageConnectorConstructorOptions } from "./models/IFileBlobStorageConnectorConstructorOptions";
+import type { IFileBlobStorageConnectorConstructorOptions } from "./models/IFileBlobStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations in file.
@@ -21,7 +32,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<FileBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<FileBlobStorageConnector>();
 
 	/**
 	 * The directory to use for storage.
@@ -36,52 +47,89 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	private readonly _extension: string;
 
 	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
+
+	/**
 	 * Create a new instance of FileBlobStorageConnector.
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IFileBlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
-		Guards.object(this.CLASS_NAME, nameof(options.config), options.config);
-		Guards.stringValue(this.CLASS_NAME, nameof(options.config.directory), options.config.directory);
+		Guards.object(FileBlobStorageConnector.CLASS_NAME, nameof(options), options);
+		Guards.object(FileBlobStorageConnector.CLASS_NAME, nameof(options.config), options.config);
+		Guards.stringValue(
+			FileBlobStorageConnector.CLASS_NAME,
+			nameof(options.config.directory),
+			options.config.directory
+		);
 		this._directory = path.resolve(options.config.directory);
 		this._extension = options.config.extension ?? ".blob";
+		this._partitionContextIds = options.partitionContextIds;
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return FileBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		if (await this.dirExists(this._directory)) {
+			return [
+				{
+					source: FileBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Ok,
+					description: "healthDescription",
+					data: {
+						directory: this._directory
+					}
+				}
+			];
+		}
+		return [
+			{
+				source: FileBlobStorageConnector.CLASS_NAME,
+				status: HealthStatus.Error,
+				description: "healthDescription",
+				message: "healthCheckFailed",
+				data: {
+					directory: this._directory
+				}
+			}
+		];
 	}
 
 	/**
 	 * Bootstrap the component by creating and initializing any resources it needs.
-	 * @param nodeLoggingConnectorType The node logging connector type, defaults to "node-logging".
+	 * @param nodeLoggingComponentType The node logging component type.
 	 * @returns True if the bootstrapping process was successful.
 	 */
-	public async bootstrap(nodeLoggingConnectorType?: string): Promise<boolean> {
-		const nodeLogging = LoggingConnectorFactory.getIfExists(
-			nodeLoggingConnectorType ?? "node-logging"
-		);
+	public async bootstrap(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 
 		if (!(await this.dirExists(this._directory))) {
-			await nodeLogging?.log({
-				level: "info",
-				source: this.CLASS_NAME,
-				message: "directoryCreating",
-				data: {
-					directory: this._directory
-				}
-			});
-
 			try {
-				await mkdir(this._directory, { recursive: true });
-
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
-					message: "directoryCreated",
+					source: FileBlobStorageConnector.CLASS_NAME,
+					message: "directoryCreating",
 					data: {
 						directory: this._directory
 					}
 				});
+				await mkdir(this._directory, { recursive: true });
 			} catch (err) {
 				await nodeLogging?.log({
 					level: "error",
-					source: this.CLASS_NAME,
+					source: FileBlobStorageConnector.CLASS_NAME,
 					message: "directoryCreateFailed",
 					data: {
 						directory: this._directory
@@ -93,7 +141,7 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 		} else {
 			await nodeLogging?.log({
 				level: "info",
-				source: this.CLASS_NAME,
+				source: FileBlobStorageConnector.CLASS_NAME,
 				message: "directoryExists",
 				data: {
 					directory: this._directory
@@ -110,22 +158,26 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(FileBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
 
 		try {
-			if (!(await this.dirExists(this._directory))) {
-				await mkdir(this._directory);
-			}
-
 			const id = Converter.bytesToHex(Sha256.sum256(blob));
 
-			const fullPath = path.join(this._directory, `${id}${this._extension}`);
+			const fullPath = this.createFullPath(id, partitionKey);
+
+			const dir = path.dirname(fullPath);
+			if (!(await this.dirExists(dir))) {
+				await mkdir(dir, { recursive: true });
+			}
 
 			await writeFile(fullPath, blob);
 
 			return `blob:${new Urn(FileBlobStorageConnector.NAMESPACE, id).toString()}`;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -135,29 +187,28 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
-
+		Urn.guard(FileBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		if (urnParsed.namespaceMethod() !== FileBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: FileBlobStorageConnector.NAMESPACE,
 				id
 			});
 		}
 
 		try {
-			const fullPath = path.join(
-				this._directory,
-				`${urnParsed.namespaceSpecific(1)}${this._extension}`
-			);
+			const fullPath = this.createFullPath(urnParsed.namespaceSpecific(1), partitionKey);
 
-			return await readFile(fullPath);
+			return new Uint8Array(await readFile(fullPath));
 		} catch (err) {
 			if (BaseError.isErrorCode(err, "ENOENT")) {
 				return;
 			}
-			throw new GeneralError(this.CLASS_NAME, "getBlobFailed", { id }, err);
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "getBlobFailed", { id }, err);
 		}
 	}
 
@@ -167,22 +218,22 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(FileBlobStorageConnector.CLASS_NAME, nameof(id), id);
 
 		const urnParsed = Urn.fromValidString(id);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		if (urnParsed.namespaceMethod() !== FileBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: FileBlobStorageConnector.NAMESPACE,
 				id
 			});
 		}
 
 		try {
-			const fullPath = path.join(
-				this._directory,
-				`${urnParsed.namespaceSpecific(1)}${this._extension}`
-			);
+			const fullPath = this.createFullPath(urnParsed.namespaceSpecific(1), partitionKey);
 
 			await unlink(fullPath);
 
@@ -191,7 +242,83 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 			if (BaseError.isErrorCode(err, "ENOENT")) {
 				return false;
 			}
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", { id }, err);
+			throw new GeneralError(FileBlobStorageConnector.CLASS_NAME, "removeBlobFailed", { id }, err);
+		}
+	}
+
+	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: FileBlobStorageConnector.CLASS_NAME,
+			message: "directoryRemoving",
+			data: {
+				directory: this._directory
+			}
+		});
+
+		try {
+			await rm(this._directory, { recursive: true, force: true });
+
+			await nodeLogging?.log({
+				level: "info",
+				source: FileBlobStorageConnector.CLASS_NAME,
+				message: "directoryRemoved",
+				data: {
+					directory: this._directory
+				}
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: FileBlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				data: {
+					directory: this._directory
+				},
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns A promise that resolves when all blobs in the current partition have been removed.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+
+			if (Is.stringValue(partitionKey)) {
+				const partitionDir = path.join(this._directory, partitionKey);
+				await rm(partitionDir, { recursive: true, force: true });
+			} else {
+				const entries = await readdir(this._directory, { withFileTypes: true });
+				for (const entry of entries) {
+					const fullPath = path.join(this._directory, entry.name);
+					await rm(fullPath, { recursive: true, force: true });
+				}
+			}
+		} catch (err) {
+			throw new GeneralError(
+				FileBlobStorageConnector.CLASS_NAME,
+				"emptyFailed",
+				{ directory: this._directory },
+				err
+			);
 		}
 	}
 
@@ -208,5 +335,17 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 		} catch {
 			return false;
 		}
+	}
+
+	/**
+	 * Create the full path for the blob.
+	 * @param id The id of the blob.
+	 * @param partitionKey The partition key.
+	 * @returns The full path for the blob.
+	 * @internal
+	 */
+	private createFullPath(id: string, partitionKey?: string): string {
+		const partitionPath = Is.stringValue(partitionKey) ? path.join(partitionKey, id) : id;
+		return path.join(this._directory, `${partitionPath}${this._extension}`);
 	}
 }

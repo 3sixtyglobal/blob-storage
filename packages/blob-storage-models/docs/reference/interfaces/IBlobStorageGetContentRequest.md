@@ -4,7 +4,7 @@ Request to get the content from blob storage.
 
 ## Properties
 
-### pathParams
+### pathParams {#pathparams}
 
 > **pathParams**: `object`
 
@@ -18,15 +18,15 @@ The id of the blob to get in urn format.
 
 ***
 
-### query?
+### query? {#query}
 
-> `optional` **query**: `object`
+> `optional` **query?**: `object`
 
 The query parameters.
 
 #### decompress?
 
-> `optional` **decompress**: `string` \| `boolean`
+> `optional` **decompress?**: `string`
 
 If the content should be decompressed, if it was compressed when stored, defaults to true.
 
@@ -38,7 +38,7 @@ true
 
 #### overrideVaultKeyId?
 
-> `optional` **overrideVaultKeyId**: `string`
+> `optional` **overrideVaultKeyId?**: `string`
 
 Use a different vault key id for decryption, if not provided the default vault key id will be used.
 
@@ -50,7 +50,7 @@ undefined
 
 #### download?
 
-> `optional` **download**: `string` \| `boolean`
+> `optional` **download?**: `string`
 
 Set the download flag which should prompt the browser to save the file.
 Otherwise the browser should show the content inside the page.
@@ -63,7 +63,7 @@ false
 
 #### filename?
 
-> `optional` **filename**: `string`
+> `optional` **filename?**: `string`
 
 Set the filename to use when a download is triggered.
 A filename will be generated if not provided.

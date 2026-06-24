@@ -14,7 +14,7 @@ Class representing entry for the blob storage.
 
 ## Properties
 
-### id
+### id {#id}
 
 > **id**: `string`
 
@@ -22,7 +22,7 @@ The id for the blob.
 
 ***
 
-### dateCreated
+### dateCreated {#datecreated}
 
 > **dateCreated**: `string`
 
@@ -30,55 +30,55 @@ The date/time when the entry was created.
 
 ***
 
-### dateModified?
+### dateModified? {#datemodified}
 
-> `optional` **dateModified**: `string`
+> `optional` **dateModified?**: `string`
 
 The date/time when the entry was modified.
 
 ***
 
-### blobSize
+### blobSize {#blobsize}
 
 > **blobSize**: `number`
 
-The length of the data in the blob.
+The size of the data in the blob.
 
 ***
 
-### blobHash
+### integrity {#integrity}
 
-> **blobHash**: `string`
+> **integrity**: `string`
 
-The hash of the data in the blob.
+The integrity of the data in the blob.
 
 ***
 
-### encodingFormat?
+### encodingFormat? {#encodingformat}
 
-> `optional` **encodingFormat**: `string`
+> `optional` **encodingFormat?**: `string`
 
 The mime type for the blob.
 
 ***
 
-### fileExtension?
+### fileExtension? {#fileextension}
 
-> `optional` **fileExtension**: `string`
+> `optional` **fileExtension?**: `string`
 
 The extension.
 
 ***
 
-### metadata?
+### metadata? {#metadata}
 
-> `optional` **metadata**: `IJsonLdNodeObject`
+> `optional` **metadata?**: `IJsonLdNodeObject`
 
 The metadata for the blob as JSON-LD.
 
 ***
 
-### isEncrypted
+### isEncrypted {#isencrypted}
 
 > **isEncrypted**: `boolean`
 
@@ -86,24 +86,8 @@ Is the entry encrypted.
 
 ***
 
-### compression?
+### compression? {#compression}
 
-> `optional` **compression**: `BlobStorageCompressionType`
+> `optional` **compression?**: `BlobStorageCompressionType`
 
-Is the entry compressed.
-
-***
-
-### userIdentity?
-
-> `optional` **userIdentity**: `string`
-
-The user identity that created the blob.
-
-***
-
-### nodeIdentity?
-
-> `optional` **nodeIdentity**: `string`
-
-The node identity that created the blob.
+The compression type applied to the entry, if any.

@@ -3,9 +3,12 @@
 import path from "node:path";
 import { Guards, Is } from "@twin.org/core";
 import * as dotenv from "dotenv";
-import type { IGcpBlobStorageConnectorConfig } from "../src/models/IGcpBlobStorageConnectorConfig";
+import type { IGcpBlobStorageConnectorConfig } from "../src/models/IGcpBlobStorageConnectorConfig.js";
 
-dotenv.config({ path: [path.join(__dirname, ".env"), path.join(__dirname, ".env.dev")] });
+dotenv.config({
+	path: [path.join(__dirname, ".env"), path.join(__dirname, ".env.dev")],
+	quiet: true
+});
 
 console.debug("Setting up test environment from .env and .env.dev files");
 

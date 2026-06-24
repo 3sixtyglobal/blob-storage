@@ -1,11 +1,25 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { GeneralError, Guards, Is, StringHelper, Urn } from "@twin.org/core";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
+import {
+	BaseError,
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Is,
+	StringHelper,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
+import { Blake2b } from "@twin.org/crypto";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import { HeaderTypes, MimeTypes } from "@twin.org/web";
-import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig";
-import type { IIpfsBlobStorageConnectorConstructorOptions } from "./models/IIpfsBlobStorageConnectorConstructorOptions";
+import { HeaderHelper, HeaderTypes, HttpMethod, MimeTypes } from "@twin.org/web";
+import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig.js";
+import type { IIpfsBlobStorageConnectorConstructorOptions } from "./models/IIpfsBlobStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations on IPFS.
@@ -20,7 +34,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<IpfsBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<IpfsBlobStorageConnector>();
 
 	/**
 	 * The configuration for the connector.
@@ -29,20 +43,79 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	private readonly _config: IIpfsBlobStorageConnectorConfig;
 
 	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
+
+	/**
 	 * Create a new instance of IpfsBlobStorageConnector.
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IIpfsBlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(IpfsBlobStorageConnector.CLASS_NAME, nameof(options), options);
 		Guards.object<IIpfsBlobStorageConnectorConfig>(
-			this.CLASS_NAME,
+			IpfsBlobStorageConnector.CLASS_NAME,
 			nameof(options.config),
 			options.config
 		);
-		Guards.stringValue(this.CLASS_NAME, nameof(options.config.apiUrl), options.config.apiUrl);
+		Guards.stringValue(
+			IpfsBlobStorageConnector.CLASS_NAME,
+			nameof(options.config.apiUrl),
+			options.config.apiUrl
+		);
 
 		this._config = options.config;
+		this._partitionContextIds = options.partitionContextIds;
 		this._config.apiUrl = StringHelper.trimTrailingSlashes(this._config.apiUrl);
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return IpfsBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		try {
+			const fetchOptions: RequestInit = {
+				method: HttpMethod.POST,
+				headers: {
+					accept: MimeTypes.Json
+				}
+			};
+			this.addSecurity(fetchOptions);
+			const response = await fetch(`${this._config.apiUrl}/version`, fetchOptions);
+			if (response.ok) {
+				return [
+					{
+						source: IpfsBlobStorageConnector.CLASS_NAME,
+						status: HealthStatus.Ok,
+						description: "healthDescription",
+						data: {
+							apiUrl: this._config.apiUrl
+						}
+					}
+				];
+			}
+		} catch {}
+		return [
+			{
+				source: IpfsBlobStorageConnector.CLASS_NAME,
+				status: HealthStatus.Error,
+				description: "healthDescription",
+				message: "healthCheckFailed",
+				data: {
+					apiUrl: this._config.apiUrl
+				}
+			}
+		];
 	}
 
 	/**
@@ -51,15 +124,15 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(IpfsBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
 
 		try {
-			const formBlob = new Blob([blob], { type: MimeTypes.OctetStream });
+			const formBlob = new Blob([new Uint8Array(blob)], { type: MimeTypes.OctetStream });
 			const formData = new FormData();
 			formData.append("file", formBlob);
 
 			const fetchOptions: RequestInit = {
-				method: "POST",
+				method: HttpMethod.POST,
 				body: formData,
 				headers: {
 					[HeaderTypes.Accept]: MimeTypes.Json,
@@ -78,13 +151,18 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 					Size: string;
 				};
 
-				return `blob:${new Urn(IpfsBlobStorageConnector.NAMESPACE, result.Hash).toString()}`;
+				const partitionSegment = await this.buildPartitionSegment();
+				const urnParts = Is.stringValue(partitionSegment)
+					? [result.Hash, partitionSegment]
+					: [result.Hash];
+
+				return `blob:${new Urn(IpfsBlobStorageConnector.NAMESPACE, urnParts).toString()}`;
 			}
 
 			const error = await response.json();
-			throw new GeneralError(this.CLASS_NAME, "fetchFail", error);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "fetchFail", error);
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -94,19 +172,30 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(IpfsBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== IpfsBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: IpfsBlobStorageConnector.NAMESPACE,
 				id
 			});
 		}
 
+		const partitionSegment = await this.buildPartitionSegment();
+		const storedPartitionSegment = Is.stringValue(urnParsed.namespaceSpecific(2))
+			? urnParsed.namespaceSpecific(2)
+			: undefined;
+
+		if (partitionSegment !== storedPartitionSegment) {
+			return undefined;
+		}
+
+		const ipfsHash = urnParsed.namespaceSpecific(1).split(":")[0];
+
 		try {
 			const fetchOptions: RequestInit = {
-				method: "POST",
+				method: HttpMethod.POST,
 				headers: {
 					accept: MimeTypes.Json
 				}
@@ -114,21 +203,129 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 			this.addSecurity(fetchOptions);
 
-			const response = await fetch(
-				`${this._config.apiUrl}/cat?arg=${urnParsed.namespaceSpecific(1)}`,
+			const pinResponse = await fetch(
+				`${this._config.apiUrl}/pin/ls?arg=${ipfsHash}`,
 				fetchOptions
 			);
 
+			if (!pinResponse.ok) {
+				return undefined;
+			}
+
+			const response = await fetch(`${this._config.apiUrl}/cat?arg=${ipfsHash}`, fetchOptions);
+
 			if (response.ok) {
 				const result = await response.arrayBuffer();
-
 				return new Uint8Array(result);
 			}
 
 			const error = await response.json();
-			throw new GeneralError(this.CLASS_NAME, "fetchFail", error);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "fetchFail", error);
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "getBlobFailed", undefined, err);
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "getBlobFailed", undefined, err);
+		}
+	}
+
+	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: IpfsBlobStorageConnector.CLASS_NAME,
+			message: "storeTearingDown"
+		});
+
+		try {
+			const fetchOptions: RequestInit = {
+				method: HttpMethod.POST,
+				headers: {
+					accept: MimeTypes.Json
+				}
+			};
+			this.addSecurity(fetchOptions);
+
+			const response = await fetch(`${this._config.apiUrl}/pin/ls`, fetchOptions);
+
+			if (response.ok) {
+				const result = (await response.json()) as { Keys: { [cid: string]: unknown } };
+
+				for (const cid of Object.keys(result.Keys)) {
+					const unpinFetchOptions: RequestInit = {
+						method: HttpMethod.POST,
+						headers: {
+							accept: MimeTypes.Json
+						}
+					};
+					this.addSecurity(unpinFetchOptions);
+					await fetch(`${this._config.apiUrl}/pin/rm?arg=${cid}`, unpinFetchOptions);
+				}
+			}
+
+			await nodeLogging?.log({
+				level: "info",
+				source: IpfsBlobStorageConnector.CLASS_NAME,
+				message: "storeTornDown"
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: IpfsBlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns A promise that resolves when all pinned blobs have been unpinned and garbage collected.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const fetchOptions: RequestInit = {
+				method: HttpMethod.POST,
+				headers: {
+					accept: MimeTypes.Json
+				}
+			};
+			this.addSecurity(fetchOptions);
+
+			const response = await fetch(`${this._config.apiUrl}/pin/ls`, fetchOptions);
+
+			if (response.ok) {
+				const result = (await response.json()) as { Keys: { [cid: string]: unknown } };
+
+				for (const cid of Object.keys(result.Keys)) {
+					const unpinFetchOptions: RequestInit = {
+						method: HttpMethod.POST,
+						headers: {
+							accept: MimeTypes.Json
+						}
+					};
+					this.addSecurity(unpinFetchOptions);
+					await fetch(`${this._config.apiUrl}/pin/rm?arg=${cid}`, unpinFetchOptions);
+				}
+			}
+
+			const gcFetchOptions: RequestInit = {
+				method: HttpMethod.POST,
+				headers: {
+					accept: MimeTypes.Json
+				}
+			};
+			this.addSecurity(gcFetchOptions);
+			const gcResponse = await fetch(`${this._config.apiUrl}/repo/gc`, gcFetchOptions);
+			await gcResponse.text();
+		} catch (err) {
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "emptyFailed", undefined, err);
 		}
 	}
 
@@ -138,19 +335,30 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(IpfsBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== IpfsBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(IpfsBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: IpfsBlobStorageConnector.NAMESPACE,
 				id
 			});
 		}
 
+		const partitionSegment = await this.buildPartitionSegment();
+		const storedPartitionSegment = Is.stringValue(urnParsed.namespaceSpecific(2))
+			? urnParsed.namespaceSpecific(2)
+			: undefined;
+
+		if (partitionSegment !== storedPartitionSegment) {
+			return false;
+		}
+
+		const ipfsHash = urnParsed.namespaceSpecific(1).split(":")[0];
+
 		try {
 			const fetchOptions: RequestInit = {
-				method: "POST",
+				method: HttpMethod.POST,
 				headers: {
 					accept: MimeTypes.Json
 				}
@@ -158,33 +366,48 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 			this.addSecurity(fetchOptions);
 
-			const response = await fetch(
-				`${this._config.apiUrl}/pin/rm?arg=${urnParsed.namespaceSpecific(1)}`,
-				fetchOptions
-			);
+			const response = await fetch(`${this._config.apiUrl}/pin/rm?arg=${ipfsHash}`, fetchOptions);
 
 			if (response.ok) {
 				return true;
 			}
 
-			const error = await response.json();
-			throw new GeneralError(this.CLASS_NAME, "fetchFail", error);
+			return false;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", undefined, err);
+			throw new GeneralError(
+				IpfsBlobStorageConnector.CLASS_NAME,
+				"removeBlobFailed",
+				undefined,
+				err
+			);
 		}
 	}
 
 	/**
-	 * Add the security to the request.
-	 * @param requestInit The request options.
+	 * Add the security headers to the request if a bearer token is configured.
+	 * @param requestInit The request options to augment with security headers.
 	 * @internal
 	 */
 	private addSecurity(requestInit: RequestInit): void {
 		if (Is.stringValue(this._config.bearerToken)) {
 			requestInit.headers = {
 				...requestInit.headers,
-				Authorization: `Bearer ${this._config.bearerToken}`
+				[HeaderTypes.Authorization]: HeaderHelper.createBearer(this._config.bearerToken)
 			};
 		}
+	}
+
+	/**
+	 * Build the partition segment from the current context.
+	 * @returns The hex-encoded Blake2b hash of the partition key, or undefined if no partition applies.
+	 * @internal
+	 */
+	private async buildPartitionSegment(): Promise<string | undefined> {
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+		if (Is.stringValue(partitionKey)) {
+			return Converter.bytesToHex(Blake2b.sum256(Converter.utf8ToBytes(partitionKey)));
+		}
+		return undefined;
 	}
 }

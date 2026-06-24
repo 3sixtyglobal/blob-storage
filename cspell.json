@@ -10,17 +10,29 @@
 		"**/tests/**",
 		"*.yaml",
 		"package.json",
-		"rollup.config.mjs",
 		"vitest.config.*",
 		"tsconfig.json",
+		"tsconfig.eslint.json",
 		"typedoc.json",
-		".eslintrc.cjs",
+		"eslint.config*",
 		"**/wordlists/**"
 	],
-	"words": ["abbrev", "autorelease", "IIPFS", "IPFS", "jsonld", "kubo", "nameof", "Stiftung"],
+	"words": [
+		"abbrev",
+		"autorelease",
+		"fsouza",
+		"IIPFS",
+		"IPFS",
+		"jsonld",
+		"kubo",
+		"nameof",
+		"Stiftung",
+		"teardown"
+	],
 	"ignoreRegExpList": [
 		"/from\\s+(['\"]).*\\1/",
 		"/eslint-disable.*/",
+		"/^```typescript[\\s\\S]*?```$/gm",
 		"/^```shell[\\s\\S]*?```$/gm",
 		"/^```json[\\s\\S]*?```$/gm"
 	]

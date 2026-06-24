@@ -1,6 +1,6 @@
 # TWIN Blob Storage Service
 
-Blob storage contract implementation and REST endpoint definitions.
+This package exposes service-side components and endpoint definitions for blob upload, retrieval, and management operations. It bridges shared blob models with application service layers so APIs can be published with consistent behaviour.
 
 ## Installation
 

@@ -1,6 +1,6 @@
 # TWIN Blob Storage Connector Azure
 
-Blob Storage connector implementation using [Azure](https://learn.microsoft.com/en-us/azure/storage/common/storage-samples-javascript?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json).
+This package integrates blob storage workflows with [Azure Blob Storage](https://learn.microsoft.com/azure/storage/blobs/storage-blobs-introduction). It is designed for environments that use Azure containers for scalable object persistence.
 
 ## Installation
 
@@ -8,18 +8,13 @@ Blob Storage connector implementation using [Azure](https://learn.microsoft.com/
 npm install @twin.org/blob-storage-connector-azure
 ```
 
-## Testing
+## Docker
 
-The tests developed are functional tests and need an instance of Azure up and running. To run Azure locally using azurite as microsoft container:
-
-```shell
-docker run -p 10000:10000 --name twin-blob-azure -d -e AZURITE_ACCOUNTS=testAccount:testKey mcr.microsoft.com/azure-storage/azurite azurite-blob --blobHost 0.0.0.0
-```
-
-Afterwards you can run the tests as follows:
+To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-npm run test
+docker pull mcr.microsoft.com/azure-storage/azurite:latest
+docker run -d --name twin-blob-storage-azure -p 20620:10000 -e AZURITE_ACCOUNTS=testAccount:testKey mcr.microsoft.com/azure-storage/azurite:latest azurite --skipApiVersionCheck --blobHost 0.0.0.0 --queueHost 0.0.0.0 --tableHost 0.0.0.0
 ```
 
 ## Examples

@@ -29,7 +29,7 @@ The options for the connector.
 
 ## Properties
 
-### NAMESPACE
+### NAMESPACE {#namespace}
 
 > `readonly` `static` **NAMESPACE**: `string` = `"s3"`
 
@@ -37,31 +37,63 @@ The namespace for the items.
 
 ***
 
-### CLASS\_NAME
+### CLASS\_NAME {#class_name}
 
-> `readonly` **CLASS\_NAME**: `string`
+> `readonly` `static` **CLASS\_NAME**: `string`
 
 Runtime name for the class.
 
-#### Implementation of
-
-`IBlobStorageConnector.CLASS_NAME`
-
 ## Methods
 
-### bootstrap()
+### className() {#classname}
 
-> **bootstrap**(`nodeLoggingConnectorType?`): `Promise`\<`boolean`\>
+> **className**(): `string`
+
+Returns the class name of the component.
+
+#### Returns
+
+`string`
+
+The class name of the component.
+
+#### Implementation of
+
+`IBlobStorageConnector.className`
+
+***
+
+### health() {#health}
+
+> **health**(): `Promise`\<`IHealth`[]\>
+
+Returns the health status of the component.
+
+#### Returns
+
+`Promise`\<`IHealth`[]\>
+
+The health status of the component.
+
+#### Implementation of
+
+`IBlobStorageConnector.health`
+
+***
+
+### bootstrap() {#bootstrap}
+
+> **bootstrap**(`nodeLoggingComponentType?`): `Promise`\<`boolean`\>
 
 Bootstrap the component by creating and initializing any resources it needs.
 
 #### Parameters
 
-##### nodeLoggingConnectorType?
+##### nodeLoggingComponentType?
 
 `string`
 
-The node logging connector type, defaults to "node-logging".
+The node logging component type.
 
 #### Returns
 
@@ -75,7 +107,7 @@ True if the bootstrapping process was successful.
 
 ***
 
-### set()
+### set() {#set}
 
 > **set**(`blob`): `Promise`\<`string`\>
 
@@ -101,9 +133,9 @@ The id of the stored blob in urn format.
 
 ***
 
-### get()
+### get() {#get}
 
-> **get**(`id`): `Promise`\<`undefined` \| `Uint8Array`\<`ArrayBufferLike`\>\>
+> **get**(`id`): `Promise`\<`Uint8Array`\<`ArrayBufferLike`\> \| `undefined`\>
 
 Get the blob.
 
@@ -117,7 +149,7 @@ The id of the blob to get in urn format.
 
 #### Returns
 
-`Promise`\<`undefined` \| `Uint8Array`\<`ArrayBufferLike`\>\>
+`Promise`\<`Uint8Array`\<`ArrayBufferLike`\> \| `undefined`\>
 
 The data for the blob if it can be found or undefined.
 
@@ -127,7 +159,51 @@ The data for the blob if it can be found or undefined.
 
 ***
 
-### remove()
+### teardown() {#teardown}
+
+> **teardown**(`nodeLoggingComponentType?`): `Promise`\<`boolean`\>
+
+Teardown the component and remove any resources it created.
+
+#### Parameters
+
+##### nodeLoggingComponentType?
+
+`string`
+
+The node logging component type.
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+True if the teardown process was successful.
+
+#### Implementation of
+
+`IBlobStorageConnector.teardown`
+
+***
+
+### empty() {#empty}
+
+> **empty**(): `Promise`\<`void`\>
+
+Remove all blobs from the storage.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+A promise that resolves when all blobs in the current partition have been removed.
+
+#### Implementation of
+
+`IBlobStorageConnector.empty`
+
+***
+
+### remove() {#remove}
 
 > **remove**(`id`): `Promise`\<`boolean`\>
 

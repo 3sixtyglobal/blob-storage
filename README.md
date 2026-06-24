@@ -1,18 +1,20 @@
 # TWIN Blob Storage
 
-This mono-repository contains the packages to use with Blob Storage in TWIN applications.
+This repository provides a modular blob storage stack for applications that need reliable handling of binary content across local and cloud environments. It combines shared contracts, service building blocks, client access utilities, and interchangeable connectors so teams can adopt one consistent approach to identifiers, metadata, and lifecycle operations.
+
+The packages are designed to reduce integration friction when moving between development and production infrastructure. With a common model layer and connector-specific adapters, projects can keep the same application-facing behaviour while targeting memory, file systems, decentralised networks, or major object storage providers.
 
 ## Packages
 
-- [blob-storage-models](packages/blob-storage-models/README.md) - Models which define the structure of the blob storage contracts and connectors.
-- [blob-storage-connector-memory](packages/blob-storage-connector-memory/README.md) - Blob Storage connector implementation using in-memory storage.
-- [blob-storage-connector-file](packages/blob-storage-connector-file/README.md) - Blob Storage connector implementation using file storage.
-- [blob-storage-connector-ipfs](packages/blob-storage-connector-ipfs/README.md) - Blob Storage connector implementation using [IPFS](https://ipfs.tech/).
-- [blob-storage-service](packages/blob-storage-service/README.md) - Blob storage contract implementation and REST endpoint definitions.
-- [blob-storage-rest-client](packages/blob-storage-rest-client/README.md) - Blob storage contract implementation which can connect to REST endpoints.
-- [blob-storage-connector-aws-s3](packages/blob-storage-connector-aws-s3/README.md) - Blob Storage connector implementation using AWS S3.
-- [blob-storage-connector-azure](packages/blob-storage-connector-azure/README.md) - Blob Storage connector implementation using Azure.
-- [blob-storage-connector-gcp](packages/blob-storage-connector-gcp/README.md) - Blob Storage connector implementation using Google Cloud Storage.
+- [blob-storage-models](packages/blob-storage-models/README.md) - Defines shared contracts, schemas, and interfaces for blob content, metadata, and connector behaviour.
+- [blob-storage-connector-memory](packages/blob-storage-connector-memory/README.md) - Provides an in-memory connector for fast local testing and ephemeral blob workflows.
+- [blob-storage-service](packages/blob-storage-service/README.md) - Exposes blob operations through service components and HTTP route definitions.
+- [blob-storage-rest-client](packages/blob-storage-rest-client/README.md) - Offers client utilities for calling blob service endpoints with consistent request handling.
+- [blob-storage-connector-file](packages/blob-storage-connector-file/README.md) - Persists blobs to local directories or mounted volumes through a file system connector.
+- [blob-storage-connector-ipfs](packages/blob-storage-connector-ipfs/README.md) - Stores and retrieves blobs through [IPFS](https://ipfs.tech/) for content-addressed and distributed workflows.
+- [blob-storage-connector-aws-s3](packages/blob-storage-connector-aws-s3/README.md) - Stores and retrieves blobs in [Amazon S3](https://aws.amazon.com/s3/) and S3-compatible object storage.
+- [blob-storage-connector-azure](packages/blob-storage-connector-azure/README.md) - Stores and retrieves blobs in [Azure Blob Storage](https://learn.microsoft.com/azure/storage/blobs/storage-blobs-introduction) containers.
+- [blob-storage-connector-gcp](packages/blob-storage-connector-gcp/README.md) - Stores and retrieves blobs in [Google Cloud Storage](https://cloud.google.com/storage) buckets.
 
 ## Contributing
 

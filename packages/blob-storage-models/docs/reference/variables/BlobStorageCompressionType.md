@@ -4,15 +4,15 @@
 
 The types of compression for blob storage data.
 
-## Type declaration
+## Type Declaration
 
-### Gzip
+### Gzip {#gzip}
 
 > `readonly` **Gzip**: `"gzip"` = `"gzip"`
 
 Gzip.
 
-### Deflate
+### Deflate {#deflate}
 
 > `readonly` **Deflate**: `"deflate"` = `"deflate"`
 

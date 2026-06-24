@@ -1,0 +1,13 @@
+{
+	"prefix": "twin-blob-storage",
+	"contextUrl": "https://schema.twindev.org/blob-storage/",
+	"additionalContextUrls": {
+		"twin-common": "https://schema.twindev.org/common/",
+		"schema": "http://schema.org/"
+	},
+	"fixedMappings": {
+		"id": "@id",
+		"type": "@type"
+	},
+	"types": ["./src/models/IBlobStorageEntry.ts", "./src/models/blobStorageCompressionType.ts"]
+}

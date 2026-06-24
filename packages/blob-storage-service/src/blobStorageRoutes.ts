@@ -1,7 +1,9 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
+	HttpContextIdKeys,
 	HttpParameterHelper,
+	HttpUrlHelper,
 	type ICreatedResponse,
 	type IHttpRequestContext,
 	type INoContentResponse,
@@ -16,6 +18,7 @@ import {
 	BlobStorageTypes,
 	type IBlobStorageComponent,
 	type IBlobStorageCreateRequest,
+	type IBlobStorageEmptyRequest,
 	type IBlobStorageGetContentRequest,
 	type IBlobStorageGetContentResponse,
 	type IBlobStorageGetRequest,
@@ -25,10 +28,17 @@ import {
 	type IBlobStorageRemoveRequest,
 	type IBlobStorageUpdateRequest
 } from "@twin.org/blob-storage-models";
+import { ContextIdStore } from "@twin.org/context";
 import { Coerce, ComponentFactory, Converter, Guards, Is, StringHelper } from "@twin.org/core";
 import { nameof } from "@twin.org/nameof";
 import { SchemaOrgContexts, SchemaOrgTypes } from "@twin.org/standards-schema-org";
-import { HeaderTypes, HttpStatusCode, MimeTypeHelper, MimeTypes } from "@twin.org/web";
+import {
+	HeaderHelper,
+	HeaderTypes,
+	HttpStatusCode,
+	MimeTypeHelper,
+	MimeTypes
+} from "@twin.org/web";
 
 /**
  * The source used when communicating about these routes.
@@ -144,16 +154,16 @@ export function generateRestRoutesBlobStorage(
 						response: {
 							body: {
 								"@context": [
-									BlobStorageContexts.ContextRoot,
-									BlobStorageContexts.ContextRootCommon,
-									SchemaOrgContexts.ContextRoot
+									BlobStorageContexts.Context,
+									BlobStorageContexts.ContextCommon,
+									SchemaOrgContexts.Context
 								],
 								type: BlobStorageTypes.Entry,
 								id: "blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
 								dateCreated: "2024-01-01T00:00:00Z",
 								encodingFormat: MimeTypes.Pdf,
 								blobSize: 42,
-								blobHash: "sha256:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+								integrity: "sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 								fileExtension: "pdf",
 								metadata: {
 									"@context": "https://schema.org",
@@ -175,16 +185,16 @@ export function generateRestRoutesBlobStorage(
 						response: {
 							body: {
 								"@context": [
-									BlobStorageContexts.ContextRoot,
-									BlobStorageContexts.ContextRootCommon,
-									SchemaOrgContexts.ContextRoot
+									BlobStorageContexts.Context,
+									BlobStorageContexts.ContextCommon,
+									SchemaOrgContexts.Context
 								],
 								type: BlobStorageTypes.Entry,
 								id: "blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
 								dateCreated: "2024-01-01T00:00:00Z",
 								encodingFormat: MimeTypes.Pdf,
 								blobSize: 42,
-								blobHash: "sha256:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+								integrity: "sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 								fileExtension: "pdf",
 								metadata: {
 									"@context": "https://schema.org",
@@ -317,6 +327,30 @@ export function generateRestRoutesBlobStorage(
 		]
 	};
 
+	const blobStorageEmptyRoute: IRestRoute<IBlobStorageEmptyRequest, INoContentResponse> = {
+		operationId: `${camelTypeName}Empty`,
+		summary: `Remove all entries from ${lowerName}`,
+		tag: options?.tagName ?? tagsBlobStorage[0].name,
+		method: "DELETE",
+		path: `${baseRouteName}/`,
+		handler: async (httpRequestContext, request) =>
+			blobStorageEmpty(httpRequestContext, componentName, request),
+		requestType: {
+			type: nameof<IBlobStorageEmptyRequest>(),
+			examples: [
+				{
+					id: `${camelTypeName}EmptyRequestExample`,
+					request: {}
+				}
+			]
+		},
+		responseType: [
+			{
+				type: nameof<INoContentResponse>()
+			}
+		]
+	};
+
 	const blobStorageListRoute: IRestRoute<IBlobStorageListRequest, IBlobStorageListResponse> = {
 		operationId: `${camelTypeName}Query`,
 		summary: `Query the items from ${lowerName}`,
@@ -343,25 +377,24 @@ export function generateRestRoutesBlobStorage(
 						response: {
 							body: {
 								"@context": [
-									SchemaOrgContexts.ContextRoot,
-									BlobStorageContexts.ContextRoot,
-									BlobStorageContexts.ContextRootCommon
+									SchemaOrgContexts.Context,
+									BlobStorageContexts.Context,
+									BlobStorageContexts.ContextCommon
 								],
 								type: SchemaOrgTypes.ItemList,
 								[SchemaOrgTypes.ItemListElement]: [
 									{
 										"@context": [
-											BlobStorageContexts.ContextRoot,
-											BlobStorageContexts.ContextRootCommon,
-											SchemaOrgContexts.ContextRoot
+											BlobStorageContexts.Context,
+											BlobStorageContexts.ContextCommon,
+											SchemaOrgContexts.Context
 										],
 										type: BlobStorageTypes.Entry,
 										id: "blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
 										dateCreated: "2024-01-01T00:00:00Z",
 										encodingFormat: MimeTypes.Pdf,
 										blobSize: 42,
-										blobHash:
-											"sha256:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+										integrity: "sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 										fileExtension: "pdf",
 										metadata: {
 											"@context": "https://schema.org",
@@ -385,25 +418,24 @@ export function generateRestRoutesBlobStorage(
 						response: {
 							body: {
 								"@context": [
-									SchemaOrgContexts.ContextRoot,
-									BlobStorageContexts.ContextRoot,
-									BlobStorageContexts.ContextRootCommon
+									SchemaOrgContexts.Context,
+									BlobStorageContexts.Context,
+									BlobStorageContexts.ContextCommon
 								],
 								type: SchemaOrgTypes.ItemList,
 								[SchemaOrgTypes.ItemListElement]: [
 									{
 										"@context": [
-											BlobStorageContexts.ContextRoot,
-											BlobStorageContexts.ContextRootCommon,
-											SchemaOrgContexts.ContextRoot
+											BlobStorageContexts.Context,
+											BlobStorageContexts.ContextCommon,
+											SchemaOrgContexts.Context
 										],
 										type: BlobStorageTypes.Entry,
 										id: "blob-memory:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
 										dateCreated: "2024-01-01T00:00:00Z",
 										encodingFormat: MimeTypes.Pdf,
 										blobSize: 42,
-										blobHash:
-											"sha256:c57d94b088f4c6d2cb32ded014813d0c786aa00134c8ee22f84b1e2545602a70",
+										integrity: "sha256-xX2UsIj0xtLLMt7QFIExDHhqoAE0yO4i+EseJUVgKnA=",
 										fileExtension: "pdf",
 										metadata: {
 											"@context": "https://schema.org",
@@ -430,6 +462,7 @@ export function generateRestRoutesBlobStorage(
 		blobStorageGetContentRoute,
 		blobStorageUpdateRoute,
 		blobStorageRemoveRoute,
+		blobStorageEmptyRoute,
 		blobStorageListRoute
 	];
 }
@@ -464,15 +497,13 @@ export async function blobStorageCreate(
 			disableEncryption: request.body.disableEncryption,
 			overrideVaultKeyId: request.body.overrideVaultKeyId,
 			namespace: request.body.namespace
-		},
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
+		}
 	);
 
 	return {
 		statusCode: HttpStatusCode.created,
 		headers: {
-			location: id
+			[HeaderTypes.Location]: id
 		}
 	};
 }
@@ -497,31 +528,27 @@ export async function blobStorageGet(
 	);
 	Guards.stringValue(ROUTES_SOURCE, nameof(request.pathParams.id), request.pathParams.id);
 
-	const mimeType = request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd ? "jsonld" : "json";
-
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
-	const result = await component.get(
-		request.pathParams.id,
-		{
-			includeContent: Coerce.boolean(request.query?.includeContent),
-			decompress: Coerce.boolean(request.query?.decompress),
-			overrideVaultKeyId: request.query?.overrideVaultKeyId
-		},
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
-	);
+	const result = await component.get(request.pathParams.id, {
+		includeContent: Coerce.boolean(request.query?.includeContent),
+		decompress: Coerce.boolean(request.query?.decompress),
+		overrideVaultKeyId: request.query?.overrideVaultKeyId
+	});
 
 	return {
 		headers: {
-			[HeaderTypes.ContentType]: mimeType === "json" ? MimeTypes.Json : MimeTypes.JsonLd
+			[HeaderTypes.ContentType]:
+				request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd
+					? MimeTypes.JsonLd
+					: MimeTypes.Json
 		},
 		body: result
 	};
 }
 
 /**
- * Get the blob from storage.
+ * Get the raw content of a blob from storage.
  * @param httpRequestContext The request context for the API.
  * @param componentName The name of the component to use in the routes.
  * @param request The request.
@@ -545,16 +572,11 @@ export async function blobStorageGetContent(
 	const decompress = Coerce.boolean(request.query?.decompress);
 	const download = Coerce.boolean(request.query?.download) ?? false;
 
-	const result = await component.get(
-		request.pathParams.id,
-		{
-			includeContent: true,
-			decompress,
-			overrideVaultKeyId: request.query?.overrideVaultKeyId
-		},
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
-	);
+	const result = await component.get(request.pathParams.id, {
+		includeContent: true,
+		decompress,
+		overrideVaultKeyId: request.query?.overrideVaultKeyId
+	});
 
 	const encodingFormat = result?.encodingFormat ?? MimeTypes.OctetStream;
 	let compressedEncodingFormat: MimeTypes | undefined;
@@ -610,9 +632,7 @@ export async function blobStorageUpdate(
 		request.pathParams.id,
 		request.body.encodingFormat,
 		request.body.fileExtension,
-		request.body.metadata,
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
+		request.body.metadata
 	);
 
 	return {
@@ -642,12 +662,27 @@ export async function blobStorageRemove(
 
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
-	await component.remove(
-		request.pathParams.id,
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
-	);
+	await component.remove(request.pathParams.id);
 
+	return {
+		statusCode: HttpStatusCode.noContent
+	};
+}
+
+/**
+ * Remove all entries from blob storage.
+ * @param httpRequestContext The request context for the API.
+ * @param componentName The name of the component to use in the routes.
+ * @param request The request.
+ * @returns The response object with additional http response properties.
+ */
+export async function blobStorageEmpty(
+	httpRequestContext: IHttpRequestContext,
+	componentName: string,
+	request: IBlobStorageEmptyRequest
+): Promise<INoContentResponse> {
+	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
+	await component.empty();
 	return {
 		statusCode: HttpStatusCode.noContent
 	};
@@ -667,8 +702,6 @@ export async function blobStorageList(
 ): Promise<IBlobStorageListResponse> {
 	Guards.object<IBlobStorageListRequest>(ROUTES_SOURCE, nameof(request), request);
 
-	const mimeType = request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd ? "jsonld" : "json";
-
 	const component = ComponentFactory.get<IBlobStorageComponent>(componentName);
 
 	const result = await component.query(
@@ -676,15 +709,28 @@ export async function blobStorageList(
 		request.query?.orderBy,
 		request.query?.orderByDirection,
 		request.query?.cursor,
-		Coerce.number(request.query?.pageSize),
-		httpRequestContext.userIdentity,
-		httpRequestContext.nodeIdentity
+		Coerce.number(request.query?.limit)
 	);
 
+	const headers: IBlobStorageListResponse["headers"] = {
+		[HeaderTypes.ContentType]:
+			request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd ? MimeTypes.JsonLd : MimeTypes.Json
+	};
+
+	if (Is.stringValue(result.cursor)) {
+		const contextIds = await ContextIdStore.getContextIds();
+		headers[HeaderTypes.Link] = HeaderHelper.createLinkHeader(
+			HttpUrlHelper.replaceOrigin(
+				httpRequestContext.serverRequest.url,
+				contextIds?.[HttpContextIdKeys.PublicOrigin]
+			),
+			{ cursor: result.cursor },
+			"next"
+		);
+	}
+
 	return {
-		headers: {
-			[HeaderTypes.ContentType]: mimeType === "json" ? MimeTypes.Json : MimeTypes.JsonLd
-		},
-		body: result
+		headers,
+		body: result.entries
 	};
 }

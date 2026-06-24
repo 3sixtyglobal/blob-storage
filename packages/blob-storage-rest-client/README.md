@@ -1,6 +1,6 @@
-# TWIN Blob Storage Rest Client
+# TWIN Blob Storage REST Client
 
-Blob storage contract implementation which can connect to REST endpoints.
+This package provides client utilities for consuming blob storage service endpoints over HTTP. It helps applications call blob APIs with consistent request construction and response handling.
 
 ## Installation
 

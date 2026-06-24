@@ -4,7 +4,7 @@ Request to remove an entry from blob storage.
 
 ## Properties
 
-### pathParams
+### pathParams {#pathparams}
 
 > **pathParams**: `object`
 

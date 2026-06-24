@@ -1,21 +1,32 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
-	type BlockBlobClient,
-	BlobServiceClient,
-	type ContainerClient,
 	type BlobClient,
 	type BlobDeleteOptions,
 	type BlobDeleteResponse,
+	BlobServiceClient,
+	type BlockBlobClient,
+	type ContainerClient,
 	StorageSharedKeyCredential
 } from "@azure/storage-blob";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { BaseError, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
+import {
+	BaseError,
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Is,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
-import { LoggingConnectorFactory } from "@twin.org/logging-models";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
-import type { IAzureBlobStorageConnectorConfig } from "./models/IAzureBlobStorageConnectorConfig";
-import type { IAzureBlobStorageConnectorConstructorOptions } from "./models/IAzureBlobStorageConnectorConstructorOptions";
+import type { IAzureBlobStorageConnectorConfig } from "./models/IAzureBlobStorageConnectorConfig.js";
+import type { IAzureBlobStorageConnectorConstructorOptions } from "./models/IAzureBlobStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations on Azure.
@@ -30,13 +41,19 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<AzureBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<AzureBlobStorageConnector>();
 
 	/**
 	 * The configuration for the connector.
 	 * @internal
 	 */
 	private readonly _config: IAzureBlobStorageConnectorConfig;
+
+	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
 
 	/**
 	 * The Azure Service client.
@@ -55,29 +72,30 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	 * @param options The options for the connector.
 	 */
 	constructor(options: IAzureBlobStorageConnectorConstructorOptions) {
-		Guards.object(this.CLASS_NAME, nameof(options), options);
+		Guards.object(AzureBlobStorageConnector.CLASS_NAME, nameof(options), options);
 		Guards.object<IAzureBlobStorageConnectorConfig>(
-			this.CLASS_NAME,
+			AzureBlobStorageConnector.CLASS_NAME,
 			nameof(options.config),
 			options.config
 		);
 		Guards.stringValue(
-			this.CLASS_NAME,
+			AzureBlobStorageConnector.CLASS_NAME,
 			nameof(options.config.accountName),
 			options.config.accountName
 		);
 		Guards.stringValue(
-			this.CLASS_NAME,
+			AzureBlobStorageConnector.CLASS_NAME,
 			nameof(options.config.accountKey),
 			options.config.accountKey
 		);
 		Guards.stringValue(
-			this.CLASS_NAME,
+			AzureBlobStorageConnector.CLASS_NAME,
 			nameof(options.config.containerName),
 			options.config.containerName
 		);
 
 		this._config = options.config;
+		this._partitionContextIds = options.partitionContextIds;
 
 		this._azureBlobServiceClient = new BlobServiceClient(
 			(options.config.endpoint ?? "https://{accountName}.blob.core.windows.net/").replace(
@@ -93,52 +111,82 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	}
 
 	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return AzureBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		try {
+			await this._azureContainerClient.exists();
+			return [
+				{
+					source: AzureBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Ok,
+					description: "healthDescription",
+					data: {
+						containerName: this._config.containerName,
+						accountName: this._config.accountName
+					}
+				}
+			];
+		} catch {
+			return [
+				{
+					source: AzureBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Error,
+					description: "healthDescription",
+					message: "healthCheckFailed",
+					data: {
+						containerName: this._config.containerName,
+						accountName: this._config.accountName
+					}
+				}
+			];
+		}
+	}
+
+	/**
 	 * Bootstrap the component by creating and initializing any resources it needs.
-	 * @param nodeLoggingConnectorType The node logging connector type, defaults to "node-logging".
+	 * @param nodeLoggingComponentType The node logging component type.
 	 * @returns True if the bootstrapping process was successful.
 	 */
-	public async bootstrap(nodeLoggingConnectorType?: string): Promise<boolean> {
-		const nodeLogging = LoggingConnectorFactory.getIfExists(
-			nodeLoggingConnectorType ?? "node-logging"
-		);
+	public async bootstrap(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
 
 		try {
-			await nodeLogging?.log({
-				level: "info",
-				source: this.CLASS_NAME,
-				message: "containerCreating",
-				data: {
-					container: this._config.containerName
-				}
-			});
-
 			const exists = await this._azureContainerClient.exists();
 
 			if (exists) {
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
+					source: AzureBlobStorageConnector.CLASS_NAME,
 					message: "containerExists",
 					data: {
 						container: this._config.containerName
 					}
 				});
 			} else {
-				await this._azureContainerClient.create();
-
 				await nodeLogging?.log({
 					level: "info",
-					source: this.CLASS_NAME,
-					message: "containerCreated",
+					source: AzureBlobStorageConnector.CLASS_NAME,
+					message: "containerCreating",
 					data: {
 						container: this._config.containerName
 					}
 				});
+				await this._azureContainerClient.create();
 			}
 		} catch (err) {
 			await nodeLogging?.log({
 				level: "error",
-				source: this.CLASS_NAME,
+				source: AzureBlobStorageConnector.CLASS_NAME,
 				message: "containerCreateFailed",
 				data: {
 					container: this._config.containerName
@@ -158,16 +206,21 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(AzureBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
 
 		try {
 			const id = Converter.bytesToHex(Sha256.sum256(blob));
-			const blockBlobClient: BlockBlobClient = this._azureContainerClient.getBlockBlobClient(id);
+			const blockBlobClient: BlockBlobClient = this._azureContainerClient.getBlockBlobClient(
+				`${partitionKey ?? "root"}/${id}`
+			);
 			await blockBlobClient.uploadData(blob);
 
 			return `blob:${new Urn(AzureBlobStorageConnector.NAMESPACE, id).toString()}`;
 		} catch (err) {
-			throw new GeneralError(this.CLASS_NAME, "setBlobFailed", undefined, err);
+			throw new GeneralError(AzureBlobStorageConnector.CLASS_NAME, "setBlobFailed", undefined, err);
 		}
 	}
 
@@ -177,11 +230,14 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(AzureBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		if (urnParsed.namespaceMethod() !== AzureBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(AzureBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: AzureBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -189,12 +245,17 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 
 		try {
 			const key = urnParsed.namespaceSpecific(1);
-			const blobClient: BlobClient = this._azureContainerClient.getBlobClient(key);
+			const blobClient: BlobClient = this._azureContainerClient.getBlobClient(
+				`${partitionKey ?? "root"}/${key}`
+			);
 			const buffer = await blobClient.downloadToBuffer();
 			return new Uint8Array(buffer);
 		} catch (err) {
+			if (Is.object<{ statusCode: number }>(err) && err.statusCode === 404) {
+				return;
+			}
 			throw new GeneralError(
-				this.CLASS_NAME,
+				AzureBlobStorageConnector.CLASS_NAME,
 				"getBlobFailed",
 				{
 					id,
@@ -206,16 +267,89 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 	}
 
 	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: AzureBlobStorageConnector.CLASS_NAME,
+			message: "containerDeleting",
+			data: {
+				container: this._config.containerName
+			}
+		});
+
+		try {
+			await this._azureContainerClient.delete();
+
+			await nodeLogging?.log({
+				level: "info",
+				source: AzureBlobStorageConnector.CLASS_NAME,
+				message: "containerDeleted",
+				data: {
+					container: this._config.containerName
+				}
+			});
+
+			return true;
+		} catch (err) {
+			await nodeLogging?.log({
+				level: "error",
+				source: AzureBlobStorageConnector.CLASS_NAME,
+				message: "teardownFailed",
+				data: {
+					container: this._config.containerName
+				},
+				error: BaseError.fromError(err)
+			});
+			return false;
+		}
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns A promise that resolves when all blobs in the current partition have been removed.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+			const prefix = `${partitionKey ?? "root"}/`;
+
+			for await (const blob of this._azureContainerClient.listBlobsFlat({ prefix })) {
+				await this._azureContainerClient.deleteBlob(blob.name);
+			}
+		} catch (err) {
+			throw new GeneralError(
+				AzureBlobStorageConnector.CLASS_NAME,
+				"emptyFailed",
+				{ containerName: this._config.containerName },
+				err
+			);
+		}
+	}
+
+	/**
 	 * Remove the blob.
 	 * @param id The id of the blob to remove in urn format.
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(AzureBlobStorageConnector.CLASS_NAME, nameof(id), id);
 		const urnParsed = Urn.fromValidString(id);
 
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
+
 		if (urnParsed.namespaceMethod() !== AzureBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(AzureBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: AzureBlobStorageConnector.NAMESPACE,
 				id
 			});
@@ -224,8 +358,9 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 		try {
 			const key = urnParsed.namespaceSpecific(1);
 
-			const blockBlobClient: BlockBlobClient =
-				await this._azureContainerClient.getBlockBlobClient(key);
+			const blockBlobClient: BlockBlobClient = this._azureContainerClient.getBlockBlobClient(
+				`${partitionKey ?? "root"}/${key}`
+			);
 
 			const options: BlobDeleteOptions = {
 				deleteSnapshots: "include"
@@ -237,10 +372,10 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 			}
 			return false;
 		} catch (err) {
-			if (err instanceof Error && "statusCode" in err && err.statusCode === 404) {
+			if (Is.object<{ statusCode: number }>(err) && err.statusCode === 404) {
 				return false;
 			}
-			throw new GeneralError(this.CLASS_NAME, "removeBlobFailed", { id }, err);
+			throw new GeneralError(AzureBlobStorageConnector.CLASS_NAME, "removeBlobFailed", { id }, err);
 		}
 	}
 }

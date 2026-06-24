@@ -1,9 +1,20 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { Converter, GeneralError, Guards, Urn } from "@twin.org/core";
+import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
+import {
+	ComponentFactory,
+	Converter,
+	GeneralError,
+	Guards,
+	HealthStatus,
+	Urn,
+	type IHealth
+} from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
+import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
+import type { IMemoryStorageConnectorConstructorOptions } from "./models/IMemoryStorageConnectorConstructorOptions.js";
 
 /**
  * Class for performing blob storage operations in-memory.
@@ -17,7 +28,13 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	/**
 	 * Runtime name for the class.
 	 */
-	public readonly CLASS_NAME: string = nameof<MemoryBlobStorageConnector>();
+	public static readonly CLASS_NAME: string = nameof<MemoryBlobStorageConnector>();
+
+	/**
+	 * The keys to use from the context ids to create partitions.
+	 * @internal
+	 */
+	private readonly _partitionContextIds?: string[];
 
 	/**
 	 * The storage for the in-memory items.
@@ -27,9 +44,36 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Create a new instance of MemoryBlobStorageConnector.
+	 * @param options The options for the connector.
 	 */
-	constructor() {
+	constructor(options?: IMemoryStorageConnectorConstructorOptions) {
+		this._partitionContextIds = options?.partitionContextIds;
 		this._store = {};
+	}
+
+	/**
+	 * Returns the class name of the component.
+	 * @returns The class name of the component.
+	 */
+	public className(): string {
+		return MemoryBlobStorageConnector.CLASS_NAME;
+	}
+
+	/**
+	 * Returns the health status of the component.
+	 * @returns The health status of the component.
+	 */
+	public async health(): Promise<IHealth[]> {
+		return [
+			{
+				source: MemoryBlobStorageConnector.CLASS_NAME,
+				status: HealthStatus.Ok,
+				description: "healthDescription",
+				data: {
+					storedItemCount: Object.keys(this._store).length
+				}
+			}
+		];
 	}
 
 	/**
@@ -38,11 +82,15 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The id of the stored blob in urn format.
 	 */
 	public async set(blob: Uint8Array): Promise<string> {
-		Guards.uint8Array(this.CLASS_NAME, nameof(blob), blob);
+		Guards.uint8Array(MemoryBlobStorageConnector.CLASS_NAME, nameof(blob), blob);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
 
 		const id = Converter.bytesToHex(Sha256.sum256(blob));
 
-		this._store[id] = blob;
+		const fullKey = `${partitionKey ?? "root"}/${id}`;
+		this._store[fullKey] = blob;
 
 		return `blob:${new Urn(MemoryBlobStorageConnector.NAMESPACE, id).toString()}`;
 	}
@@ -53,18 +101,23 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The data for the blob if it can be found or undefined.
 	 */
 	public async get(id: string): Promise<Uint8Array | undefined> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(MemoryBlobStorageConnector.CLASS_NAME, nameof(id), id);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
 
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== MemoryBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(MemoryBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: MemoryBlobStorageConnector.NAMESPACE,
 				id
 			});
 		}
 
-		return this._store[urnParsed.namespaceSpecific(1)];
+		const namespaceId = urnParsed.namespaceSpecific(1);
+		const fullKey = `${partitionKey ?? "root"}/${namespaceId}`;
+		return this._store[fullKey];
 	}
 
 	/**
@@ -73,30 +126,83 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns True if the blob was found.
 	 */
 	public async remove(id: string): Promise<boolean> {
-		Urn.guard(this.CLASS_NAME, nameof(id), id);
+		Urn.guard(MemoryBlobStorageConnector.CLASS_NAME, nameof(id), id);
+
+		const contextIds = await ContextIdStore.getContextIds();
+		const partitionKey = ContextIdHelper.combinedContextKey(contextIds, this._partitionContextIds);
 
 		const urnParsed = Urn.fromValidString(id);
 
 		if (urnParsed.namespaceMethod() !== MemoryBlobStorageConnector.NAMESPACE) {
-			throw new GeneralError(this.CLASS_NAME, "namespaceMismatch", {
+			throw new GeneralError(MemoryBlobStorageConnector.CLASS_NAME, "namespaceMismatch", {
 				namespace: MemoryBlobStorageConnector.NAMESPACE,
 				id
 			});
 		}
 
 		const namespaceId = urnParsed.namespaceSpecific(1);
-		if (this._store[namespaceId]) {
-			delete this._store[namespaceId];
+		const fullKey = `${partitionKey ?? "root"}/${namespaceId}`;
+		if (this._store[fullKey]) {
+			delete this._store[fullKey];
 			return true;
 		}
 		return false;
 	}
 
 	/**
+	 * Teardown the component and remove any resources it created.
+	 * @param nodeLoggingComponentType The node logging component type.
+	 * @returns True if the teardown process was successful.
+	 */
+	public async teardown(nodeLoggingComponentType?: string): Promise<boolean> {
+		const nodeLogging = ComponentFactory.getIfExists<ILoggingComponent>(nodeLoggingComponentType);
+
+		await nodeLogging?.log({
+			level: "info",
+			source: MemoryBlobStorageConnector.CLASS_NAME,
+			message: "storeTearingDown"
+		});
+
+		for (const key of Object.keys(this._store)) {
+			delete this._store[key];
+		}
+
+		await nodeLogging?.log({
+			level: "info",
+			source: MemoryBlobStorageConnector.CLASS_NAME,
+			message: "storeTornDown"
+		});
+
+		return true;
+	}
+
+	/**
+	 * Remove all blobs from the storage.
+	 * @returns A promise that resolves when all blobs in the current partition have been removed.
+	 */
+	public async empty(): Promise<void> {
+		try {
+			const contextIds = await ContextIdStore.getContextIds();
+			const partitionKey = ContextIdHelper.combinedContextKey(
+				contextIds,
+				this._partitionContextIds
+			);
+			const prefix = `${partitionKey ?? "root"}/`;
+			for (const key of Object.keys(this._store)) {
+				if (key.startsWith(prefix)) {
+					delete this._store[key];
+				}
+			}
+		} catch (err) {
+			throw new GeneralError(MemoryBlobStorageConnector.CLASS_NAME, "emptyFailed", undefined, err);
+		}
+	}
+
+	/**
 	 * Get the memory store.
 	 * @returns The store.
 	 */
-	public getStore(): { [id: string]: Uint8Array } {
+	public async getStore(): Promise<{ [id: string]: Uint8Array }> {
 		return this._store;
 	}
 }

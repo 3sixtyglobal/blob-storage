@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { IBlobStorageServiceConfig } from "./IBlobStorageServiceConfig";
+import type { IBlobStorageServiceConfig } from "./IBlobStorageServiceConfig.js";
 
 /**
  * Options for the Blob Storage Service constructor.
