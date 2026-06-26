@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.9.1-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.9.1-next.0...blob-storage-rest-client-v0.9.1-next.1) (2026-06-26)
+
+
+### Features
+
+* add compression support ([67d239b](https://github.com/iotaledger/twin-blob-storage/commit/67d239bca8321bd90bf4ff93167c564130309730))
+* add context id features ([#30](https://github.com/iotaledger/twin-blob-storage/issues/30)) ([fbf1c92](https://github.com/iotaledger/twin-blob-storage/commit/fbf1c9276424c841ef5ef3f4de8469ab3fba7e9c))
+* add empty and teardown methods ([#49](https://github.com/iotaledger/twin-blob-storage/issues/49)) ([cec6248](https://github.com/iotaledger/twin-blob-storage/commit/cec624809ffd2f2baa4b7b8cbf72a7247b8703ed))
+* add validate-locales ([f20fcec](https://github.com/iotaledger/twin-blob-storage/commit/f20fceced91e39a0c9edb770b2e43ce944c92f3c))
+* additional encryption options on per item basis ([4b95a65](https://github.com/iotaledger/twin-blob-storage/commit/4b95a656d19e3b571cea905e36f29b679b13e1e8))
+* eslint migration to flat config ([e4239dd](https://github.com/iotaledger/twin-blob-storage/commit/e4239dd1c721955cff7f0357255d2bba15319972))
+* replace nextItem property with Link header ([#37](https://github.com/iotaledger/twin-blob-storage/issues/37)) ([0b68da5](https://github.com/iotaledger/twin-blob-storage/commit/0b68da58549c9e52eb2313ea5a868573840d5ca6))
+* typescript 6 update ([4eed54f](https://github.com/iotaledger/twin-blob-storage/commit/4eed54f5ce2dc697c06597269c97ad4cad108be5))
+* update dependencies ([ca3c571](https://github.com/iotaledger/twin-blob-storage/commit/ca3c571573c771b8d25594f729651c8214e28263))
+* update dependencies ([56f0094](https://github.com/iotaledger/twin-blob-storage/commit/56f0094b68d8bd22864cd899ac1b61d95540f719))
+* update framework core ([ff339fe](https://github.com/iotaledger/twin-blob-storage/commit/ff339fe7e3f09ddff429907834bdf43617e9c05e))
+* use shared store mechanism ([#12](https://github.com/iotaledger/twin-blob-storage/issues/12)) ([cae8110](https://github.com/iotaledger/twin-blob-storage/commit/cae8110681847a1ac4fcac968b8196694e49c320))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.9.1-next.0 to 0.9.1-next.1
+
 ## [0.9.0](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.9.0...blob-storage-rest-client-v0.9.0) (2026-06-24)
 
 
