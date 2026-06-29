@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-connector-azure",
-	"version": "0.9.1-next.1",
+	"version": "0.9.1-next.2",
 	"description": "Stores and retrieves blobs in Azure Blob Storage containers.",
 	"repository": {
 		"type": "git",
@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@azure/storage-blob": "12.32.0",
-		"@twin.org/blob-storage-models": "0.9.1-next.1",
+		"@twin.org/blob-storage-models": "0.9.1-next.2",
 		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",

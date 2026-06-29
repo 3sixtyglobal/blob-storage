@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.1-next.2](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-aws-s3-v0.9.1-next.1...blob-storage-connector-aws-s3-v0.9.1-next.2) (2026-06-29)
+
+
+### Miscellaneous Chores
+
+* **blob-storage-connector-aws-s3:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.9.1-next.1 to 0.9.1-next.2
+
 ## [0.9.1-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-aws-s3-v0.9.1-next.0...blob-storage-connector-aws-s3-v0.9.1-next.1) (2026-06-26)
 
 
