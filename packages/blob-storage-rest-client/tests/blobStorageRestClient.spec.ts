@@ -128,12 +128,12 @@ describe("BlobStorageRestClient", () => {
 			expect(body.disableEncryption).toBe(true);
 		});
 
-		test("returns the Location header value as the blob id", async () => {
+		test("returns the blob id extracted from the Location header", async () => {
 			fetchMock.mockResolvedValueOnce(createdResponse(LOCATION));
 
 			const id = await client.create(TEST_BLOB_BASE64);
 
-			expect(id).toBe(LOCATION);
+			expect(id).toBe(BLOB_ID);
 		});
 	});
 

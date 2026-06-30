@@ -93,7 +93,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 			}
 		);
 
-		return HttpHeaderHelper.extractId(response.headers);
+		return HttpHeaderHelper.extractId(response.headers, `${this.getPathPrefix()}/:id`);
 	}
 
 	/**
