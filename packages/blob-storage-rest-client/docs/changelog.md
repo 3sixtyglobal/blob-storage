@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.1-next.3](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.9.1-next.2...blob-storage-rest-client-v0.9.1-next.3) (2026-06-30)
+
+
+### Features
+
+* rest enhancements ([#76](https://github.com/iotaledger/twin-blob-storage/issues/76)) ([ffe3d0c](https://github.com/iotaledger/twin-blob-storage/commit/ffe3d0cd456324eb79c18ea5e49b0e8be704cc5d))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.9.1-next.2 to 0.9.1-next.3
+
 ## [0.9.1-next.2](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-rest-client-v0.9.1-next.1...blob-storage-rest-client-v0.9.1-next.2) (2026-06-29)
 
 
