@@ -1,6 +1,6 @@
 # Function: blobStorageCreate()
 
-> **blobStorageCreate**(`httpRequestContext`, `componentName`, `request`): `Promise`\<`ICreatedResponse`\>
+> **blobStorageCreate**(`httpRequestContext`, `componentName`, `request`, `baseRouteName`): `Promise`\<`ICreatedResponse`\>
 
 Create a blob in storage.
 
@@ -23,6 +23,12 @@ The name of the component to use in the routes.
 `IBlobStorageCreateRequest`
 
 The request.
+
+### baseRouteName
+
+`string`
+
+The base route name to use for the location header.
 
 ## Returns
 

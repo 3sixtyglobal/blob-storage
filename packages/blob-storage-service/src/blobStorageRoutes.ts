@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import {
 	HttpContextIdKeys,
+	HttpHeaderHelper,
 	HttpParameterHelper,
 	HttpUrlHelper,
 	type ICreatedResponse,
@@ -33,9 +34,9 @@ import { Coerce, ComponentFactory, Converter, Guards, Is, StringHelper } from "@
 import { nameof } from "@twin.org/nameof";
 import { SchemaOrgContexts, SchemaOrgTypes } from "@twin.org/standards-schema-org";
 import {
-	HeaderHelper,
 	HeaderTypes,
 	HttpStatusCode,
+	type IHttpHeaders,
 	MimeTypeHelper,
 	MimeTypes
 } from "@twin.org/web";
@@ -83,7 +84,7 @@ export function generateRestRoutesBlobStorage(
 		method: "POST",
 		path: `${baseRouteName}/`,
 		handler: async (httpRequestContext, request) =>
-			blobStorageCreate(httpRequestContext, componentName, request),
+			blobStorageCreate(httpRequestContext, componentName, request, baseRouteName),
 		requestType: {
 			type: nameof<IBlobStorageCreateRequest>(),
 			examples: [
@@ -472,12 +473,14 @@ export function generateRestRoutesBlobStorage(
  * @param httpRequestContext The request context for the API.
  * @param componentName The name of the component to use in the routes.
  * @param request The request.
+ * @param baseRouteName The base route name to use for the location header.
  * @returns The response object with additional http response properties.
  */
 export async function blobStorageCreate(
 	httpRequestContext: IHttpRequestContext,
 	componentName: string,
-	request: IBlobStorageCreateRequest
+	request: IBlobStorageCreateRequest,
+	baseRouteName: string
 ): Promise<ICreatedResponse> {
 	Guards.object<IBlobStorageCreateRequest>(ROUTES_SOURCE, nameof(request), request);
 	Guards.object<IBlobStorageCreateRequest["body"]>(
@@ -500,11 +503,19 @@ export async function blobStorageCreate(
 		}
 	);
 
+	const contextIds = await ContextIdStore.getContextIds();
+	const publicOrigin = contextIds?.[HttpContextIdKeys.PublicOrigin];
+
+	const headers: IHttpHeaders = {};
+	HttpHeaderHelper.buildId(
+		headers,
+		id,
+		HttpUrlHelper.combineOriginPath(publicOrigin, `${baseRouteName}/:id`)
+	);
+
 	return {
 		statusCode: HttpStatusCode.created,
-		headers: {
-			[HeaderTypes.Location]: id
-		}
+		headers
 	};
 }
 
@@ -536,13 +547,11 @@ export async function blobStorageGet(
 		overrideVaultKeyId: request.query?.overrideVaultKeyId
 	});
 
+	const headers: IHttpHeaders = {};
+	HttpHeaderHelper.buildJsonContentType(headers, request.headers);
+
 	return {
-		headers: {
-			[HeaderTypes.ContentType]:
-				request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd
-					? MimeTypes.JsonLd
-					: MimeTypes.Json
-		},
+		headers,
 		body: result
 	};
 }
@@ -712,22 +721,16 @@ export async function blobStorageList(
 		Coerce.number(request.query?.limit)
 	);
 
-	const headers: IBlobStorageListResponse["headers"] = {
-		[HeaderTypes.ContentType]:
-			request.headers?.[HeaderTypes.Accept] === MimeTypes.JsonLd ? MimeTypes.JsonLd : MimeTypes.Json
-	};
+	const headers: IHttpHeaders = {};
+	HttpHeaderHelper.buildJsonContentType(headers, request.headers);
 
-	if (Is.stringValue(result.cursor)) {
-		const contextIds = await ContextIdStore.getContextIds();
-		headers[HeaderTypes.Link] = HeaderHelper.createLinkHeader(
-			HttpUrlHelper.replaceOrigin(
-				httpRequestContext.serverRequest.url,
-				contextIds?.[HttpContextIdKeys.PublicOrigin]
-			),
-			{ cursor: result.cursor },
-			"next"
-		);
-	}
+	const contextIds = await ContextIdStore.getContextIds();
+	HttpHeaderHelper.buildCursor(
+		headers,
+		httpRequestContext.serverRequest.url,
+		contextIds?.[HttpContextIdKeys.PublicOrigin],
+		result.cursor
+	);
 
 	return {
 		headers,

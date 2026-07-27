@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0.
 import { BaseRestClient } from "@twin.org/api-core";
 import {
+	HttpHeaderHelper,
 	HttpParameterHelper,
 	type IBaseRestClientConfig,
 	type ICreatedResponse,
@@ -24,7 +25,7 @@ import { Coerce, Guards, Is, StringHelper, Urn } from "@twin.org/core";
 import type { IJsonLdNodeObject } from "@twin.org/data-json-ld";
 import type { EntityCondition, SortDirection } from "@twin.org/entity";
 import { nameof } from "@twin.org/nameof";
-import { HeaderHelper, HeaderTypes, MimeTypes } from "@twin.org/web";
+import { HeaderTypes, HttpMethod, MimeTypes } from "@twin.org/web";
 
 /**
  * Client for performing blob storage through to REST endpoints.
@@ -76,19 +77,23 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	): Promise<string> {
 		Guards.stringBase64(BlobStorageRestClient.CLASS_NAME, nameof(blob), blob);
 
-		const response = await this.fetch<IBlobStorageCreateRequest, ICreatedResponse>("/", "POST", {
-			body: {
-				blob,
-				encodingFormat,
-				fileExtension,
-				metadata,
-				disableEncryption: options?.disableEncryption,
-				overrideVaultKeyId: options?.overrideVaultKeyId,
-				namespace: options?.namespace
+		const response = await this.fetch<IBlobStorageCreateRequest, ICreatedResponse>(
+			"/",
+			HttpMethod.POST,
+			{
+				body: {
+					blob,
+					encodingFormat,
+					fileExtension,
+					metadata,
+					disableEncryption: options?.disableEncryption,
+					overrideVaultKeyId: options?.overrideVaultKeyId,
+					namespace: options?.namespace
+				}
 			}
-		});
+		);
 
-		return response.headers[HeaderTypes.Location];
+		return HttpHeaderHelper.extractId(response.headers, `${this.getPathPrefix()}/:id`);
 	}
 
 	/**
@@ -113,7 +118,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 
 		const response = await this.fetch<IBlobStorageGetRequest, IBlobStorageGetResponse>(
 			"/:id",
-			"GET",
+			HttpMethod.GET,
 			{
 				headers: {
 					[HeaderTypes.Accept]: MimeTypes.JsonLd
@@ -149,7 +154,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	): Promise<void> {
 		Urn.guard(BlobStorageRestClient.CLASS_NAME, nameof(id), id);
 
-		await this.fetch<IBlobStorageUpdateRequest, INoContentResponse>("/:id", "PUT", {
+		await this.fetch<IBlobStorageUpdateRequest, INoContentResponse>("/:id", HttpMethod.PUT, {
 			pathParams: {
 				id
 			},
@@ -166,7 +171,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	 * @returns A promise that resolves when all blobs have been removed.
 	 */
 	public async empty(): Promise<void> {
-		await this.fetch<IBlobStorageEmptyRequest, INoContentResponse>("/", "DELETE");
+		await this.fetch<IBlobStorageEmptyRequest, INoContentResponse>("/", HttpMethod.DELETE);
 	}
 
 	/**
@@ -177,7 +182,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	public async remove(id: string): Promise<void> {
 		Urn.guard(BlobStorageRestClient.CLASS_NAME, nameof(id), id);
 
-		await this.fetch<IBlobStorageRemoveRequest, INoContentResponse>("/:id", "DELETE", {
+		await this.fetch<IBlobStorageRemoveRequest, INoContentResponse>("/:id", HttpMethod.DELETE, {
 			pathParams: {
 				id
 			}
@@ -206,7 +211,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	}> {
 		const response = await this.fetch<IBlobStorageListRequest, IBlobStorageListResponse>(
 			"/",
-			"GET",
+			HttpMethod.GET,
 			{
 				headers: {
 					[HeaderTypes.Accept]: MimeTypes.JsonLd
@@ -223,8 +228,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 
 		return {
 			entries: response.body,
-			cursor: HeaderHelper.extractLinkHeaderRelation(response.headers?.[HeaderTypes.Link], "next")
-				?.urlQueryParams?.cursor
+			cursor: HttpHeaderHelper.extractCursor(response.headers)
 		};
 	}
 
