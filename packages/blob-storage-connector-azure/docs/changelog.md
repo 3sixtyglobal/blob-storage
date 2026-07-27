@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.9.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-azure-v0.9.1...blob-storage-connector-azure-v0.9.1) (2026-07-27)
+
+
+### Features
+
+* release to production ([eacfe75](https://github.com/iotaledger/twin-blob-storage/commit/eacfe754a0dcd9243d9e13d86422327d0a605164))
+* release to production ([#70](https://github.com/iotaledger/twin-blob-storage/issues/70)) ([6a38fe5](https://github.com/iotaledger/twin-blob-storage/commit/6a38fe583076baf1fc53d1d891d294b75ebbefd1))
+* release to production ([#81](https://github.com/iotaledger/twin-blob-storage/issues/81)) ([0743e8f](https://github.com/iotaledger/twin-blob-storage/commit/0743e8fd2d542d687a8ba49a8251ae1805023c9f))
+
 ## [0.9.1-next.3](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-azure-v0.9.1-next.2...blob-storage-connector-azure-v0.9.1-next.3) (2026-06-30)
 
 
