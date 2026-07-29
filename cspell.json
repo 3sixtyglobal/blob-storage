@@ -27,7 +27,9 @@
 		"kubo",
 		"nameof",
 		"Stiftung",
-		"teardown"
+		"teardown",
+		"statfs",
+		"bavail"
 	],
 	"ignoreRegExpList": [
 		"/from\\s+(['\"]).*\\1/",

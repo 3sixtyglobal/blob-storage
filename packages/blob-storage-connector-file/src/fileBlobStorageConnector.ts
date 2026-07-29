@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { access, mkdir, readFile, readdir, rm, unlink, writeFile } from "node:fs/promises";
+import { access, mkdir, readFile, readdir, rm, statfs, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
@@ -35,6 +35,18 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	public static readonly CLASS_NAME: string = nameof<FileBlobStorageConnector>();
 
 	/**
+	 * Default disk space warning threshold: 500 MB.
+	 * @internal
+	 */
+	private static readonly _DEFAULT_DISK_WARNING_THRESHOLD_BYTES: number = 500 * 1024 * 1024;
+
+	/**
+	 * Default disk space error threshold: 100 MB.
+	 * @internal
+	 */
+	private static readonly _DEFAULT_DISK_ERROR_THRESHOLD_BYTES: number = 100 * 1024 * 1024;
+
+	/**
 	 * The directory to use for storage.
 	 * @internal
 	 */
@@ -45,6 +57,18 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @internal
 	 */
 	private readonly _extension: string;
+
+	/**
+	 * Free bytes below which health reports an error.
+	 * @internal
+	 */
+	private readonly _diskErrorThresholdBytes: number;
+
+	/**
+	 * Free bytes below which health reports a warning.
+	 * @internal
+	 */
+	private readonly _diskWarningThresholdBytes: number;
 
 	/**
 	 * The keys to use from the context ids to create partitions.
@@ -66,6 +90,12 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 		);
 		this._directory = path.resolve(options.config.directory);
 		this._extension = options.config.extension ?? ".blob";
+		this._diskErrorThresholdBytes =
+			options.config.diskErrorThresholdBytes ??
+			FileBlobStorageConnector._DEFAULT_DISK_ERROR_THRESHOLD_BYTES;
+		this._diskWarningThresholdBytes =
+			options.config.diskWarningThresholdBytes ??
+			FileBlobStorageConnector._DEFAULT_DISK_WARNING_THRESHOLD_BYTES;
 		this._partitionContextIds = options.partitionContextIds;
 	}
 
@@ -82,29 +112,58 @@ export class FileBlobStorageConnector implements IBlobStorageConnector {
 	 * @returns The health status of the component.
 	 */
 	public async health(): Promise<IHealth[]> {
-		if (await this.dirExists(this._directory)) {
+		try {
+			const stats = await statfs(this._directory);
+			const freeBytes = stats.bavail * stats.bsize;
+
+			if (freeBytes < this._diskErrorThresholdBytes) {
+				return [
+					{
+						source: FileBlobStorageConnector.CLASS_NAME,
+						status: HealthStatus.Error,
+						description: "healthDescription",
+						message: "diskSpaceError",
+						data: {
+							directory: this._directory,
+							freeBytes,
+							thresholdBytes: this._diskErrorThresholdBytes
+						}
+					}
+				];
+			} else if (freeBytes < this._diskWarningThresholdBytes) {
+				return [
+					{
+						source: FileBlobStorageConnector.CLASS_NAME,
+						status: HealthStatus.Warning,
+						description: "healthDescription",
+						message: "diskSpaceWarning",
+						data: {
+							directory: this._directory,
+							freeBytes,
+							thresholdBytes: this._diskWarningThresholdBytes
+						}
+					}
+				];
+			}
 			return [
 				{
 					source: FileBlobStorageConnector.CLASS_NAME,
 					status: HealthStatus.Ok,
 					description: "healthDescription",
-					data: {
-						directory: this._directory
-					}
+					data: { directory: this._directory, freeBytes }
+				}
+			];
+		} catch {
+			return [
+				{
+					source: FileBlobStorageConnector.CLASS_NAME,
+					status: HealthStatus.Error,
+					description: "healthDescription",
+					message: "diskSpaceCheckFailed",
+					data: { directory: this._directory }
 				}
 			];
 		}
-		return [
-			{
-				source: FileBlobStorageConnector.CLASS_NAME,
-				status: HealthStatus.Error,
-				description: "healthDescription",
-				message: "healthCheckFailed",
-				data: {
-					directory: this._directory
-				}
-			}
-		];
 	}
 
 	/**
