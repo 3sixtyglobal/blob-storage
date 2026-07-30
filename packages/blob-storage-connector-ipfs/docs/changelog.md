@@ -1,5 +1,40 @@
 # Changelog
 
+## [0.9.2-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-ipfs-v0.9.2-next.0...blob-storage-connector-ipfs-v0.9.2-next.1) (2026-07-30)
+
+
+### Features
+
+* add context id features ([#30](https://github.com/iotaledger/twin-blob-storage/issues/30)) ([fbf1c92](https://github.com/iotaledger/twin-blob-storage/commit/fbf1c9276424c841ef5ef3f4de8469ab3fba7e9c))
+* add empty and teardown methods ([#49](https://github.com/iotaledger/twin-blob-storage/issues/49)) ([cec6248](https://github.com/iotaledger/twin-blob-storage/commit/cec624809ffd2f2baa4b7b8cbf72a7247b8703ed))
+* add validate-locales ([f20fcec](https://github.com/iotaledger/twin-blob-storage/commit/f20fceced91e39a0c9edb770b2e43ce944c92f3c))
+* additional information in health ([1ef83be](https://github.com/iotaledger/twin-blob-storage/commit/1ef83bef81148489b7950d5131a2af5121910e99))
+* async getStore ([#59](https://github.com/iotaledger/twin-blob-storage/issues/59)) ([2de1ae5](https://github.com/iotaledger/twin-blob-storage/commit/2de1ae5c274b84a2320f75ac4628b81e9459c540))
+* eslint migration to flat config ([e4239dd](https://github.com/iotaledger/twin-blob-storage/commit/e4239dd1c721955cff7f0357255d2bba15319972))
+* health checks ([#44](https://github.com/iotaledger/twin-blob-storage/issues/44)) ([4a4041c](https://github.com/iotaledger/twin-blob-storage/commit/4a4041c19b68c40ed1aba6d1cdb4318ac4208b7d))
+* skip ci for tests ([02b8095](https://github.com/iotaledger/twin-blob-storage/commit/02b8095dfabf8d9b3c6248a054a7657bfab1a374))
+* typescript 6 update ([4eed54f](https://github.com/iotaledger/twin-blob-storage/commit/4eed54f5ce2dc697c06597269c97ad4cad108be5))
+* update dependencies ([ca3c571](https://github.com/iotaledger/twin-blob-storage/commit/ca3c571573c771b8d25594f729651c8214e28263))
+* update dependencies ([56f0094](https://github.com/iotaledger/twin-blob-storage/commit/56f0094b68d8bd22864cd899ac1b61d95540f719))
+* update framework core ([ff339fe](https://github.com/iotaledger/twin-blob-storage/commit/ff339fe7e3f09ddff429907834bdf43617e9c05e))
+* update health fetch ([6c86b51](https://github.com/iotaledger/twin-blob-storage/commit/6c86b51c2a034f680ccf290514dcb47e2ef91057))
+* use new createBearer method ([f87c550](https://github.com/iotaledger/twin-blob-storage/commit/f87c5502fe3b5fee81257d7500f5d4500ea5ed28))
+* use new createBearer method ([a965801](https://github.com/iotaledger/twin-blob-storage/commit/a96580160315c363fc0f06a1615cc92d4339a5e4))
+* use shared store mechanism ([#12](https://github.com/iotaledger/twin-blob-storage/issues/12)) ([cae8110](https://github.com/iotaledger/twin-blob-storage/commit/cae8110681847a1ac4fcac968b8196694e49c320))
+
+
+### Bug Fixes
+
+* missing dependency ([868717b](https://github.com/iotaledger/twin-blob-storage/commit/868717b9d352af916c32df4d4f942d3bd8769c95))
+* missing dependency ([9b7ec26](https://github.com/iotaledger/twin-blob-storage/commit/9b7ec2694468e75b4d3357b623e5031def82c920))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.9.2-next.0 to 0.9.2-next.1
+
 ## [0.9.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-ipfs-v0.9.1...blob-storage-connector-ipfs-v0.9.1) (2026-07-27)
 
 
