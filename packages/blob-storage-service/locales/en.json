@@ -9,6 +9,7 @@
 			"emptyFailed": "There was a problem emptying the blob storage",
 			"namespaceMismatch": "The namespace in the urn \"{id}\" does not match the namespace of the blob storage service \"{namespace}\"",
 			"vaultConnectorNotConfigured": "The vault connector is not configured, but encryption/decryption was requested.",
+			"vaultKeyIdMissing": "The blob is encrypted but no vault key id is available for decryption.",
 			"blobNotFound": "The blob with id \"{notFoundId}\" was not found",
 			"entityNotFound": "The entity with id \"{notFoundId}\" was not found"
 		}

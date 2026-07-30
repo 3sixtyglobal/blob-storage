@@ -150,7 +150,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 		Guards.stringBase64(BlobStorageService.CLASS_NAME, nameof(blob), blob);
 
 		const disableEncryption = options?.disableEncryption ?? false;
-		const vaultKeyId = options?.overrideVaultKeyId ?? this._vaultKeyId;
+		const vaultKeyId = Is.stringValue(options?.overrideVaultKeyId)
+			? options.overrideVaultKeyId
+			: this._vaultKeyId;
 		const encryptionEnabled = !disableEncryption && Is.stringValue(vaultKeyId);
 
 		try {
@@ -208,7 +210,8 @@ export class BlobStorageService implements IBlobStorageComponent {
 			// Set the blob in the storage connector, which may now be encrypted
 			const blobId = await blobStorageConnector.set(storeBlob);
 
-			// Now store the entry in entity storage
+			// Build the entry before the existence check so that dateCreated is
+			// stamped whether or not the entry already exists.
 			const blobEntry: BlobStorageEntry = {
 				id: blobId,
 				dateCreated: new Date(Date.now()).toISOString(),
@@ -221,7 +224,39 @@ export class BlobStorageService implements IBlobStorageComponent {
 				compression: options?.compress
 			};
 
-			await this._entryEntityStorage.set(blobEntry);
+			// Content-addressed deduplication and entry write are wrapped in a single
+			// try/catch so that a failure in either the existence check or the set call
+			// triggers the same compensating cleanup.
+			//
+			// If an entry already exists the bytes are already stored and the existing
+			// entry's mutable fields (encodingFormat, fileExtension, metadata) are left
+			// unchanged.  Callers that need to update those fields should use update().
+			try {
+				const existingEntry = await this._entryEntityStorage.get(blobId);
+				if (!Is.empty(existingEntry)) {
+					return blobId;
+				}
+				await this._entryEntityStorage.set(blobEntry);
+			} catch (entityError) {
+				// Compensating cleanup: remove the orphaned blob if no entry now references it.
+				// Guard the check so that a concurrent successful create of the same content
+				// (content-addressed ids) is not deleted.
+				let orphaned = true;
+				try {
+					const existing = await this._entryEntityStorage.get(blobId);
+					orphaned = Is.empty(existing);
+				} catch {
+					// If we cannot confirm the entry was saved, assume it was not and clean up.
+				}
+				if (orphaned) {
+					try {
+						await blobStorageConnector.remove(blobId);
+					} catch {
+						// Best-effort cleanup; the blob may already be absent or unreachable.
+					}
+				}
+				throw entityError;
+			}
 
 			return blobId;
 		} catch (error) {
@@ -250,7 +285,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);
 
 		const includeContent = options?.includeContent ?? false;
-		const vaultKeyId = options?.overrideVaultKeyId ?? this._vaultKeyId;
+		const vaultKeyId = Is.stringValue(options?.overrideVaultKeyId)
+			? options.overrideVaultKeyId
+			: this._vaultKeyId;
 
 		try {
 			const blobEntry = await this.internalGet(id);
@@ -264,8 +301,11 @@ export class BlobStorageService implements IBlobStorageComponent {
 				}
 
 				// If the data is encrypted then decrypt it.
-				const decryptionEnabled = blobEntry.isEncrypted && Is.stringValue(vaultKeyId);
-				if (decryptionEnabled) {
+				if (blobEntry.isEncrypted) {
+					if (!Is.stringValue(vaultKeyId)) {
+						throw new GeneralError(BlobStorageService.CLASS_NAME, "vaultKeyIdMissing");
+					}
+
 					const contextIds = await ContextIdStore.getContextIds();
 					ContextIdHelper.guard(contextIds, ContextIdKeys.Organization);
 
@@ -315,7 +355,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		try {
 			const blobEntry = await this._entryEntityStorage.get(id);
 
-			if (Is.undefined(blobEntry)) {
+			if (Is.empty(blobEntry)) {
 				throw new NotFoundError(BlobStorageService.CLASS_NAME, "blobNotFound", id);
 			}
 
@@ -393,13 +433,13 @@ export class BlobStorageService implements IBlobStorageComponent {
 		try {
 			const blobStorageConnector = this.getConnector(id);
 
+			// Remove the blob before the metadata entry.  If the connector fails, the
+			// metadata entry survives and the blob remains reachable (no data loss).
+			// If the connector succeeds but entity-storage remove fails, the metadata
+			// entry temporarily points to absent bytes; a second call to remove() will
+			// clean it up because connectors treat an already-absent blob as acceptable.
+			await blobStorageConnector.remove(id);
 			await this._entryEntityStorage.remove(id);
-
-			const removed = await blobStorageConnector.remove(id);
-
-			if (!removed) {
-				throw new NotFoundError(BlobStorageService.CLASS_NAME, "blobNotFound", id);
-			}
 		} catch (error) {
 			throw new GeneralError(BlobStorageService.CLASS_NAME, "removeFailed", undefined, error);
 		}

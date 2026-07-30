@@ -9,6 +9,7 @@ import {
 	type INoContentResponse
 } from "@twin.org/api-models";
 import type {
+	BlobStorageCompressionType,
 	IBlobStorageComponent,
 	IBlobStorageCreateRequest,
 	IBlobStorageEmptyRequest,
@@ -61,6 +62,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 	 * @param options Optional options for the creation of the blob.
 	 * @param options.disableEncryption Disables encryption if enabled by default.
 	 * @param options.overrideVaultKeyId Use a different vault key id for encryption, if not provided the default vault key id will be used.
+	 * @param options.compress Optional compression type to use for the blob, defaults to no compression.
 	 * @param options.namespace The namespace to use for storing, defaults to component configured namespace.
 	 * @returns The id of the stored blob in urn format.
 	 */
@@ -72,6 +74,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 		options?: {
 			disableEncryption?: boolean;
 			overrideVaultKeyId?: string;
+			compress?: BlobStorageCompressionType;
 			namespace?: string;
 		}
 	): Promise<string> {
@@ -88,6 +91,7 @@ export class BlobStorageRestClient extends BaseRestClient implements IBlobStorag
 					metadata,
 					disableEncryption: options?.disableEncryption,
 					overrideVaultKeyId: options?.overrideVaultKeyId,
+					compress: options?.compress,
 					namespace: options?.namespace
 				}
 			}

@@ -1,7 +1,11 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import type { IBlobStorageEntry, IBlobStorageEntryList } from "@twin.org/blob-storage-models";
-import { BlobStorageContexts, BlobStorageTypes } from "@twin.org/blob-storage-models";
+import {
+	BlobStorageCompressionType,
+	BlobStorageContexts,
+	BlobStorageTypes
+} from "@twin.org/blob-storage-models";
 import { GuardError } from "@twin.org/core";
 import { SchemaOrgContexts, SchemaOrgTypes } from "@twin.org/standards-schema-org";
 import { HttpMethod } from "@twin.org/web";
@@ -126,6 +130,18 @@ describe("BlobStorageRestClient", () => {
 			const [, options] = fetchMock.mock.calls[0];
 			const body = JSON.parse(options.body);
 			expect(body.disableEncryption).toBe(true);
+		});
+
+		test("sends compress in the request body when provided via options", async () => {
+			fetchMock.mockResolvedValueOnce(createdResponse(LOCATION));
+
+			await client.create(TEST_BLOB_BASE64, undefined, undefined, undefined, {
+				compress: BlobStorageCompressionType.Gzip
+			});
+
+			const [, options] = fetchMock.mock.calls[0];
+			const body = JSON.parse(options.body);
+			expect(body.compress).toBe(BlobStorageCompressionType.Gzip);
 		});
 
 		test("returns the blob id extracted from the Location header", async () => {
