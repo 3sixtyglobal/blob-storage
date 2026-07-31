@@ -20,16 +20,17 @@
 	"words": [
 		"abbrev",
 		"autorelease",
+		"bavail",
 		"fsouza",
+		"hotfixes",
 		"IIPFS",
 		"IPFS",
 		"jsonld",
 		"kubo",
 		"nameof",
-		"Stiftung",
-		"teardown",
 		"statfs",
-		"bavail"
+		"Stiftung",
+		"teardown"
 	],
 	"ignoreRegExpList": [
 		"/from\\s+(['\"]).*\\1/",
