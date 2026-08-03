@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import { HealthStatus } from "@twin.org/api-models";
 import { ContextIdStore } from "@twin.org/context";
-import { HealthStatus } from "@twin.org/core";
 import { TEST_GCP_CONFIG } from "./setupTestEnv.js";
 import { GcpBlobStorageConnector } from "../src/gcpBlobStorageConnector.js";
 
@@ -14,7 +14,7 @@ describe("GcpBlobStorageConnector Health", () => {
 
 	test("can health check", async () => {
 		const blobStorage = new GcpBlobStorageConnector({ config: TEST_GCP_CONFIG });
-		const health = await blobStorage.health();
+		const health = await blobStorage.health(0);
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Ok);
@@ -28,7 +28,7 @@ describe("GcpBlobStorageConnector Health", () => {
 				apiEndpoint: "http://localhost:19999"
 			}
 		});
-		const health = await blobStorage.health();
+		const health = await blobStorage.health(0);
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Error);

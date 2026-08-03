@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import { HealthStatus } from "@twin.org/api-models";
 import { ContextIdStore } from "@twin.org/context";
-import { HealthStatus } from "@twin.org/core";
 import { TEST_S3_CONFIG } from "./setupTestEnv.js";
 import { S3BlobStorageConnector } from "../src/s3BlobStorageConnector.js";
 
@@ -21,7 +21,7 @@ describe("S3BlobStorageConnector Health", () => {
 	});
 
 	test("can health check", async () => {
-		const health = await blobStorage.health();
+		const health = await blobStorage.health(0);
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Ok);
@@ -37,7 +37,7 @@ describe("S3BlobStorageConnector Health", () => {
 				secretAccessKey: "test-secret-key"
 			}
 		});
-		const health = await blobStorage2.health();
+		const health = await blobStorage2.health(0);
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Error);

@@ -1,8 +1,9 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { rm } from "node:fs/promises";
+import { HealthStatus } from "@twin.org/api-models";
 import { ContextIdStore } from "@twin.org/context";
-import { Converter, HealthStatus, RandomHelper } from "@twin.org/core";
+import { Converter, RandomHelper } from "@twin.org/core";
 import { FileBlobStorageConnector } from "../src/fileBlobStorageConnector.js";
 
 const TEST_DIRECTORY_ROOT = "./.tmp/";
@@ -29,7 +30,7 @@ describe("FileBlobStorageConnector Health", () => {
 				directory: TEST_DIRECTORY
 			}
 		});
-		const health = await blobStorage.health();
+		const health = await blobStorage.health(0);
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Ok);
@@ -41,7 +42,7 @@ describe("FileBlobStorageConnector Health", () => {
 				directory: `${TEST_DIRECTORY_ROOT}does-not-exist`
 			}
 		});
-		const health = await blobStorage.health();
+		const health = await blobStorage.health(0);
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Error);

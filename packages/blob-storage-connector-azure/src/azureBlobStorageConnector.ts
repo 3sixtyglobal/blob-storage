@@ -9,6 +9,12 @@ import {
 	type ContainerClient,
 	StorageSharedKeyCredential
 } from "@azure/storage-blob";
+import {
+	HealthCategory,
+	HealthStatus,
+	type IHealth,
+	type IHealthProviderComponent
+} from "@twin.org/api-models";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
 import {
@@ -17,10 +23,8 @@ import {
 	Converter,
 	GeneralError,
 	Guards,
-	HealthStatus,
 	Is,
-	Urn,
-	type IHealth
+	Urn
 } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
@@ -32,7 +36,7 @@ import type { IAzureBlobStorageConnectorConstructorOptions } from "./models/IAzu
  * Class for performing blob storage operations on Azure.
  * See https://learn.microsoft.com/en-us/azure/storage/common/storage-samples-javascript?toc=%2Fazure%2Fstorage%2Fblobs%2Ftoc.json for more information.
  */
-export class AzureBlobStorageConnector implements IBlobStorageConnector {
+export class AzureBlobStorageConnector implements IBlobStorageConnector, IHealthProviderComponent {
 	/**
 	 * The namespace for the items.
 	 */
@@ -120,14 +124,16 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Returns the health status of the component.
+	 * @param lastTimestamp The Unix timestamp (ms) recorded at the start of the previous cycle.
 	 * @returns The health status of the component.
 	 */
-	public async health(): Promise<IHealth[]> {
+	public async health(lastTimestamp: number): Promise<IHealth[]> {
 		try {
 			await this._azureContainerClient.exists();
 			return [
 				{
 					source: AzureBlobStorageConnector.CLASS_NAME,
+					category: HealthCategory.Connectivity,
 					status: HealthStatus.Ok,
 					description: "healthDescription",
 					data: {
@@ -140,6 +146,7 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector {
 			return [
 				{
 					source: AzureBlobStorageConnector.CLASS_NAME,
+					category: HealthCategory.Connectivity,
 					status: HealthStatus.Error,
 					description: "healthDescription",
 					message: "healthCheckFailed",

@@ -13,18 +13,15 @@ import {
 	PutObjectCommand,
 	S3Client
 } from "@aws-sdk/client-s3";
+import {
+	HealthCategory,
+	HealthStatus,
+	type IHealth,
+	type IHealthProviderComponent
+} from "@twin.org/api-models";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
-import {
-	BaseError,
-	ComponentFactory,
-	Converter,
-	GeneralError,
-	Guards,
-	HealthStatus,
-	Urn,
-	type IHealth
-} from "@twin.org/core";
+import { BaseError, ComponentFactory, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
@@ -35,7 +32,7 @@ import type { IS3BlobStorageConnectorConstructorOptions } from "./models/IS3Blob
  * Class for performing blob storage operations on S3.
  * See https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/ for more information.
  */
-export class S3BlobStorageConnector implements IBlobStorageConnector {
+export class S3BlobStorageConnector implements IBlobStorageConnector, IHealthProviderComponent {
 	/**
 	 * The namespace for the items.
 	 */
@@ -127,14 +124,16 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Returns the health status of the component.
+	 * @param lastTimestamp The Unix timestamp (ms) recorded at the start of the previous cycle.
 	 * @returns The health status of the component.
 	 */
-	public async health(): Promise<IHealth[]> {
+	public async health(lastTimestamp: number): Promise<IHealth[]> {
 		try {
 			await this._s3Client.send(new HeadBucketCommand({ Bucket: this._config.bucketName }));
 			return [
 				{
 					source: S3BlobStorageConnector.CLASS_NAME,
+					category: HealthCategory.Connectivity,
 					status: HealthStatus.Ok,
 					description: "healthDescription",
 					data: {
@@ -147,6 +146,7 @@ export class S3BlobStorageConnector implements IBlobStorageConnector {
 			return [
 				{
 					source: S3BlobStorageConnector.CLASS_NAME,
+					category: HealthCategory.Connectivity,
 					status: HealthStatus.Error,
 					description: "healthDescription",
 					message: "healthCheckFailed",

@@ -1,6 +1,12 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { Storage } from "@google-cloud/storage";
+import {
+	HealthCategory,
+	HealthStatus,
+	type IHealth,
+	type IHealthProviderComponent
+} from "@twin.org/api-models";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
 import {
@@ -9,11 +15,9 @@ import {
 	Converter,
 	GeneralError,
 	Guards,
-	HealthStatus,
 	Is,
 	ObjectHelper,
-	Urn,
-	type IHealth
+	Urn
 } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
@@ -27,7 +31,7 @@ import type { IGcpBlobStorageConnectorConstructorOptions } from "./models/IGcpBl
  * Class for performing blob storage operations on GCP Storage.
  * See https://cloud.google.com/storage/docs/reference/libraries for more information.
  */
-export class GcpBlobStorageConnector implements IBlobStorageConnector {
+export class GcpBlobStorageConnector implements IBlobStorageConnector, IHealthProviderComponent {
 	/**
 	 * The namespace for the items.
 	 */
@@ -110,14 +114,16 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Returns the health status of the component.
+	 * @param lastTimestamp The Unix timestamp (ms) recorded at the start of the previous cycle.
 	 * @returns The health status of the component.
 	 */
-	public async health(): Promise<IHealth[]> {
+	public async health(lastTimestamp: number): Promise<IHealth[]> {
 		try {
 			await this._storage.bucket(this._config.bucketName).exists();
 			return [
 				{
 					source: GcpBlobStorageConnector.CLASS_NAME,
+					category: HealthCategory.Connectivity,
 					status: HealthStatus.Ok,
 					description: "healthDescription",
 					data: {
@@ -130,6 +136,7 @@ export class GcpBlobStorageConnector implements IBlobStorageConnector {
 			return [
 				{
 					source: GcpBlobStorageConnector.CLASS_NAME,
+					category: HealthCategory.Connectivity,
 					status: HealthStatus.Error,
 					description: "healthDescription",
 					message: "healthCheckFailed",

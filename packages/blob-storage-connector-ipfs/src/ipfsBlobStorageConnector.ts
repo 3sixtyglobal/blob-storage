@@ -1,5 +1,11 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import {
+	HealthCategory,
+	HealthStatus,
+	type IHealth,
+	type IHealthProviderComponent
+} from "@twin.org/api-models";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
 import {
@@ -8,11 +14,9 @@ import {
 	Converter,
 	GeneralError,
 	Guards,
-	HealthStatus,
 	Is,
 	StringHelper,
-	Urn,
-	type IHealth
+	Urn
 } from "@twin.org/core";
 import { Blake2b } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
@@ -25,7 +29,7 @@ import type { IIpfsBlobStorageConnectorConstructorOptions } from "./models/IIpfs
  * Class for performing blob storage operations on IPFS.
  * See https://docs.ipfs.tech/reference/kubo/rpc/ for more information.
  */
-export class IpfsBlobStorageConnector implements IBlobStorageConnector {
+export class IpfsBlobStorageConnector implements IBlobStorageConnector, IHealthProviderComponent {
 	/**
 	 * The namespace for the items.
 	 */
@@ -80,9 +84,10 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 
 	/**
 	 * Returns the health status of the component.
+	 * @param lastTimestamp The Unix timestamp (ms) recorded at the start of the previous cycle.
 	 * @returns The health status of the component.
 	 */
-	public async health(): Promise<IHealth[]> {
+	public async health(lastTimestamp: number): Promise<IHealth[]> {
 		try {
 			const fetchOptions: RequestInit = {
 				method: HttpMethod.POST,
@@ -96,6 +101,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 				return [
 					{
 						source: IpfsBlobStorageConnector.CLASS_NAME,
+						category: HealthCategory.Connectivity,
 						status: HealthStatus.Ok,
 						description: "healthDescription",
 						data: {
@@ -108,6 +114,7 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector {
 		return [
 			{
 				source: IpfsBlobStorageConnector.CLASS_NAME,
+				category: HealthCategory.Connectivity,
 				status: HealthStatus.Error,
 				description: "healthDescription",
 				message: "healthCheckFailed",
