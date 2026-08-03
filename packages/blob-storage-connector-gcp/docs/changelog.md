@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.9.2-next.2](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-gcp-v0.9.2-next.1...blob-storage-connector-gcp-v0.9.2-next.2) (2026-08-03)
+
+
+### Features
+
+* update health signatures ([#93](https://github.com/iotaledger/twin-blob-storage/issues/93)) ([01775fa](https://github.com/iotaledger/twin-blob-storage/commit/01775faf45a6c5a179b47fe21e05f8beab430a57))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.9.2-next.1 to 0.9.2-next.2
+
 ## [0.9.2-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-gcp-v0.9.2-next.0...blob-storage-connector-gcp-v0.9.2-next.1) (2026-07-30)
 
 

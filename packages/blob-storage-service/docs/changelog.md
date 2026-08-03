@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.9.2-next.2](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.9.2-next.1...blob-storage-service-v0.9.2-next.2) (2026-08-03)
+
+
+### Miscellaneous Chores
+
+* **blob-storage-service:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.9.2-next.1 to 0.9.2-next.2
+  * devDependencies
+    * @twin.org/blob-storage-connector-memory bumped from 0.9.2-next.1 to 0.9.2-next.2
+
 ## [0.9.2-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.9.2-next.0...blob-storage-service-v0.9.2-next.1) (2026-07-30)
 
 
