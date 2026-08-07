@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2-next.3](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.9.2-next.2...blob-storage-models-v0.9.2-next.3) (2026-08-07)
+
+
+### Features
+
+* linting and dependency update ([d95c578](https://github.com/iotaledger/twin-blob-storage/commit/d95c57878a6dd3f220580595ba4096107d7015c3))
+
 ## [0.9.2-next.2](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.9.2-next.1...blob-storage-models-v0.9.2-next.2) (2026-08-03)
 
 
