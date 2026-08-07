@@ -30,7 +30,7 @@ describe("FileBlobStorageConnector Health", () => {
 				directory: TEST_DIRECTORY
 			}
 		});
-		const health = await blobStorage.health(0);
+		const health = await blobStorage.health();
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Ok);
@@ -42,7 +42,7 @@ describe("FileBlobStorageConnector Health", () => {
 				directory: `${TEST_DIRECTORY_ROOT}does-not-exist`
 			}
 		});
-		const health = await blobStorage.health(0);
+		const health = await blobStorage.health();
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Error);

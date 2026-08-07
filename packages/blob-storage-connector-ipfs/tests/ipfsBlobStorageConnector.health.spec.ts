@@ -14,7 +14,7 @@ describe("IpfsBlobStorageConnector Health", () => {
 
 	test("can health check", async () => {
 		const blobStorage = new IpfsBlobStorageConnector({ config: TEST_IPFS_CONFIG });
-		const health = await blobStorage.health(0);
+		const health = await blobStorage.health();
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Ok);
@@ -24,7 +24,7 @@ describe("IpfsBlobStorageConnector Health", () => {
 		const blobStorage = new IpfsBlobStorageConnector({
 			config: { apiUrl: "http://localhost:19999/api/v0" }
 		});
-		const health = await blobStorage.health(0);
+		const health = await blobStorage.health();
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Error);

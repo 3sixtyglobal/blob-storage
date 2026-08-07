@@ -13,7 +13,7 @@ describe("MemoryBlobStorageConnector Health", () => {
 
 	test("can health check", async () => {
 		const blobStorage = new MemoryBlobStorageConnector();
-		const health = await blobStorage.health(0);
+		const health = await blobStorage.health();
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Ok);

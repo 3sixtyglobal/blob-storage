@@ -21,7 +21,7 @@ describe("S3BlobStorageConnector Health", () => {
 	});
 
 	test("can health check", async () => {
-		const health = await blobStorage.health(0);
+		const health = await blobStorage.health();
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Ok);
@@ -37,7 +37,7 @@ describe("S3BlobStorageConnector Health", () => {
 				secretAccessKey: "test-secret-key"
 			}
 		});
-		const health = await blobStorage2.health(0);
+		const health = await blobStorage2.health();
 		expect(health).toBeDefined();
 		expect(health.length).toEqual(1);
 		expect(health[0].status).toEqual(HealthStatus.Error);

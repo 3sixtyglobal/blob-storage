@@ -113,10 +113,9 @@ export class FileBlobStorageConnector implements IBlobStorageConnector, IHealthP
 
 	/**
 	 * Returns the health status of the component.
-	 * @param lastTimestamp The Unix timestamp (ms) recorded at the start of the previous cycle.
 	 * @returns The health status of the component.
 	 */
-	public async health(lastTimestamp: number): Promise<IHealth[]> {
+	public async health(): Promise<IHealth[]> {
 		try {
 			const stats = await statfs(this._directory);
 			const freeBytes = stats.bavail * stats.bsize;

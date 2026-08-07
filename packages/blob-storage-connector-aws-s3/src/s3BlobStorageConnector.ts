@@ -124,10 +124,9 @@ export class S3BlobStorageConnector implements IBlobStorageConnector, IHealthPro
 
 	/**
 	 * Returns the health status of the component.
-	 * @param lastTimestamp The Unix timestamp (ms) recorded at the start of the previous cycle.
 	 * @returns The health status of the component.
 	 */
-	public async health(lastTimestamp: number): Promise<IHealth[]> {
+	public async health(): Promise<IHealth[]> {
 		try {
 			await this._s3Client.send(new HeadBucketCommand({ Bucket: this._config.bucketName }));
 			return [

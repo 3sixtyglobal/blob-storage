@@ -124,10 +124,9 @@ export class AzureBlobStorageConnector implements IBlobStorageConnector, IHealth
 
 	/**
 	 * Returns the health status of the component.
-	 * @param lastTimestamp The Unix timestamp (ms) recorded at the start of the previous cycle.
 	 * @returns The health status of the component.
 	 */
-	public async health(lastTimestamp: number): Promise<IHealth[]> {
+	public async health(): Promise<IHealth[]> {
 		try {
 			await this._azureContainerClient.exists();
 			return [
