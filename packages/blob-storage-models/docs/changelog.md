@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.2-next.4](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.9.2-next.3...blob-storage-models-v0.9.2-next.4) (2026-08-10)
+
+
+### Features
+
+* telemetry ([#99](https://github.com/iotaledger/twin-blob-storage/issues/99)) ([e1e1644](https://github.com/iotaledger/twin-blob-storage/commit/e1e16441d1211022ea9d0edd98f2f57857aa8eb5))
+
 ## [0.9.2-next.3](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.9.2-next.2...blob-storage-models-v0.9.2-next.3) (2026-08-07)
 
 
