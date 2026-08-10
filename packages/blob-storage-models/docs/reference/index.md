@@ -25,6 +25,7 @@
 
 - [BlobStorageCompressionType](type-aliases/BlobStorageCompressionType.md)
 - [BlobStorageContexts](type-aliases/BlobStorageContexts.md)
+- [BlobStorageMetricIds](type-aliases/BlobStorageMetricIds.md)
 - [BlobStorageTypes](type-aliases/BlobStorageTypes.md)
 
 ## Variables
@@ -32,4 +33,6 @@
 - [BlobStorageConnectorFactory](variables/BlobStorageConnectorFactory.md)
 - [BlobStorageCompressionType](variables/BlobStorageCompressionType.md)
 - [BlobStorageContexts](variables/BlobStorageContexts.md)
+- [BlobStorageMetricIds](variables/BlobStorageMetricIds.md)
+- [BlobStorageMetrics](variables/BlobStorageMetrics.md)
 - [BlobStorageTypes](variables/BlobStorageTypes.md)

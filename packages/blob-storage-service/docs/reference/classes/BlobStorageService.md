@@ -58,6 +58,22 @@ The class name of the component.
 
 ***
 
+### start() {#start}
+
+> **start**(): `Promise`\<`void`\>
+
+Registers the blob storage metrics with the telemetry component.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Implementation of
+
+`IBlobStorageComponent.start`
+
+***
+
 ### create() {#create}
 
 > **create**(`blob`, `encodingFormat?`, `fileExtension?`, `metadata?`, `options?`): `Promise`\<`string`\>
