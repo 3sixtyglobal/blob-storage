@@ -103,7 +103,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	/**
 	 * Create a new instance of BlobStorageService.
 	 * @param options The options for the service.
-	 * @throws {GeneralError} If no blob storage connectors are registered.
+	 * @throws GeneralError If no blob storage connectors are registered.
 	 */
 	constructor(options?: IBlobStorageServiceConstructorOptions) {
 		const names = BlobStorageConnectorFactory.names();
@@ -564,7 +564,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * Get the connector from the uri.
 	 * @param id The id of the blob storage item in urn format.
 	 * @returns The connector.
-	 * @throws {GeneralError} If the namespace does not match.
+	 * @throws GeneralError If the namespace does not match.
 	 * @internal
 	 */
 	private getConnector(id: string): IBlobStorageConnector {
