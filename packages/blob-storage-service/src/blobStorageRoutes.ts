@@ -1,6 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
+	HttpBodyLimit,
 	HttpContextIdKeys,
 	HttpHeaderHelper,
 	HttpParameterHelper,
@@ -83,6 +84,7 @@ export function generateRestRoutesBlobStorage(
 		tag: options?.tagName ?? tagsBlobStorage[0].name,
 		method: "POST",
 		path: `${baseRouteName}/`,
+		bodyLimit: HttpBodyLimit.Large,
 		handler: async (httpRequestContext, request) =>
 			blobStorageCreate(httpRequestContext, componentName, request, baseRouteName),
 		requestType: {
