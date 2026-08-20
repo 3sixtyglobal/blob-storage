@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.9.2-next.5](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.9.2-next.4...blob-storage-service-v0.9.2-next.5) (2026-08-20)
+
+
+### Features
+
+* allow large payloads on the blob create route ([#103](https://github.com/iotaledger/twin-blob-storage/issues/103)) ([af87205](https://github.com/iotaledger/twin-blob-storage/commit/af8720504e52daa07b98e3569e9d39f7617f2999))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.9.2-next.4 to 0.9.2-next.5
+  * devDependencies
+    * @twin.org/blob-storage-connector-memory bumped from 0.9.2-next.4 to 0.9.2-next.5
+
 ## [0.9.2-next.4](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.9.2-next.3...blob-storage-service-v0.9.2-next.4) (2026-08-10)
 
 
