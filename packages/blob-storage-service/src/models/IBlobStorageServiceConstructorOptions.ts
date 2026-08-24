@@ -18,6 +18,11 @@ export interface IBlobStorageServiceConstructorOptions {
 	vaultConnectorType?: string;
 
 	/**
+	 * The component type for the optional telemetry component used for event metrics.
+	 */
+	telemetryComponentType?: string;
+
+	/**
 	 * The configuration for the service.
 	 */
 	config?: IBlobStorageServiceConfig;

@@ -636,6 +636,144 @@ describe("blob-storage-service", () => {
 		);
 	});
 
+	test("can fail to get an encrypted blob when vault key is not available", async () => {
+		const vaultKeyEntityStorageConnector = new MemoryEntityStorageConnector<VaultKey>({
+			entitySchema: nameof<VaultKey>(),
+			config: { storageKey: "vault-key" }
+		});
+
+		const vaultSecretEntityStorageConnector = new MemoryEntityStorageConnector<VaultSecret>({
+			entitySchema: nameof<VaultSecret>(),
+			config: { storageKey: "vault-secret" }
+		});
+
+		EntityStorageConnectorFactory.register("vault-key", () => vaultKeyEntityStorageConnector);
+		EntityStorageConnectorFactory.register("vault-secret", () => vaultSecretEntityStorageConnector);
+
+		VaultConnectorFactory.register("vault", () => new EntityStorageVaultConnector());
+
+		await vaultKeyEntityStorageConnector.set({
+			id: `${TEST_ORGANIZATION_IDENTITY}/my-key`,
+			type: VaultKeyType.ChaCha20Poly1305,
+			privateKey: "vOpvrUcuiDJF09hoe9AWa4OUqcNqr6RpGOuj/A57gag="
+		});
+
+		const serviceWithVault = new BlobStorageService({
+			config: { vaultKeyId: "my-key" },
+			vaultConnectorType: "vault"
+		});
+		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
+		const data = Converter.bytesToBase64(dataBytes);
+		const result = await serviceWithVault.create(data);
+
+		const serviceNoKey = new BlobStorageService({ vaultConnectorType: "vault" });
+		await expect(serviceNoKey.get(result, { includeContent: true })).rejects.toMatchObject({
+			name: "GeneralError",
+			message: "blobStorageService.getFailed",
+			cause: {
+				name: "GeneralError",
+				message: "blobStorageService.vaultKeyIdMissing"
+			}
+		});
+	});
+
+	test("treats empty overrideVaultKeyId as absent and falls back to service vault key", async () => {
+		const vaultKeyEntityStorageConnector = new MemoryEntityStorageConnector<VaultKey>({
+			entitySchema: nameof<VaultKey>(),
+			config: { storageKey: "vault-key" }
+		});
+
+		const vaultSecretEntityStorageConnector = new MemoryEntityStorageConnector<VaultSecret>({
+			entitySchema: nameof<VaultSecret>(),
+			config: { storageKey: "vault-secret" }
+		});
+
+		EntityStorageConnectorFactory.register("vault-key", () => vaultKeyEntityStorageConnector);
+		EntityStorageConnectorFactory.register("vault-secret", () => vaultSecretEntityStorageConnector);
+
+		VaultConnectorFactory.register("vault", () => new EntityStorageVaultConnector());
+
+		await vaultKeyEntityStorageConnector.set({
+			id: `${TEST_ORGANIZATION_IDENTITY}/my-key`,
+			type: VaultKeyType.ChaCha20Poly1305,
+			privateKey: "vOpvrUcuiDJF09hoe9AWa4OUqcNqr6RpGOuj/A57gag="
+		});
+
+		const service = new BlobStorageService({
+			config: { vaultKeyId: "my-key" },
+			vaultConnectorType: "vault"
+		});
+		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
+		const data = Converter.bytesToBase64(dataBytes);
+		const result = await service.create(data);
+
+		const decryptedData = await service.get(result, {
+			includeContent: true,
+			overrideVaultKeyId: ""
+		});
+		expect(Converter.base64ToBytes(decryptedData.blob ?? "")).toEqual(dataBytes);
+	});
+
+	test("preserves metadata when connector remove throws", async () => {
+		const service = new BlobStorageService();
+		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
+		const data = Converter.bytesToBase64(dataBytes);
+		const id = await service.create(data);
+
+		vi.spyOn(blobStorage, "remove").mockRejectedValueOnce(new Error("connector failure"));
+
+		await expect(service.remove(id)).rejects.toMatchObject({
+			name: "GeneralError",
+			message: "blobStorageService.removeFailed"
+		});
+
+		expect((await entityStorage.getStore()).length).toBe(1);
+	});
+
+	test("cleans up metadata when connector reports blob absent", async () => {
+		const service = new BlobStorageService();
+		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
+		const data = Converter.bytesToBase64(dataBytes);
+		const id = await service.create(data);
+
+		vi.spyOn(blobStorage, "remove").mockResolvedValueOnce(false);
+
+		await service.remove(id);
+
+		expect(await entityStorage.getStore()).toEqual([]);
+	});
+
+	test("preserves first entry metadata on duplicate content", async () => {
+		const service = new BlobStorageService();
+		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
+		const data = Converter.bytesToBase64(dataBytes);
+
+		const id1 = await service.create(data, "application/pdf", "pdf");
+		const id2 = await service.create(data, "image/png", "png");
+
+		expect(id1).toBe(id2);
+
+		const store = await entityStorage.getStore();
+		expect(store.length).toBe(1);
+		expect(store[0].encodingFormat).toBe("application/pdf");
+		expect(store[0].fileExtension).toBe("pdf");
+	});
+
+	test("cleans up orphaned blob when entity storage write fails", async () => {
+		const service = new BlobStorageService();
+		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
+		const data = Converter.bytesToBase64(dataBytes);
+
+		vi.spyOn(entityStorage, "set").mockRejectedValueOnce(new Error("storage unavailable"));
+
+		await expect(service.create(data)).rejects.toMatchObject({
+			name: "GeneralError",
+			message: "blobStorageService.createFailed"
+		});
+
+		expect(Object.keys(await blobStorage.getStore()).length).toBe(0);
+	});
+
 	test("can empty with no files", async () => {
 		const service = new BlobStorageService();
 		await service.empty();

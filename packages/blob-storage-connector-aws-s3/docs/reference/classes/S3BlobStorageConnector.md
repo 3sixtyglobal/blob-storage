@@ -6,6 +6,7 @@ See https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/s3/ for more i
 ## Implements
 
 - `IBlobStorageConnector`
+- `IHealthProviderComponent`
 
 ## Constructors
 
@@ -77,7 +78,7 @@ The health status of the component.
 
 #### Implementation of
 
-`IBlobStorageConnector.health`
+`IHealthProviderComponent.health`
 
 ***
 

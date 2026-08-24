@@ -110,6 +110,12 @@ Disables encryption if enabled by default.
 
 Use a different vault key id for encryption, if not provided the default vault key id will be used.
 
+###### compress?
+
+`BlobStorageCompressionType`
+
+Optional compression type to use for the blob, defaults to no compression.
+
 ###### namespace?
 
 `string`

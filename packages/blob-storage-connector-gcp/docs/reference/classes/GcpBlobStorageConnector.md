@@ -6,6 +6,7 @@ See https://cloud.google.com/storage/docs/reference/libraries for more informati
 ## Implements
 
 - `IBlobStorageConnector`
+- `IHealthProviderComponent`
 
 ## Constructors
 
@@ -77,7 +78,7 @@ The health status of the component.
 
 #### Implementation of
 
-`IBlobStorageConnector.health`
+`IHealthProviderComponent.health`
 
 ***
 

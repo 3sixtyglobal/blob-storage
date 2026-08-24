@@ -6,6 +6,7 @@ See https://docs.ipfs.tech/reference/kubo/rpc/ for more information.
 ## Implements
 
 - `IBlobStorageConnector`
+- `IHealthProviderComponent`
 
 ## Constructors
 
@@ -77,7 +78,7 @@ The health status of the component.
 
 #### Implementation of
 
-`IBlobStorageConnector.health`
+`IHealthProviderComponent.health`
 
 ***
 

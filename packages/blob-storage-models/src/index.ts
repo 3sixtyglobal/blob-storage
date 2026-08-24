@@ -14,6 +14,8 @@ export * from "./models/api/IBlobStorageRemoveRequest.js";
 export * from "./models/api/IBlobStorageUpdateRequest.js";
 export * from "./models/blobStorageCompressionType.js";
 export * from "./models/blobStorageContexts.js";
+export * from "./models/blobStorageMetricIds.js";
+export * from "./models/blobStorageMetrics.js";
 export * from "./models/blobStorageTypes.js";
 export * from "./models/IBlobStorageComponent.js";
 export * from "./models/IBlobStorageConnector.js";

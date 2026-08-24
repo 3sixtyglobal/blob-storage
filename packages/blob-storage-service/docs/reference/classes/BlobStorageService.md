@@ -28,7 +28,7 @@ The options for the service.
 
 #### Throws
 
-If no blob storage connectors are registered.
+GeneralError If no blob storage connectors are registered.
 
 ## Properties
 
@@ -55,6 +55,22 @@ The class name of the component.
 #### Implementation of
 
 `IBlobStorageComponent.className`
+
+***
+
+### start() {#start}
+
+> **start**(): `Promise`\<`void`\>
+
+Registers the blob storage metrics with the telemetry component.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Implementation of
+
+`IBlobStorageComponent.start`
 
 ***
 

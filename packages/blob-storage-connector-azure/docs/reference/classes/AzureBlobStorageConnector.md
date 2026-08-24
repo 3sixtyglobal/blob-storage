@@ -6,6 +6,7 @@ See https://learn.microsoft.com/en-us/azure/storage/common/storage-samples-javas
 ## Implements
 
 - `IBlobStorageConnector`
+- `IHealthProviderComponent`
 
 ## Constructors
 
@@ -77,7 +78,7 @@ The health status of the component.
 
 #### Implementation of
 
-`IBlobStorageConnector.health`
+`IHealthProviderComponent.health`
 
 ***
 

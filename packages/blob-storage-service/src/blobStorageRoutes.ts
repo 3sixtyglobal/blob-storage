@@ -1,6 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import {
+	HttpBodyLimit,
 	HttpContextIdKeys,
 	HttpHeaderHelper,
 	HttpParameterHelper,
@@ -83,6 +84,7 @@ export function generateRestRoutesBlobStorage(
 		tag: options?.tagName ?? tagsBlobStorage[0].name,
 		method: "POST",
 		path: `${baseRouteName}/`,
+		bodyLimit: HttpBodyLimit.Large,
 		handler: async (httpRequestContext, request) =>
 			blobStorageCreate(httpRequestContext, componentName, request, baseRouteName),
 		requestType: {
@@ -499,6 +501,7 @@ export async function blobStorageCreate(
 		{
 			disableEncryption: request.body.disableEncryption,
 			overrideVaultKeyId: request.body.overrideVaultKeyId,
+			compress: request.body.compress,
 			namespace: request.body.namespace
 		}
 	);
@@ -591,10 +594,11 @@ export async function blobStorageGetContent(
 	let compressedEncodingFormat: MimeTypes | undefined;
 	let compressedExtension: string = "";
 
-	// If the entry is compressed and we are not decompressing
-	// we need to override the encoding format to the compressed type
-	// and append an additional extension to the filename.
-	if (result.compression && !decompress) {
+	// If the entry is compressed and the caller explicitly opted out of decompression,
+	// override the encoding format to the compressed type and append an extra extension.
+	// decompress === undefined means "use the service default" (decompress), so only
+	// treat the content as still-compressed when the caller passed decompress=false.
+	if (result.compression && decompress === false) {
 		compressedEncodingFormat =
 			result.compression === BlobStorageCompressionType.Gzip ? MimeTypes.Gzip : MimeTypes.Zlib;
 		compressedExtension = `.${MimeTypeHelper.defaultExtension(compressedEncodingFormat)}`;
@@ -605,8 +609,11 @@ export async function blobStorageGetContent(
 		filename = `file.${result.fileExtension ?? MimeTypeHelper.defaultExtension(encodingFormat)}${compressedExtension}`;
 	}
 
+	const { blob } = result;
+	Guards.stringBase64(ROUTES_SOURCE, nameof(blob), blob);
+
 	return {
-		body: Is.stringBase64(result.blob) ? Converter.base64ToBytes(result.blob) : new Uint8Array(),
+		body: Converter.base64ToBytes(blob),
 		attachment: {
 			mimeType: compressedEncodingFormat ?? encodingFormat,
 			filename,

@@ -5,6 +5,7 @@ Class for performing blob storage operations in file.
 ## Implements
 
 - `IBlobStorageConnector`
+- `IHealthProviderComponent`
 
 ## Constructors
 
@@ -76,7 +77,7 @@ The health status of the component.
 
 #### Implementation of
 
-`IBlobStorageConnector.health`
+`IHealthProviderComponent.health`
 
 ***
 

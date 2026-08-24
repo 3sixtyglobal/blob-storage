@@ -9,8 +9,10 @@
 	},
 	"health": {
 		"fileBlobStorageConnector": {
-			"healthDescription": "File blob storage connector is healthy, directory \"{directory}\"",
-			"healthCheckFailed": "Failed to access the storage directory \"{directory}\""
+			"healthDescription": "Checks if there is sufficient disk space in directory \"{directory}\" for the file blob storage connector to operate properly",
+			"diskSpaceError": "Disk space critically low in directory \"{directory}\", {freeBytes} bytes free, threshold is {thresholdBytes} bytes",
+			"diskSpaceWarning": "Disk space low in directory \"{directory}\", {freeBytes} bytes free, threshold is {thresholdBytes} bytes",
+			"diskSpaceCheckFailed": "Failed to check disk space in directory \"{directory}\""
 		}
 	},
 	"error": {

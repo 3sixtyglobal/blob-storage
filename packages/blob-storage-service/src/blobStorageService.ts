@@ -3,6 +3,8 @@
 import {
 	BlobStorageConnectorFactory,
 	BlobStorageContexts,
+	BlobStorageMetricIds,
+	BlobStorageMetrics,
 	BlobStorageTypes,
 	type BlobStorageCompressionType,
 	type IBlobStorageComponent,
@@ -12,6 +14,7 @@ import {
 } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdKeys, ContextIdStore } from "@twin.org/context";
 import {
+	ComponentFactory,
 	Compression,
 	Converter,
 	GeneralError,
@@ -41,6 +44,7 @@ import {
 	SchemaOrgDataTypes,
 	SchemaOrgTypes
 } from "@twin.org/standards-schema-org";
+import { MetricHelper, type ITelemetryComponent } from "@twin.org/telemetry-models";
 import {
 	VaultConnectorFactory,
 	VaultEncryptionType,
@@ -91,9 +95,15 @@ export class BlobStorageService implements IBlobStorageComponent {
 	private readonly _vaultKeyId: string | undefined;
 
 	/**
+	 * The optional telemetry component for recording metrics.
+	 * @internal
+	 */
+	private readonly _telemetryComponent?: ITelemetryComponent;
+
+	/**
 	 * Create a new instance of BlobStorageService.
 	 * @param options The options for the service.
-	 * @throws {GeneralError} If no blob storage connectors are registered.
+	 * @throws GeneralError If no blob storage connectors are registered.
 	 */
 	constructor(options?: IBlobStorageServiceConstructorOptions) {
 		const names = BlobStorageConnectorFactory.names();
@@ -110,6 +120,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 
 		this._defaultNamespace = options?.config?.defaultNamespace ?? names[0];
 		this._vaultKeyId = options?.config?.vaultKeyId;
+		this._telemetryComponent = ComponentFactory.getIfExists<ITelemetryComponent>(
+			options?.telemetryComponentType
+		);
 
 		SchemaOrgDataTypes.registerRedirects();
 	}
@@ -120,6 +133,16 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 */
 	public className(): string {
 		return BlobStorageService.CLASS_NAME;
+	}
+
+	/**
+	 * Registers the blob storage metrics with the telemetry component.
+	 */
+	public async start(): Promise<void> {
+		if (Is.undefined(this._telemetryComponent)) {
+			return;
+		}
+		await MetricHelper.createMetrics(this._telemetryComponent, BlobStorageMetrics);
 	}
 
 	/**
@@ -150,7 +173,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 		Guards.stringBase64(BlobStorageService.CLASS_NAME, nameof(blob), blob);
 
 		const disableEncryption = options?.disableEncryption ?? false;
-		const vaultKeyId = options?.overrideVaultKeyId ?? this._vaultKeyId;
+		const vaultKeyId = Is.stringValue(options?.overrideVaultKeyId)
+			? options.overrideVaultKeyId
+			: this._vaultKeyId;
 		const encryptionEnabled = !disableEncryption && Is.stringValue(vaultKeyId);
 
 		try {
@@ -208,7 +233,8 @@ export class BlobStorageService implements IBlobStorageComponent {
 			// Set the blob in the storage connector, which may now be encrypted
 			const blobId = await blobStorageConnector.set(storeBlob);
 
-			// Now store the entry in entity storage
+			// Build the entry before the existence check so that dateCreated is
+			// stamped whether or not the entry already exists.
 			const blobEntry: BlobStorageEntry = {
 				id: blobId,
 				dateCreated: new Date(Date.now()).toISOString(),
@@ -221,8 +247,50 @@ export class BlobStorageService implements IBlobStorageComponent {
 				compression: options?.compress
 			};
 
-			await this._entryEntityStorage.set(blobEntry);
+			// Content-addressed deduplication and entry write are wrapped in a single
+			// try/catch so that a failure in either the existence check or the set call
+			// triggers the same compensating cleanup.
+			//
+			// If an entry already exists the bytes are already stored and the existing
+			// entry's mutable fields (encodingFormat, fileExtension, metadata) are left
+			// unchanged.  Callers that need to update those fields should use update().
+			try {
+				const existingEntry = await this._entryEntityStorage.get(blobId);
+				if (!Is.empty(existingEntry)) {
+					await MetricHelper.metricIncrement(
+						this._telemetryComponent,
+						BlobStorageMetricIds.BlobCreated,
+						{ namespace: connectorNamespace }
+					);
+					return blobId;
+				}
+				await this._entryEntityStorage.set(blobEntry);
+			} catch (entityError) {
+				// Compensating cleanup: remove the orphaned blob if no entry now references it.
+				// Guard the check so that a concurrent successful create of the same content
+				// (content-addressed ids) is not deleted.
+				let orphaned = true;
+				try {
+					const existing = await this._entryEntityStorage.get(blobId);
+					orphaned = Is.empty(existing);
+				} catch {
+					// If we cannot confirm the entry was saved, assume it was not and clean up.
+				}
+				if (orphaned) {
+					try {
+						await blobStorageConnector.remove(blobId);
+					} catch {
+						// Best-effort cleanup; the blob may already be absent or unreachable.
+					}
+				}
+				throw entityError;
+			}
 
+			await MetricHelper.metricIncrement(
+				this._telemetryComponent,
+				BlobStorageMetricIds.BlobCreated,
+				{ namespace: connectorNamespace }
+			);
 			return blobId;
 		} catch (error) {
 			throw new GeneralError(BlobStorageService.CLASS_NAME, "createFailed", undefined, error);
@@ -250,7 +318,9 @@ export class BlobStorageService implements IBlobStorageComponent {
 		Urn.guard(BlobStorageService.CLASS_NAME, nameof(id), id);
 
 		const includeContent = options?.includeContent ?? false;
-		const vaultKeyId = options?.overrideVaultKeyId ?? this._vaultKeyId;
+		const vaultKeyId = Is.stringValue(options?.overrideVaultKeyId)
+			? options.overrideVaultKeyId
+			: this._vaultKeyId;
 
 		try {
 			const blobEntry = await this.internalGet(id);
@@ -264,8 +334,11 @@ export class BlobStorageService implements IBlobStorageComponent {
 				}
 
 				// If the data is encrypted then decrypt it.
-				const decryptionEnabled = blobEntry.isEncrypted && Is.stringValue(vaultKeyId);
-				if (decryptionEnabled) {
+				if (blobEntry.isEncrypted) {
+					if (!Is.stringValue(vaultKeyId)) {
+						throw new GeneralError(BlobStorageService.CLASS_NAME, "vaultKeyIdMissing");
+					}
+
 					const contextIds = await ContextIdStore.getContextIds();
 					ContextIdHelper.guard(contextIds, ContextIdKeys.Organization);
 
@@ -289,6 +362,12 @@ export class BlobStorageService implements IBlobStorageComponent {
 			const result = await JsonLdProcessor.compact(jsonLd, jsonLd["@context"], {
 				compactArrays: false
 			});
+
+			await MetricHelper.metricIncrement(
+				this._telemetryComponent,
+				BlobStorageMetricIds.BlobRetrieved
+			);
+
 			return result;
 		} catch (error) {
 			throw new GeneralError(BlobStorageService.CLASS_NAME, "getFailed", undefined, error);
@@ -315,7 +394,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 		try {
 			const blobEntry = await this._entryEntityStorage.get(id);
 
-			if (Is.undefined(blobEntry)) {
+			if (Is.empty(blobEntry)) {
 				throw new NotFoundError(BlobStorageService.CLASS_NAME, "blobNotFound", id);
 			}
 
@@ -344,6 +423,11 @@ export class BlobStorageService implements IBlobStorageComponent {
 			};
 
 			await this._entryEntityStorage.set(updatedBlobEntry);
+
+			await MetricHelper.metricIncrement(
+				this._telemetryComponent,
+				BlobStorageMetricIds.BlobUpdated
+			);
 		} catch (error) {
 			throw new GeneralError(BlobStorageService.CLASS_NAME, "updateFailed", undefined, error);
 		}
@@ -393,13 +477,18 @@ export class BlobStorageService implements IBlobStorageComponent {
 		try {
 			const blobStorageConnector = this.getConnector(id);
 
+			// Remove the blob before the metadata entry.  If the connector fails, the
+			// metadata entry survives and the blob remains reachable (no data loss).
+			// If the connector succeeds but entity-storage remove fails, the metadata
+			// entry temporarily points to absent bytes; a second call to remove() will
+			// clean it up because connectors treat an already-absent blob as acceptable.
+			await blobStorageConnector.remove(id);
 			await this._entryEntityStorage.remove(id);
 
-			const removed = await blobStorageConnector.remove(id);
-
-			if (!removed) {
-				throw new NotFoundError(BlobStorageService.CLASS_NAME, "blobNotFound", id);
-			}
+			await MetricHelper.metricIncrement(
+				this._telemetryComponent,
+				BlobStorageMetricIds.BlobRemoved
+			);
 		} catch (error) {
 			throw new GeneralError(BlobStorageService.CLASS_NAME, "removeFailed", undefined, error);
 		}
@@ -463,6 +552,8 @@ export class BlobStorageService implements IBlobStorageComponent {
 			[SchemaOrgTypes.ItemListElement]: entriesJsonLd
 		};
 
+		await MetricHelper.metricIncrement(this._telemetryComponent, BlobStorageMetricIds.BlobQueried);
+
 		return {
 			entries: await JsonLdProcessor.compact(jsonLd, jsonLd["@context"], { compactArrays: false }),
 			cursor: result.cursor
@@ -473,7 +564,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * Get the connector from the uri.
 	 * @param id The id of the blob storage item in urn format.
 	 * @returns The connector.
-	 * @throws {GeneralError} If the namespace does not match.
+	 * @throws GeneralError If the namespace does not match.
 	 * @internal
 	 */
 	private getConnector(id: string): IBlobStorageConnector {

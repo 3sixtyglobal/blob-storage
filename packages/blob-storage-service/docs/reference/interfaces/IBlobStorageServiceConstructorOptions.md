@@ -26,6 +26,14 @@ The type of the vault connector for encryption.
 
 ***
 
+### telemetryComponentType? {#telemetrycomponenttype}
+
+> `optional` **telemetryComponentType?**: `string`
+
+The component type for the optional telemetry component used for event metrics.
+
+***
+
 ### config? {#config}
 
 > `optional` **config?**: [`IBlobStorageServiceConfig`](IBlobStorageServiceConfig.md)

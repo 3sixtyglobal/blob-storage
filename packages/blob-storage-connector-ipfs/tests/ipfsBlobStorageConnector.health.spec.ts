@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import { HealthStatus } from "@twin.org/api-models";
 import { ContextIdStore } from "@twin.org/context";
-import { HealthStatus } from "@twin.org/core";
 import { TEST_IPFS_CONFIG } from "./setupTestEnv.js";
 import { IpfsBlobStorageConnector } from "../src/ipfsBlobStorageConnector.js";
 

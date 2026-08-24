@@ -1,16 +1,14 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
+import {
+	HealthCategory,
+	HealthStatus,
+	type IHealth,
+	type IHealthProviderComponent
+} from "@twin.org/api-models";
 import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
 import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
-import {
-	ComponentFactory,
-	Converter,
-	GeneralError,
-	Guards,
-	HealthStatus,
-	Urn,
-	type IHealth
-} from "@twin.org/core";
+import { ComponentFactory, Converter, GeneralError, Guards, Urn } from "@twin.org/core";
 import { Sha256 } from "@twin.org/crypto";
 import type { ILoggingComponent } from "@twin.org/logging-models";
 import { nameof } from "@twin.org/nameof";
@@ -19,7 +17,7 @@ import type { IMemoryStorageConnectorConstructorOptions } from "./models/IMemory
 /**
  * Class for performing blob storage operations in-memory.
  */
-export class MemoryBlobStorageConnector implements IBlobStorageConnector {
+export class MemoryBlobStorageConnector implements IBlobStorageConnector, IHealthProviderComponent {
 	/**
 	 * The namespace for the items.
 	 */
@@ -67,6 +65,7 @@ export class MemoryBlobStorageConnector implements IBlobStorageConnector {
 		return [
 			{
 				source: MemoryBlobStorageConnector.CLASS_NAME,
+				category: HealthCategory.Connectivity,
 				status: HealthStatus.Ok,
 				description: "healthDescription",
 				data: {
