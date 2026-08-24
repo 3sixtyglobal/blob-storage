@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.9.2](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.9.2...blob-storage-service-v0.9.2) (2026-08-24)
+
+
+### Features
+
+* release to production ([eacfe75](https://github.com/iotaledger/twin-blob-storage/commit/eacfe754a0dcd9243d9e13d86422327d0a605164))
+* release to production ([#108](https://github.com/iotaledger/twin-blob-storage/issues/108)) ([ae87a7a](https://github.com/iotaledger/twin-blob-storage/commit/ae87a7a7b70595e9fac8d8843bdc7c01fbc9b3fe))
+* release to production ([#70](https://github.com/iotaledger/twin-blob-storage/issues/70)) ([6a38fe5](https://github.com/iotaledger/twin-blob-storage/commit/6a38fe583076baf1fc53d1d891d294b75ebbefd1))
+* release to production ([#81](https://github.com/iotaledger/twin-blob-storage/issues/81)) ([0743e8f](https://github.com/iotaledger/twin-blob-storage/commit/0743e8fd2d542d687a8ba49a8251ae1805023c9f))
+
 ## [0.9.2-next.5](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-service-v0.9.2-next.4...blob-storage-service-v0.9.2-next.5) (2026-08-20)
 
 
