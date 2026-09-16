@@ -3,7 +3,7 @@
 import { MemoryBlobStorageConnector } from "@twin.org/blob-storage-connector-memory";
 import { BlobStorageConnectorFactory, BlobStorageMetricIds } from "@twin.org/blob-storage-models";
 import { ContextIdStore } from "@twin.org/context";
-import { ComponentFactory, Converter, Factory } from "@twin.org/core";
+import { ComponentFactory, Converter, Factory, Is } from "@twin.org/core";
 import { EntitySchemaFactory, EntitySchemaHelper } from "@twin.org/entity";
 import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
 import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
@@ -36,13 +36,19 @@ function makeMockTelemetry(): {
 		start: async () => {},
 		stop: async () => {},
 		createMetric: async m => {
-			created.push({ ...m });
+			for (const metric of Is.array(m) ? m : [m]) {
+				created.push({ ...metric });
+			}
 		},
 		getMetric: async () => ({ metric: {} as never, value: {} as never }),
 		updateMetric: async () => {},
 		addMetricValue: async (id, value, customData) => {
 			values.push({ id, value, customData });
 			return "v";
+		},
+		addMetricValues: async entries => {
+			values.push(...entries);
+			return entries.map(() => "v");
 		},
 		getMetricValue: async (id, valueId) => ({
 			id: valueId,
