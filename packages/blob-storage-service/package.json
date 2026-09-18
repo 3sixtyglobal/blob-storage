@@ -1,6 +1,6 @@
 {
 	"name": "@twin.org/blob-storage-service",
-	"version": "0.10.1-next.0",
+	"version": "0.10.1-next.1",
 	"description": "Exposes blob operations through service components and HTTP route definitions.",
 	"repository": {
 		"type": "git",
@@ -30,7 +30,7 @@
 	},
 	"dependencies": {
 		"@twin.org/api-models": "next",
-		"@twin.org/blob-storage-models": "0.10.1-next.0",
+		"@twin.org/blob-storage-models": "0.10.1-next.1",
 		"@twin.org/context": "next",
 		"@twin.org/core": "next",
 		"@twin.org/crypto": "next",
@@ -44,7 +44,7 @@
 		"@twin.org/vault-models": "next"
 	},
 	"devDependencies": {
-		"@twin.org/blob-storage-connector-memory": "0.10.1-next.0",
+		"@twin.org/blob-storage-connector-memory": "0.10.1-next.1",
 		"@twin.org/entity-storage-connector-memory": "next",
 		"@twin.org/nameof-transformer": "next",
 		"@twin.org/nameof-vitest-plugin": "next",

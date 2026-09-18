@@ -1,5 +1,39 @@
 # Changelog
 
+## [0.10.1-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-file-v0.10.1-next.0...blob-storage-connector-file-v0.10.1-next.1) (2026-09-18)
+
+
+### Features
+
+* add context id features ([#30](https://github.com/iotaledger/twin-blob-storage/issues/30)) ([fbf1c92](https://github.com/iotaledger/twin-blob-storage/commit/fbf1c9276424c841ef5ef3f4de8469ab3fba7e9c))
+* add empty and teardown methods ([#49](https://github.com/iotaledger/twin-blob-storage/issues/49)) ([cec6248](https://github.com/iotaledger/twin-blob-storage/commit/cec624809ffd2f2baa4b7b8cbf72a7247b8703ed))
+* add validate-locales ([f20fcec](https://github.com/iotaledger/twin-blob-storage/commit/f20fceced91e39a0c9edb770b2e43ce944c92f3c))
+* additional information in health ([1ef83be](https://github.com/iotaledger/twin-blob-storage/commit/1ef83bef81148489b7950d5131a2af5121910e99))
+* async getStore ([#59](https://github.com/iotaledger/twin-blob-storage/issues/59)) ([2de1ae5](https://github.com/iotaledger/twin-blob-storage/commit/2de1ae5c274b84a2320f75ac4628b81e9459c540))
+* eslint migration to flat config ([e4239dd](https://github.com/iotaledger/twin-blob-storage/commit/e4239dd1c721955cff7f0357255d2bba15319972))
+* file connector health checks free space ([#84](https://github.com/iotaledger/twin-blob-storage/issues/84)) ([cd54393](https://github.com/iotaledger/twin-blob-storage/commit/cd54393267a6a2c98cff21c7a503495cc4d97b4d))
+* health checks ([#44](https://github.com/iotaledger/twin-blob-storage/issues/44)) ([4a4041c](https://github.com/iotaledger/twin-blob-storage/commit/4a4041c19b68c40ed1aba6d1cdb4318ac4208b7d))
+* linting and dependency update ([d95c578](https://github.com/iotaledger/twin-blob-storage/commit/d95c57878a6dd3f220580595ba4096107d7015c3))
+* skip ci for tests ([02b8095](https://github.com/iotaledger/twin-blob-storage/commit/02b8095dfabf8d9b3c6248a054a7657bfab1a374))
+* typescript 6 update ([4eed54f](https://github.com/iotaledger/twin-blob-storage/commit/4eed54f5ce2dc697c06597269c97ad4cad108be5))
+* update dependencies ([ca3c571](https://github.com/iotaledger/twin-blob-storage/commit/ca3c571573c771b8d25594f729651c8214e28263))
+* update dependencies ([56f0094](https://github.com/iotaledger/twin-blob-storage/commit/56f0094b68d8bd22864cd899ac1b61d95540f719))
+* update framework core ([ff339fe](https://github.com/iotaledger/twin-blob-storage/commit/ff339fe7e3f09ddff429907834bdf43617e9c05e))
+* update health signatures ([#93](https://github.com/iotaledger/twin-blob-storage/issues/93)) ([01775fa](https://github.com/iotaledger/twin-blob-storage/commit/01775faf45a6c5a179b47fe21e05f8beab430a57))
+* use shared store mechanism ([#12](https://github.com/iotaledger/twin-blob-storage/issues/12)) ([cae8110](https://github.com/iotaledger/twin-blob-storage/commit/cae8110681847a1ac4fcac968b8196694e49c320))
+
+
+### Bug Fixes
+
+* register platform mock in file blob storage connector tests ([#55](https://github.com/iotaledger/twin-blob-storage/issues/55)) ([fb83b24](https://github.com/iotaledger/twin-blob-storage/commit/fb83b2467daa74b2d45e32775ace42a5c4262768))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.10.1-next.0 to 0.10.1-next.1
+
 ## [0.10.0](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-file-v0.10.0...blob-storage-connector-file-v0.10.0) (2026-09-16)
 
 

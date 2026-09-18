@@ -1,5 +1,42 @@
 # Changelog
 
+## [0.10.1-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.10.1-next.0...blob-storage-models-v0.10.1-next.1) (2026-09-18)
+
+
+### Features
+
+* add compression support ([67d239b](https://github.com/iotaledger/twin-blob-storage/commit/67d239bca8321bd90bf4ff93167c564130309730))
+* add context id features ([#30](https://github.com/iotaledger/twin-blob-storage/issues/30)) ([fbf1c92](https://github.com/iotaledger/twin-blob-storage/commit/fbf1c9276424c841ef5ef3f4de8469ab3fba7e9c))
+* add empty and teardown methods ([#49](https://github.com/iotaledger/twin-blob-storage/issues/49)) ([cec6248](https://github.com/iotaledger/twin-blob-storage/commit/cec624809ffd2f2baa4b7b8cbf72a7247b8703ed))
+* add missing namespace for JSON-LD context ([80b15cf](https://github.com/iotaledger/twin-blob-storage/commit/80b15cf34b580d9550affa66bcbc9b9ccb34ce21))
+* add ts-to-jsonld-context tool ([2fd217f](https://github.com/iotaledger/twin-blob-storage/commit/2fd217f50dfaf6ac068091876237f5a101a7995e))
+* add validate-locales ([f20fcec](https://github.com/iotaledger/twin-blob-storage/commit/f20fceced91e39a0c9edb770b2e43ce944c92f3c))
+* additional encryption options on per item basis ([4b95a65](https://github.com/iotaledger/twin-blob-storage/commit/4b95a656d19e3b571cea905e36f29b679b13e1e8))
+* blobHash changed to integrity ([#41](https://github.com/iotaledger/twin-blob-storage/issues/41)) ([c06a55f](https://github.com/iotaledger/twin-blob-storage/commit/c06a55f0eed3f7cad5d19c4084abd8ef0cdbfb60))
+* eslint migration to flat config ([e4239dd](https://github.com/iotaledger/twin-blob-storage/commit/e4239dd1c721955cff7f0357255d2bba15319972))
+* linting and dependency update ([d95c578](https://github.com/iotaledger/twin-blob-storage/commit/d95c57878a6dd3f220580595ba4096107d7015c3))
+* remove includeNodeIdentity flag ([13bc334](https://github.com/iotaledger/twin-blob-storage/commit/13bc33445b179879688af3c98e8be8a5609d3f46))
+* replace nextItem property with Link header ([#37](https://github.com/iotaledger/twin-blob-storage/issues/37)) ([0b68da5](https://github.com/iotaledger/twin-blob-storage/commit/0b68da58549c9e52eb2313ea5a868573840d5ca6))
+* telemetry ([#99](https://github.com/iotaledger/twin-blob-storage/issues/99)) ([e1e1644](https://github.com/iotaledger/twin-blob-storage/commit/e1e16441d1211022ea9d0edd98f2f57857aa8eb5))
+* typescript 6 update ([4eed54f](https://github.com/iotaledger/twin-blob-storage/commit/4eed54f5ce2dc697c06597269c97ad4cad108be5))
+* update contexts ([#34](https://github.com/iotaledger/twin-blob-storage/issues/34)) ([b9e432c](https://github.com/iotaledger/twin-blob-storage/commit/b9e432c26025e4bfdf5ba837516dfdbf40f45a61))
+* update contexts and namespaces ([#32](https://github.com/iotaledger/twin-blob-storage/issues/32)) ([187ed36](https://github.com/iotaledger/twin-blob-storage/commit/187ed36a7d83062665f70689ec5e2b2f553a592e))
+* update dependencies ([ca3c571](https://github.com/iotaledger/twin-blob-storage/commit/ca3c571573c771b8d25594f729651c8214e28263))
+* update dependencies ([56f0094](https://github.com/iotaledger/twin-blob-storage/commit/56f0094b68d8bd22864cd899ac1b61d95540f719))
+* update framework core ([ff339fe](https://github.com/iotaledger/twin-blob-storage/commit/ff339fe7e3f09ddff429907834bdf43617e9c05e))
+* update schemas ([6fe6571](https://github.com/iotaledger/twin-blob-storage/commit/6fe65714e23209cdd760ecd5aa8e18762044e4b3))
+* update to support fully qualified data type names ([3297d69](https://github.com/iotaledger/twin-blob-storage/commit/3297d69d332058b0f0141002087f56ba230620e1))
+* update ts-to-schema generation ([03439c7](https://github.com/iotaledger/twin-blob-storage/commit/03439c726108bf645941290e41824c57a6a23de3))
+* use shared store mechanism ([#12](https://github.com/iotaledger/twin-blob-storage/issues/12)) ([cae8110](https://github.com/iotaledger/twin-blob-storage/commit/cae8110681847a1ac4fcac968b8196694e49c320))
+* use standard list json ld types ([d6bdfd6](https://github.com/iotaledger/twin-blob-storage/commit/d6bdfd68af47f70f3cc53658b4a12543497e1f48))
+
+
+### Bug Fixes
+
+* Adding the optional flag to the entity ([#10](https://github.com/iotaledger/twin-blob-storage/issues/10)) ([626677e](https://github.com/iotaledger/twin-blob-storage/commit/626677e5730d23535a0eb1f36f8394d941ff2447))
+* data validation tests ([556979a](https://github.com/iotaledger/twin-blob-storage/commit/556979a0c36a942f691c971a9bce3a5d72093f52))
+* query params force coercion ([a5e547a](https://github.com/iotaledger/twin-blob-storage/commit/a5e547a775f8997cb04780938c7a9561ddb048d1))
+
 ## [0.10.0](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.10.0...blob-storage-models-v0.10.0) (2026-09-16)
 
 
