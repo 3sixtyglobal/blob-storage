@@ -281,6 +281,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -351,6 +354,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -430,6 +436,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -503,6 +512,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -573,6 +585,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -637,6 +652,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -710,6 +728,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -777,6 +798,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
@@ -868,6 +892,9 @@ importers:
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
+      concurrently:
+        specifier: 10.0.5
+        version: 10.0.5
       copyfiles:
         specifier: 2.4.1
         version: 2.4.1
