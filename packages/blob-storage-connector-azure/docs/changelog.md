@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.10.1-next.2](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-azure-v0.10.1-next.1...blob-storage-connector-azure-v0.10.1-next.2) (2026-09-26)
+
+
+### Miscellaneous Chores
+
+* **blob-storage-connector-azure:** Synchronize repo versions
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @twin.org/blob-storage-models bumped from 0.10.1-next.1 to 0.10.1-next.2
+
 ## [0.10.1-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-connector-azure-v0.10.1-next.0...blob-storage-connector-azure-v0.10.1-next.1) (2026-09-18)
 
 

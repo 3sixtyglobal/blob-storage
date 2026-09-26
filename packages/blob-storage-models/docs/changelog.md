@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.1-next.2](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.10.1-next.1...blob-storage-models-v0.10.1-next.2) (2026-09-26)
+
+
+### Features
+
+* compiled validation ([8bc2ddc](https://github.com/iotaledger/twin-blob-storage/commit/8bc2ddc92de5acd6a788e3961bd15a30d36e5f7c))
+
 ## [0.10.1-next.1](https://github.com/iotaledger/twin-blob-storage/compare/blob-storage-models-v0.10.1-next.0...blob-storage-models-v0.10.1-next.1) (2026-09-18)
 
 
