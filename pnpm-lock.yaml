@@ -509,6 +509,9 @@ importers:
       '@twin.org/validate-locales':
         specifier: next
         version: 0.10.1-next.12
+      '@types/node':
+        specifier: 26.6.2
+        version: 26.6.2
       '@vitest/coverage-v8':
         specifier: 5.0.1
         version: 5.0.1(vitest@5.0.1)
