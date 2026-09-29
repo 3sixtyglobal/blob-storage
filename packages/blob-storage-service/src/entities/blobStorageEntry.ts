@@ -12,7 +12,7 @@ export class BlobStorageEntry {
 	/**
 	 * The id for the blob.
 	 */
-	@property({ type: "string", isPrimary: true })
+	@property({ type: "string", isPrimary: true, maxLength: 255 })
 	public id!: string;
 
 	/**
@@ -41,19 +41,19 @@ export class BlobStorageEntry {
 	/**
 	 * The integrity of the data in the blob.
 	 */
-	@property({ type: "string" })
+	@property({ type: "string", maxLength: 255 })
 	public integrity!: string;
 
 	/**
 	 * The mime type for the blob.
 	 */
-	@property({ type: "string", optional: true })
+	@property({ type: "string", maxLength: 128, optional: true })
 	public encodingFormat?: string;
 
 	/**
 	 * The extension.
 	 */
-	@property({ type: "string", optional: true })
+	@property({ type: "string", maxLength: 128, optional: true })
 	public fileExtension?: string;
 
 	/**
@@ -71,6 +71,6 @@ export class BlobStorageEntry {
 	/**
 	 * The compression type applied to the entry, if any.
 	 */
-	@property({ type: "string", optional: true })
+	@property({ type: "string", maxLength: 16, optional: true })
 	public compression?: BlobStorageCompressionType;
 }

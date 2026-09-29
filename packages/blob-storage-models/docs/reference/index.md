@@ -30,6 +30,8 @@
 
 ## Variables
 
+- [CompiledBlobStorageEntry](variables/CompiledBlobStorageEntry.md)
+- [CompiledBlobStorageCompressionType](variables/CompiledBlobStorageCompressionType.md)
 - [BlobStorageConnectorFactory](variables/BlobStorageConnectorFactory.md)
 - [BlobStorageCompressionType](variables/BlobStorageCompressionType.md)
 - [BlobStorageContexts](variables/BlobStorageContexts.md)

@@ -1,6 +1,8 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { DataTypeHandlerFactory } from "@twin.org/data-core";
+import { DataTypeHelper } from "@twin.org/data-core";
+import { JsonLdDataTypes } from "@twin.org/data-json-ld";
+import * as CompiledValidators from "../compiled/validators.js";
 import { BlobStorageContexts } from "../models/blobStorageContexts.js";
 import { BlobStorageTypes } from "../models/blobStorageTypes.js";
 import BlobStorageCompressionTypeSchema from "../schemas/BlobStorageCompressionType.json" with { type: "json" };
@@ -14,24 +16,26 @@ export class BlobStorageDataTypes {
 	 * Register all the data types.
 	 */
 	public static registerTypes(): void {
-		DataTypeHandlerFactory.register(
-			`${BlobStorageContexts.Namespace}${BlobStorageTypes.Entry}`,
-			() => ({
-				namespace: BlobStorageContexts.Namespace,
-				type: BlobStorageTypes.Entry,
-				defaultValue: {},
-				jsonSchema: async () => BlobStorageEntrySchema
-			})
-		);
+		// Register the types referenced by the schemas, which are only registered once.
+		JsonLdDataTypes.registerTypes();
 
-		DataTypeHandlerFactory.register(
-			`${BlobStorageContexts.Namespace}${BlobStorageTypes.CompressionType}`,
-			() => ({
-				namespace: BlobStorageContexts.Namespace,
+		const types = [
+			{
+				type: BlobStorageTypes.Entry,
+				schema: BlobStorageEntrySchema,
+				compiledValidator: CompiledValidators.CompiledBlobStorageEntry
+			},
+			{
 				type: BlobStorageTypes.CompressionType,
-				defaultValue: {},
-				jsonSchema: async () => BlobStorageCompressionTypeSchema
-			})
+				schema: BlobStorageCompressionTypeSchema,
+				compiledValidator: CompiledValidators.CompiledBlobStorageCompressionType
+			}
+		];
+
+		DataTypeHelper.registerTypes(
+			BlobStorageContexts.Namespace,
+			BlobStorageContexts.JsonLdContext,
+			types
 		);
 	}
 }
