@@ -19,3 +19,7 @@ The packages are designed to reduce integration friction when moving between dev
 ## Contributing
 
 To contribute to this package see the guidelines for building and publishing in [CONTRIBUTING](./CONTRIBUTING.md)
+
+## Origin
+
+This repository is derived from the original [iotaledger/twin-blob-storage](https://github.com/iotaledger/twin-blob-storage) repository.

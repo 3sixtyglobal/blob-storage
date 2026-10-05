@@ -4,7 +4,7 @@
 	"description": "Stores and retrieves blobs in Azure Blob Storage containers.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/twin-blob-storage.git",
+		"url": "git+https://github.com/3sixtyglobal/twin-blob-storage.git",
 		"directory": "packages/blob-storage-connector-azure"
 	},
 	"author": "adrian.sanchez.sequeira@iota.org",
@@ -86,7 +86,7 @@
 		"integration"
 	],
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/twin-blob-storage/issues"
+		"url": "git+https://github.com/3sixtyglobal/twin-blob-storage/issues"
 	},
 	"homepage": "https://twindev.org"
 }

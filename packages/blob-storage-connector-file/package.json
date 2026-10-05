@@ -4,7 +4,7 @@
 	"description": "Persists blobs to local directories or mounted volumes through a file system connector.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/twin-blob-storage.git",
+		"url": "git+https://github.com/3sixtyglobal/twin-blob-storage.git",
 		"directory": "packages/blob-storage-connector-file"
 	},
 	"author": "martyn.janes@iota.org",
@@ -89,7 +89,7 @@
 		"integration"
 	],
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/twin-blob-storage/issues"
+		"url": "git+https://github.com/3sixtyglobal/twin-blob-storage/issues"
 	},
 	"homepage": "https://twindev.org"
 }

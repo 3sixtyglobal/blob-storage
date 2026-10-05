@@ -4,7 +4,7 @@
 	"description": "Blob Storage",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/twin-blob-storage.git"
+		"url": "git+https://github.com/3sixtyglobal/twin-blob-storage.git"
 	},
 	"author": "martyn.janes@iota.org",
 	"license": "Apache-2.0",
@@ -70,7 +70,7 @@
 	},
 	"type": "module",
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/twin-blob-storage/issues"
+		"url": "git+https://github.com/3sixtyglobal/twin-blob-storage/issues"
 	},
 	"homepage": "https://twindev.org"
 }

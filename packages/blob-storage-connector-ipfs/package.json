@@ -4,7 +4,7 @@
 	"description": "Stores and retrieves blobs through IPFS for content-addressed and distributed workflows.",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/iotaledger/twin-blob-storage.git",
+		"url": "git+https://github.com/3sixtyglobal/twin-blob-storage.git",
 		"directory": "packages/blob-storage-connector-ipfs"
 	},
 	"author": "martyn.janes@iota.org",
@@ -86,7 +86,7 @@
 		"integration"
 	],
 	"bugs": {
-		"url": "git+https://github.com/iotaledger/twin-blob-storage/issues"
+		"url": "git+https://github.com/3sixtyglobal/twin-blob-storage/issues"
 	},
 	"homepage": "https://twindev.org"
 }
