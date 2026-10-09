@@ -1,11 +1,11 @@
-# TWIN Blob Storage Models
+# 3Sixty Blob Storage Models
 
 This package defines shared models, contracts, and schemas for blob identifiers, metadata, and storage operations. It provides the common language used by service, client, and connector packages so integrations remain consistent across environments.
 
 ## Installation
 
 ```shell
-npm install @twin.org/blob-storage-models
+npm install @3sixty/blob-storage-models
 ```
 
 ## Examples

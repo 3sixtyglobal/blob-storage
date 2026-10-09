@@ -6,7 +6,7 @@ Interface describing a blob storage entry list.
 
 ### @context {#context}
 
-> **@context**: \[`"https://schema.org"`, `"https://schema.twindev.org/blob-storage/"`, `"https://schema.twindev.org/common/"`, `...IJsonLdContextDefinitionElement[]`\]
+> **@context**: \[`"https://schema.org"`, `"https://schema.3sixty.global/blob-storage/"`, `"https://schema.3sixty.global/common/"`, `...IJsonLdContextDefinitionElement[]`\]
 
 JSON-LD Context.
 

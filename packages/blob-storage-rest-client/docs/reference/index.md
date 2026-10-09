@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-rest-client
+# @3sixty/blob-storage-rest-client
 
 ## Classes
 

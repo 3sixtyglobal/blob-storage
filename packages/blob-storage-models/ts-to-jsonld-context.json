@@ -1,8 +1,8 @@
 {
 	"prefix": "twin-blob-storage",
-	"contextUrl": "https://schema.twindev.org/blob-storage/",
+	"contextUrl": "https://schema.3sixty.global/blob-storage/",
 	"additionalContextUrls": {
-		"twin-common": "https://schema.twindev.org/common/",
+		"twin-common": "https://schema.3sixty.global/common/",
 		"schema": "http://schema.org/"
 	},
 	"fixedMappings": {

@@ -1,11 +1,11 @@
-# TWIN Blob Storage REST Client
+# 3Sixty Blob Storage REST Client
 
 This package provides client utilities for consuming blob storage service endpoints over HTTP. It helps applications call blob APIs with consistent request construction and response handling.
 
 ## Installation
 
 ```shell
-npm install @twin.org/blob-storage-rest-client
+npm install @3sixty/blob-storage-rest-client
 ```
 
 ## Examples

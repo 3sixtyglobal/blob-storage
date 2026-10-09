@@ -5,7 +5,7 @@ Use these snippets to register data types and resolve connector instances by nam
 ## BlobStorageDataTypes
 
 ```typescript
-import { BlobStorageDataTypes } from '@twin.org/blob-storage-models';
+import { BlobStorageDataTypes } from '@3sixty/blob-storage-models';
 
 BlobStorageDataTypes.registerTypes();
 ```
@@ -13,7 +13,7 @@ BlobStorageDataTypes.registerTypes();
 ## BlobStorageConnectorFactory
 
 ```typescript
-import { BlobStorageConnectorFactory } from '@twin.org/blob-storage-models';
+import { BlobStorageConnectorFactory } from '@3sixty/blob-storage-models';
 
 const connectorNamespaces = BlobStorageConnectorFactory.names();
 console.log(connectorNamespaces.length); // 2

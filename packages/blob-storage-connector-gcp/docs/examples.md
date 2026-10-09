@@ -5,7 +5,7 @@ Use these snippets to create a bucket-backed flow for storing and retrieving bin
 ## GcpBlobStorageConnector
 
 ```typescript
-import { GcpBlobStorageConnector } from '@twin.org/blob-storage-connector-gcp';
+import { GcpBlobStorageConnector } from '@3sixty/blob-storage-connector-gcp';
 
 const connector = new GcpBlobStorageConnector({
   config: {
@@ -21,8 +21,8 @@ console.log(connector.className()); // GcpBlobStorageConnector
 ```
 
 ```typescript
-import { Converter } from '@twin.org/core';
-import { GcpBlobStorageConnector } from '@twin.org/blob-storage-connector-gcp';
+import { Converter } from '@3sixty/core';
+import { GcpBlobStorageConnector } from '@3sixty/blob-storage-connector-gcp';
 
 const connector = new GcpBlobStorageConnector({
   config: {

@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-connector-aws-s3
+# @3sixty/blob-storage-connector-aws-s3
 
 ## Classes
 

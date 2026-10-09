@@ -1,18 +1,18 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { MemoryBlobStorageConnector } from "@twin.org/blob-storage-connector-memory";
-import { BlobStorageConnectorFactory, BlobStorageMetricIds } from "@twin.org/blob-storage-models";
-import { ContextIdStore } from "@twin.org/context";
-import { ComponentFactory, Converter, Factory, Is } from "@twin.org/core";
-import { EntitySchemaFactory, EntitySchemaHelper } from "@twin.org/entity";
-import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
-import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
-import { nameof } from "@twin.org/nameof";
+import { MemoryBlobStorageConnector } from "@3sixty/blob-storage-connector-memory";
+import { BlobStorageConnectorFactory, BlobStorageMetricIds } from "@3sixty/blob-storage-models";
+import { ContextIdStore } from "@3sixty/context";
+import { ComponentFactory, Converter, Factory, Is } from "@3sixty/core";
+import { EntitySchemaFactory, EntitySchemaHelper } from "@3sixty/entity";
+import { MemoryEntityStorageConnector } from "@3sixty/entity-storage-connector-memory";
+import { EntityStorageConnectorFactory } from "@3sixty/entity-storage-models";
+import { nameof } from "@3sixty/nameof";
 import {
 	MetricType,
 	type ITelemetryComponent,
 	type ITelemetryMetric
-} from "@twin.org/telemetry-models";
+} from "@3sixty/telemetry-models";
 import { BlobStorageService } from "../src/blobStorageService.js";
 import { BlobStorageEntry } from "../src/entities/blobStorageEntry.js";
 

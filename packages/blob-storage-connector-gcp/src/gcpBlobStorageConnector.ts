@@ -1,14 +1,13 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { Storage } from "@google-cloud/storage";
 import {
 	HealthCategory,
 	HealthStatus,
 	type IHealth,
 	type IHealthProviderComponent
-} from "@twin.org/api-models";
-import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
+} from "@3sixty/api-models";
+import type { IBlobStorageConnector } from "@3sixty/blob-storage-models";
+import { ContextIdHelper, ContextIdStore } from "@3sixty/context";
 import {
 	BaseError,
 	ComponentFactory,
@@ -18,11 +17,12 @@ import {
 	Is,
 	ObjectHelper,
 	Urn
-} from "@twin.org/core";
-import { Sha256 } from "@twin.org/crypto";
-import type { ILoggingComponent } from "@twin.org/logging-models";
-import { nameof } from "@twin.org/nameof";
-import { MimeTypes } from "@twin.org/web";
+} from "@3sixty/core";
+import { Sha256 } from "@3sixty/crypto";
+import type { ILoggingComponent } from "@3sixty/logging-models";
+import { nameof } from "@3sixty/nameof";
+import { MimeTypes } from "@3sixty/web";
+import { Storage } from "@google-cloud/storage";
 import type { JWTInput } from "google-auth-library";
 import type { IGcpBlobStorageConnectorConfig } from "./models/IGcpBlobStorageConnectorConfig.js";
 import type { IGcpBlobStorageConnectorConstructorOptions } from "./models/IGcpBlobStorageConnectorConstructorOptions.js";

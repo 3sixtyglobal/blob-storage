@@ -10,6 +10,7 @@
 	"versioning": "prerelease",
 	"prerelease": true,
 	"prerelease-type": "next",
+	"last-release-sha": "44dc99a0d41087156247459c288491b70d4d66f1",
 	"packages": {
 		"packages/blob-storage-models": {
 			"package-name": "blob-storage-models",

@@ -5,7 +5,7 @@ Use these snippets to create metadata-rich entries, retrieve stored content, and
 ## BlobStorageService
 
 ```typescript
-import { BlobStorageService } from '@twin.org/blob-storage-service';
+import { BlobStorageService } from '@3sixty/blob-storage-service';
 
 const service = new BlobStorageService({
   config: {
@@ -18,7 +18,7 @@ console.log(service.className()); // BlobStorageService
 ```
 
 ```typescript
-import { BlobStorageService } from '@twin.org/blob-storage-service';
+import { BlobStorageService } from '@3sixty/blob-storage-service';
 
 const service = new BlobStorageService({
   config: {
@@ -47,7 +47,7 @@ console.log(blobEntry.blobSize); // 11
 ```
 
 ```typescript
-import { BlobStorageService } from '@twin.org/blob-storage-service';
+import { BlobStorageService } from '@3sixty/blob-storage-service';
 
 const service = new BlobStorageService({
   config: {
@@ -88,7 +88,7 @@ console.log(blobId); // blob:urn:blob:memory:7f83b1657ff1fc53
 ## BlobStorageEntry
 
 ```typescript
-import type { BlobStorageEntry } from '@twin.org/blob-storage-service';
+import type { BlobStorageEntry } from '@3sixty/blob-storage-service';
 
 const entry: BlobStorageEntry = {
   id: 'blob:urn:blob:memory:7f83b1657ff1fc53',

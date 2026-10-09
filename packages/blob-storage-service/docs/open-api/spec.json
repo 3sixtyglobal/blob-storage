@@ -1,8 +1,8 @@
 {
 	"openapi": "3.1.1",
 	"info": {
-		"title": "TWIN - Test Endpoints",
-		"description": "REST API for TWIN - Test Endpoints.",
+		"title": "3Sixty - Test Endpoints",
+		"description": "REST API for 3Sixty - Test Endpoints.",
 		"version": "1.0.0",
 		"license": {
 			"name": "Apache 2.0 License",
@@ -295,15 +295,15 @@
 										"value": {
 											"@context": [
 												"https://schema.org",
-												"https://schema.twindev.org/blob-storage/",
-												"https://schema.twindev.org/common/"
+												"https://schema.3sixty.global/blob-storage/",
+												"https://schema.3sixty.global/common/"
 											],
 											"type": "ItemList",
 											"itemListElement": [
 												{
 													"@context": [
-														"https://schema.twindev.org/blob-storage/",
-														"https://schema.twindev.org/common/",
+														"https://schema.3sixty.global/blob-storage/",
+														"https://schema.3sixty.global/common/",
 														"https://schema.org"
 													],
 													"type": "BlobStorageEntry",
@@ -334,15 +334,15 @@
 										"value": {
 											"@context": [
 												"https://schema.org",
-												"https://schema.twindev.org/blob-storage/",
-												"https://schema.twindev.org/common/"
+												"https://schema.3sixty.global/blob-storage/",
+												"https://schema.3sixty.global/common/"
 											],
 											"type": "ItemList",
 											"itemListElement": [
 												{
 													"@context": [
-														"https://schema.twindev.org/blob-storage/",
-														"https://schema.twindev.org/common/",
+														"https://schema.3sixty.global/blob-storage/",
+														"https://schema.3sixty.global/common/",
 														"https://schema.org"
 													],
 													"type": "BlobStorageEntry",
@@ -521,8 +521,8 @@
 									"blobStorageGetResponseExample": {
 										"value": {
 											"@context": [
-												"https://schema.twindev.org/blob-storage/",
-												"https://schema.twindev.org/common/",
+												"https://schema.3sixty.global/blob-storage/",
+												"https://schema.3sixty.global/common/",
 												"https://schema.org"
 											],
 											"type": "BlobStorageEntry",
@@ -550,8 +550,8 @@
 									"blobStorageGetResponseJsonLdExample": {
 										"value": {
 											"@context": [
-												"https://schema.twindev.org/blob-storage/",
-												"https://schema.twindev.org/common/",
+												"https://schema.3sixty.global/blob-storage/",
+												"https://schema.3sixty.global/common/",
 												"https://schema.org"
 											],
 											"type": "BlobStorageEntry",
@@ -1027,7 +1027,7 @@
 						"description": "The extension of the blob, will be detected if left undefined."
 					},
 					"metadata": {
-						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
+						"$ref": "https://schema.3sixty.global/json-ld/JsonLdNodeObject"
 					},
 					"disableEncryption": {
 						"type": "boolean",
@@ -1064,14 +1064,14 @@
 						"type": "array",
 						"prefixItems": [
 							{
-								"const": "https://schema.twindev.org/blob-storage/"
+								"const": "https://schema.3sixty.global/blob-storage/"
 							},
 							{
-								"const": "https://schema.twindev.org/common/"
+								"const": "https://schema.3sixty.global/common/"
 							}
 						],
 						"items": {
-							"$ref": "https://schema.twindev.org/json-ld/JsonLdContextDefinitionElement"
+							"$ref": "https://schema.3sixty.global/json-ld/JsonLdContextDefinitionElement"
 						},
 						"minItems": 2,
 						"description": "JSON-LD Context."
@@ -1116,7 +1116,7 @@
 						"description": "The extension."
 					},
 					"metadata": {
-						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
+						"$ref": "https://schema.3sixty.global/json-ld/JsonLdNodeObject"
 					},
 					"blob": {
 						"type": "string",
@@ -1143,14 +1143,14 @@
 								"const": "https://schema.org"
 							},
 							{
-								"const": "https://schema.twindev.org/blob-storage/"
+								"const": "https://schema.3sixty.global/blob-storage/"
 							},
 							{
-								"const": "https://schema.twindev.org/common/"
+								"const": "https://schema.3sixty.global/common/"
 							}
 						],
 						"items": {
-							"$ref": "https://schema.twindev.org/json-ld/JsonLdContextDefinitionElement"
+							"$ref": "https://schema.3sixty.global/json-ld/JsonLdContextDefinitionElement"
 						},
 						"minItems": 3,
 						"description": "JSON-LD Context."
@@ -1185,7 +1185,7 @@
 						"description": "The extension of the blob, will be detected if left undefined."
 					},
 					"metadata": {
-						"$ref": "https://schema.twindev.org/json-ld/JsonLdNodeObject"
+						"$ref": "https://schema.3sixty.global/json-ld/JsonLdNodeObject"
 					}
 				},
 				"description": "The body parameters."

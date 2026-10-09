@@ -1,7 +1,7 @@
 {
-	"baseUrl": "https://schema.twindev.org/blob-storage/",
+	"baseUrl": "https://schema.3sixty.global/blob-storage/",
 	"types": ["./src/models/IBlobStorageEntry.ts", "./src/models/blobStorageCompressionType.ts"],
 	"externalReferences": {
-		"JsonLd(.*)": "https://schema.twindev.org/json-ld/JsonLd$1"
+		"JsonLd(.*)": "https://schema.3sixty.global/json-ld/JsonLd$1"
 	}
 }

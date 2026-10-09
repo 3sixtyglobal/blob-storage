@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-connector-gcp
+# @3sixty/blob-storage-connector-gcp
 
 ## Classes
 

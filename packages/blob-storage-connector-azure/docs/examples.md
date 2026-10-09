@@ -5,7 +5,7 @@ Use these examples to connect to a container, store binary data, and verify retr
 ## AzureBlobStorageConnector
 
 ```typescript
-import { AzureBlobStorageConnector } from '@twin.org/blob-storage-connector-azure';
+import { AzureBlobStorageConnector } from '@3sixty/blob-storage-connector-azure';
 
 const connector = new AzureBlobStorageConnector({
   config: {
@@ -22,8 +22,8 @@ console.log(connector.className()); // AzureBlobStorageConnector
 ```
 
 ```typescript
-import { Converter } from '@twin.org/core';
-import { AzureBlobStorageConnector } from '@twin.org/blob-storage-connector-azure';
+import { Converter } from '@3sixty/core';
+import { AzureBlobStorageConnector } from '@3sixty/blob-storage-connector-azure';
 
 const connector = new AzureBlobStorageConnector({
   config: {

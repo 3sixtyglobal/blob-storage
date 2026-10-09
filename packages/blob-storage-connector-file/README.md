@@ -1,11 +1,11 @@
-# TWIN Blob Storage Connector File
+# 3Sixty Blob Storage Connector File
 
 This package stores and retrieves blobs using local file system directories or mounted volumes. It is useful for straightforward deployments and development environments that rely on direct disk-backed storage.
 
 ## Installation
 
 ```shell
-npm install @twin.org/blob-storage-connector-file
+npm install @3sixty/blob-storage-connector-file
 ```
 
 ## Examples

@@ -5,7 +5,7 @@ Use these snippets to pin content, read it back by identifier, and remove it whe
 ## IpfsBlobStorageConnector
 
 ```typescript
-import { IpfsBlobStorageConnector } from '@twin.org/blob-storage-connector-ipfs';
+import { IpfsBlobStorageConnector } from '@3sixty/blob-storage-connector-ipfs';
 
 const connector = new IpfsBlobStorageConnector({
   config: {
@@ -18,8 +18,8 @@ console.log(connector.className()); // IpfsBlobStorageConnector
 ```
 
 ```typescript
-import { Converter } from '@twin.org/core';
-import { IpfsBlobStorageConnector } from '@twin.org/blob-storage-connector-ipfs';
+import { Converter } from '@3sixty/core';
+import { IpfsBlobStorageConnector } from '@3sixty/blob-storage-connector-ipfs';
 
 const connector = new IpfsBlobStorageConnector({
   config: {

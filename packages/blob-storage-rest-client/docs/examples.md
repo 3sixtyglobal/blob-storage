@@ -5,7 +5,7 @@ Use these snippets to create, query, and manage blobs through HTTP endpoints wit
 ## BlobStorageRestClient
 
 ```typescript
-import { BlobStorageRestClient } from '@twin.org/blob-storage-rest-client';
+import { BlobStorageRestClient } from '@3sixty/blob-storage-rest-client';
 
 const client = new BlobStorageRestClient({
   endpoint: 'https://api.example.com',
@@ -16,7 +16,7 @@ console.log(client.className()); // BlobStorageRestClient
 ```
 
 ```typescript
-import { BlobStorageRestClient } from '@twin.org/blob-storage-rest-client';
+import { BlobStorageRestClient } from '@3sixty/blob-storage-rest-client';
 
 const client = new BlobStorageRestClient({
   endpoint: 'https://api.example.com',
@@ -56,9 +56,9 @@ import {
   ComparisonOperator,
   LogicalOperator,
   SortDirection
-} from '@twin.org/entity';
-import type { IBlobStorageEntry } from '@twin.org/blob-storage-models';
-import { BlobStorageRestClient } from '@twin.org/blob-storage-rest-client';
+} from '@3sixty/entity';
+import type { IBlobStorageEntry } from '@3sixty/blob-storage-models';
+import { BlobStorageRestClient } from '@3sixty/blob-storage-rest-client';
 
 const client = new BlobStorageRestClient({
   endpoint: 'https://api.example.com',
@@ -82,7 +82,7 @@ console.log(queryResult.cursor); // eyJwYWdlIjoyfQ==
 ```
 
 ```typescript
-import { BlobStorageRestClient } from '@twin.org/blob-storage-rest-client';
+import { BlobStorageRestClient } from '@3sixty/blob-storage-rest-client';
 
 const client = new BlobStorageRestClient({
   endpoint: 'https://api.example.com',

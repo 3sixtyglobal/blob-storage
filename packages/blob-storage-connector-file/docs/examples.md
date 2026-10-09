@@ -5,7 +5,7 @@ Use these snippets to store blobs on local disk for development, integration tes
 ## FileBlobStorageConnector
 
 ```typescript
-import { FileBlobStorageConnector } from '@twin.org/blob-storage-connector-file';
+import { FileBlobStorageConnector } from '@3sixty/blob-storage-connector-file';
 
 const connector = new FileBlobStorageConnector({
   config: {
@@ -21,8 +21,8 @@ console.log(connector.className()); // FileBlobStorageConnector
 ```
 
 ```typescript
-import { Converter } from '@twin.org/core';
-import { FileBlobStorageConnector } from '@twin.org/blob-storage-connector-file';
+import { Converter } from '@3sixty/core';
+import { FileBlobStorageConnector } from '@3sixty/blob-storage-connector-file';
 
 const connector = new FileBlobStorageConnector({
   config: {

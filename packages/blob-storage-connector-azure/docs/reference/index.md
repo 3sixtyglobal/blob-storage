@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-connector-azure
+# @3sixty/blob-storage-connector-azure
 
 ## Classes
 

@@ -1,7 +1,7 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import path from "node:path";
-import { Guards, Is } from "@twin.org/core";
+import { Guards, Is } from "@3sixty/core";
 import * as dotenv from "dotenv";
 import type { IGcpBlobStorageConnectorConfig } from "../src/models/IGcpBlobStorageConnectorConfig.js";
 

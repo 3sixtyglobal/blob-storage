@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-models
+# @3sixty/blob-storage-models
 
 ## Classes
 

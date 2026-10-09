@@ -8,6 +8,7 @@
 	"release-type": "node",
 	"initial-version": "0.0.1",
 	"versioning": "default",
+	"last-release-sha": "168c7ea8587ceb70d69df89d56745f4f91dce895",
 	"packages": {
 		"packages/blob-storage-models": {
 			"package-name": "blob-storage-models",

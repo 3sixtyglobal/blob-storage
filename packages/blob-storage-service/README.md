@@ -1,11 +1,11 @@
-# TWIN Blob Storage Service
+# 3Sixty Blob Storage Service
 
 This package exposes service-side components and endpoint definitions for blob upload, retrieval, and management operations. It bridges shared blob models with application service layers so APIs can be published with consistent behaviour.
 
 ## Installation
 
 ```shell
-npm install @twin.org/blob-storage-service
+npm install @3sixty/blob-storage-service
 ```
 
 ## Examples

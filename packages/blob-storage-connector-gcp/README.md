@@ -1,11 +1,11 @@
-# TWIN Blob Storage Connector GCP
+# 3Sixty Blob Storage Connector GCP
 
 This package integrates blob storage workflows with [Google Cloud Storage](https://cloud.google.com/storage). It supports deployments that rely on managed GCP buckets for object persistence and retrieval.
 
 ## Installation
 
 ```shell
-npm install @twin.org/blob-storage-connector-gcp
+npm install @3sixty/blob-storage-connector-gcp
 ```
 
 ## Docker
@@ -13,7 +13,7 @@ npm install @twin.org/blob-storage-connector-gcp
 To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-docker run -d --name twin-blob-storage-gcp -p 4443:4443 fsouza/fake-gcs-server:latest -scheme http -external-url http://localhost:4443
+docker run -d --name 3sixty-blob-storage-gcp -p 4443:4443 fsouza/fake-gcs-server:latest -scheme http -external-url http://localhost:4443
 ```
 
 ## Examples

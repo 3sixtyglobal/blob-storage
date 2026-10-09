@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-service
+# @3sixty/blob-storage-service
 
 ## Classes
 

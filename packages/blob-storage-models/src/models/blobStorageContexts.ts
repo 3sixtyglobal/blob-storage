@@ -9,32 +9,32 @@ export const BlobStorageContexts = {
 	/**
 	 * The canonical RDF namespace URI for Blob Storage.
 	 */
-	Namespace: "https://schema.twindev.org/blob-storage/",
+	Namespace: "https://schema.3sixty.global/blob-storage/",
 
 	/**
 	 * The value to use in JSON-LD context for Blob Storage.
 	 */
-	Context: "https://schema.twindev.org/blob-storage/",
+	Context: "https://schema.3sixty.global/blob-storage/",
 
 	/**
 	 * The JSON-LD Context URL.
 	 */
-	JsonLdContext: "https://schema.twindev.org/blob-storage/types.jsonld",
+	JsonLdContext: "https://schema.3sixty.global/blob-storage/types.jsonld",
 
 	/**
 	 * The canonical RDF namespace URI for TWIN Common.
 	 */
-	NamespaceCommon: "https://schema.twindev.org/common/",
+	NamespaceCommon: "https://schema.3sixty.global/common/",
 
 	/**
 	 * The value to use in JSON-LD context for TWIN Common.
 	 */
-	ContextCommon: "https://schema.twindev.org/common/",
+	ContextCommon: "https://schema.3sixty.global/common/",
 
 	/**
 	 * The JSON-LD Context URL for TWIN Common.
 	 */
-	JsonLdContextCommon: "https://schema.twindev.org/common/types.jsonld"
+	JsonLdContextCommon: "https://schema.3sixty.global/common/types.jsonld"
 } as const;
 
 /**

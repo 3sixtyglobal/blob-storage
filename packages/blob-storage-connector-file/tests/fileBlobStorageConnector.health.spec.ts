@@ -1,9 +1,9 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
 import { rm } from "node:fs/promises";
-import { HealthStatus } from "@twin.org/api-models";
-import { ContextIdStore } from "@twin.org/context";
-import { Converter, RandomHelper } from "@twin.org/core";
+import { HealthStatus } from "@3sixty/api-models";
+import { ContextIdStore } from "@3sixty/context";
+import { Converter, RandomHelper } from "@3sixty/core";
 import { FileBlobStorageConnector } from "../src/fileBlobStorageConnector.js";
 
 const TEST_DIRECTORY_ROOT = "./.tmp/";

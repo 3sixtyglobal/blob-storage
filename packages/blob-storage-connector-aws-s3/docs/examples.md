@@ -5,7 +5,7 @@ Use these snippets to configure cloud storage quickly and validate read and writ
 ## S3BlobStorageConnector
 
 ```typescript
-import { S3BlobStorageConnector } from '@twin.org/blob-storage-connector-aws-s3';
+import { S3BlobStorageConnector } from '@3sixty/blob-storage-connector-aws-s3';
 
 const connector = new S3BlobStorageConnector({
   config: {
@@ -24,8 +24,8 @@ console.log(connector.className()); // S3BlobStorageConnector
 ```
 
 ```typescript
-import { Converter } from '@twin.org/core';
-import { S3BlobStorageConnector } from '@twin.org/blob-storage-connector-aws-s3';
+import { Converter } from '@3sixty/core';
+import { S3BlobStorageConnector } from '@3sixty/blob-storage-connector-aws-s3';
 
 const connector = new S3BlobStorageConnector({
   config: {

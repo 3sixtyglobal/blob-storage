@@ -1,6 +1,6 @@
 // Copyright 2026 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { HttpBodyLimit } from "@twin.org/api-models";
+import { HttpBodyLimit } from "@3sixty/api-models";
 import { generateRestRoutesBlobStorage } from "../src/blobStorageRoutes.js";
 
 describe("blobStorageRoutes", () => {

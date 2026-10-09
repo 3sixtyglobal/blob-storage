@@ -1,4 +1,4 @@
-# TWIN Blob Storage
+# 3Sixty Blob Storage
 
 This repository provides a modular blob storage stack for applications that need reliable handling of binary content across local and cloud environments. It combines shared contracts, service building blocks, client access utilities, and interchangeable connectors so teams can adopt one consistent approach to identifiers, metadata, and lifecycle operations.
 

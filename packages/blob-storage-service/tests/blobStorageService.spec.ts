@@ -1,23 +1,23 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import { MemoryBlobStorageConnector } from "@twin.org/blob-storage-connector-memory";
+import { MemoryBlobStorageConnector } from "@3sixty/blob-storage-connector-memory";
 import {
 	BlobStorageCompressionType,
 	BlobStorageConnectorFactory
-} from "@twin.org/blob-storage-models";
-import { ContextIdStore } from "@twin.org/context";
-import { Converter } from "@twin.org/core";
-import { EntitySchemaFactory, EntitySchemaHelper } from "@twin.org/entity";
-import { MemoryEntityStorageConnector } from "@twin.org/entity-storage-connector-memory";
-import { EntityStorageConnectorFactory } from "@twin.org/entity-storage-models";
-import { nameof } from "@twin.org/nameof";
+} from "@3sixty/blob-storage-models";
+import { ContextIdStore } from "@3sixty/context";
+import { Converter } from "@3sixty/core";
+import { EntitySchemaFactory, EntitySchemaHelper } from "@3sixty/entity";
+import { MemoryEntityStorageConnector } from "@3sixty/entity-storage-connector-memory";
+import { EntityStorageConnectorFactory } from "@3sixty/entity-storage-models";
+import { nameof } from "@3sixty/nameof";
 import {
 	EntityStorageVaultConnector,
 	type VaultKey,
 	type VaultSecret,
 	initSchema as initSchemaVault
-} from "@twin.org/vault-connector-entity-storage";
-import { VaultConnectorFactory, VaultKeyType } from "@twin.org/vault-models";
+} from "@3sixty/vault-connector-entity-storage";
+import { VaultConnectorFactory, VaultKeyType } from "@3sixty/vault-models";
 import { BlobStorageService } from "../src/blobStorageService.js";
 import { BlobStorageEntry } from "../src/entities/blobStorageEntry.js";
 
@@ -148,8 +148,8 @@ describe("blob-storage-service", () => {
 		const result = await service.get(id, { includeContent: true });
 		expect(result).toEqual({
 			"@context": [
-				"https://schema.twindev.org/blob-storage/",
-				"https://schema.twindev.org/common/",
+				"https://schema.3sixty.global/blob-storage/",
+				"https://schema.3sixty.global/common/",
 				"https://schema.org"
 			],
 			type: "BlobStorageEntry",
@@ -173,8 +173,8 @@ describe("blob-storage-service", () => {
 		const result = await service.get(id, { includeContent: true });
 		expect(result).toEqual({
 			"@context": [
-				"https://schema.twindev.org/blob-storage/",
-				"https://schema.twindev.org/common/",
+				"https://schema.3sixty.global/blob-storage/",
+				"https://schema.3sixty.global/common/",
 				"https://schema.org"
 			],
 			type: "BlobStorageEntry",
@@ -202,8 +202,8 @@ describe("blob-storage-service", () => {
 		const result = await service.get(id, { includeContent: true });
 		expect(result).toEqual({
 			"@context": [
-				"https://schema.twindev.org/blob-storage/",
-				"https://schema.twindev.org/common/",
+				"https://schema.3sixty.global/blob-storage/",
+				"https://schema.3sixty.global/common/",
 				"https://schema.org"
 			],
 			type: "BlobStorageEntry",
@@ -244,8 +244,8 @@ describe("blob-storage-service", () => {
 		const result = await service.get(id);
 		expect(result).toEqual({
 			"@context": [
-				"https://schema.twindev.org/blob-storage/",
-				"https://schema.twindev.org/common/",
+				"https://schema.3sixty.global/blob-storage/",
+				"https://schema.3sixty.global/common/",
 				"https://schema.org",
 				"https://www.w3.org/ns/activitystreams"
 			],
@@ -393,8 +393,8 @@ describe("blob-storage-service", () => {
 		expect(entriesAndCursor.entries).toEqual({
 			"@context": [
 				"https://schema.org",
-				"https://schema.twindev.org/blob-storage/",
-				"https://schema.twindev.org/common/",
+				"https://schema.3sixty.global/blob-storage/",
+				"https://schema.3sixty.global/common/",
 				"https://www.w3.org/ns/activitystreams"
 			],
 			type: "ItemList",

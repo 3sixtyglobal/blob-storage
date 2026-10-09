@@ -5,9 +5,9 @@ import {
 	HealthStatus,
 	type IHealth,
 	type IHealthProviderComponent
-} from "@twin.org/api-models";
-import type { IBlobStorageConnector } from "@twin.org/blob-storage-models";
-import { ContextIdHelper, ContextIdStore } from "@twin.org/context";
+} from "@3sixty/api-models";
+import type { IBlobStorageConnector } from "@3sixty/blob-storage-models";
+import { ContextIdHelper, ContextIdStore } from "@3sixty/context";
 import {
 	BaseError,
 	ComponentFactory,
@@ -17,11 +17,11 @@ import {
 	Is,
 	StringHelper,
 	Urn
-} from "@twin.org/core";
-import { Blake2b } from "@twin.org/crypto";
-import type { ILoggingComponent } from "@twin.org/logging-models";
-import { nameof } from "@twin.org/nameof";
-import { HeaderHelper, HeaderTypes, HttpMethod, MimeTypes } from "@twin.org/web";
+} from "@3sixty/core";
+import { Blake2b } from "@3sixty/crypto";
+import type { ILoggingComponent } from "@3sixty/logging-models";
+import { nameof } from "@3sixty/nameof";
+import { HeaderHelper, HeaderTypes, HttpMethod, MimeTypes } from "@3sixty/web";
 import type { IIpfsBlobStorageConnectorConfig } from "./models/IIpfsBlobStorageConnectorConfig.js";
 import type { IIpfsBlobStorageConnectorConstructorOptions } from "./models/IIpfsBlobStorageConnectorConstructorOptions.js";
 

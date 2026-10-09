@@ -11,8 +11,8 @@ import {
 	type IBlobStorageConnector,
 	type IBlobStorageEntry,
 	type IBlobStorageEntryList
-} from "@twin.org/blob-storage-models";
-import { ContextIdHelper, ContextIdKeys, ContextIdStore } from "@twin.org/context";
+} from "@3sixty/blob-storage-models";
+import { ContextIdHelper, ContextIdKeys, ContextIdStore } from "@3sixty/context";
 import {
 	ComponentFactory,
 	Compression,
@@ -24,33 +24,33 @@ import {
 	Urn,
 	Validation,
 	type IValidationFailure
-} from "@twin.org/core";
-import { IntegrityAlgorithm, IntegrityHelper } from "@twin.org/crypto";
-import { JsonLdHelper, JsonLdProcessor, type IJsonLdNodeObject } from "@twin.org/data-json-ld";
+} from "@3sixty/core";
+import { IntegrityAlgorithm, IntegrityHelper } from "@3sixty/crypto";
+import { JsonLdHelper, JsonLdProcessor, type IJsonLdNodeObject } from "@3sixty/data-json-ld";
 import {
 	ComparisonOperator,
 	EntitySchemaHelper,
 	LogicalOperator,
 	SortDirection,
 	type EntityCondition
-} from "@twin.org/entity";
+} from "@3sixty/entity";
 import {
 	EntityStorageConnectorFactory,
 	type IEntityStorageConnector
-} from "@twin.org/entity-storage-models";
-import { nameof } from "@twin.org/nameof";
+} from "@3sixty/entity-storage-models";
+import { nameof } from "@3sixty/nameof";
 import {
 	SchemaOrgContexts,
 	SchemaOrgDataTypes,
 	SchemaOrgTypes
-} from "@twin.org/standards-schema-org";
-import { MetricHelper, type ITelemetryComponent } from "@twin.org/telemetry-models";
+} from "@3sixty/standards-schema-org";
+import { MetricHelper, type ITelemetryComponent } from "@3sixty/telemetry-models";
 import {
 	VaultConnectorFactory,
 	VaultEncryptionType,
 	type IVaultConnector
-} from "@twin.org/vault-models";
-import { MimeTypeHelper } from "@twin.org/web";
+} from "@3sixty/vault-models";
+import { MimeTypeHelper } from "@3sixty/web";
 import type { BlobStorageEntry } from "./entities/blobStorageEntry.js";
 import type { IBlobStorageServiceConstructorOptions } from "./models/IBlobStorageServiceConstructorOptions.js";
 

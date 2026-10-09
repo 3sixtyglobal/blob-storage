@@ -5,7 +5,7 @@ Use these snippets to test fast in-memory blob workflows where you want determin
 ## MemoryBlobStorageConnector
 
 ```typescript
-import { MemoryBlobStorageConnector } from '@twin.org/blob-storage-connector-memory';
+import { MemoryBlobStorageConnector } from '@3sixty/blob-storage-connector-memory';
 
 const connector = new MemoryBlobStorageConnector({
   partitionContextIds: ['tenant', 'environment']
@@ -15,8 +15,8 @@ console.log(connector.className()); // MemoryBlobStorageConnector
 ```
 
 ```typescript
-import { Converter } from '@twin.org/core';
-import { MemoryBlobStorageConnector } from '@twin.org/blob-storage-connector-memory';
+import { Converter } from '@3sixty/core';
+import { MemoryBlobStorageConnector } from '@3sixty/blob-storage-connector-memory';
 
 const connector = new MemoryBlobStorageConnector();
 

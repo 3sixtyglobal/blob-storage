@@ -13,7 +13,7 @@ import {
 	type IRestRoute,
 	type IRestRouteResponseOptions,
 	type ITag
-} from "@twin.org/api-models";
+} from "@3sixty/api-models";
 import {
 	BlobStorageCompressionType,
 	BlobStorageContexts,
@@ -29,18 +29,18 @@ import {
 	type IBlobStorageListResponse,
 	type IBlobStorageRemoveRequest,
 	type IBlobStorageUpdateRequest
-} from "@twin.org/blob-storage-models";
-import { ContextIdStore } from "@twin.org/context";
-import { Coerce, ComponentFactory, Converter, Guards, Is, StringHelper } from "@twin.org/core";
-import { nameof } from "@twin.org/nameof";
-import { SchemaOrgContexts, SchemaOrgTypes } from "@twin.org/standards-schema-org";
+} from "@3sixty/blob-storage-models";
+import { ContextIdStore } from "@3sixty/context";
+import { Coerce, ComponentFactory, Converter, Guards, Is, StringHelper } from "@3sixty/core";
+import { nameof } from "@3sixty/nameof";
+import { SchemaOrgContexts, SchemaOrgTypes } from "@3sixty/standards-schema-org";
 import {
 	HeaderTypes,
 	HttpStatusCode,
 	type IHttpHeaders,
 	MimeTypeHelper,
 	MimeTypes
-} from "@twin.org/web";
+} from "@3sixty/web";
 
 /**
  * The source used when communicating about these routes.

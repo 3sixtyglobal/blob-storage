@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-connector-file
+# @3sixty/blob-storage-connector-file
 
 ## Classes
 

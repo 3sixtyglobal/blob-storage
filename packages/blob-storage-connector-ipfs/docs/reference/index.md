@@ -1,4 +1,4 @@
-# @twin.org/blob-storage-connector-ipfs
+# @3sixty/blob-storage-connector-ipfs
 
 ## Classes
 

@@ -1,11 +1,11 @@
-# TWIN Blob Storage Connector IPFS
+# 3Sixty Blob Storage Connector IPFS
 
 This package integrates blob workflows with [IPFS](https://ipfs.tech/) for decentralised, content-addressed storage and retrieval. It supports distributed scenarios where immutable content addressing is important.
 
 ## Installation
 
 ```shell
-npm install @twin.org/blob-storage-connector-ipfs
+npm install @3sixty/blob-storage-connector-ipfs
 ```
 
 ## Docker
@@ -13,7 +13,7 @@ npm install @twin.org/blob-storage-connector-ipfs
 To perform testing of this component it may be necessary to launch a local instance to communicate with.
 
 ```shell
-docker run -d --name twin-blob-storage-ipfs -p 24001:4001 -p 24001:4001/udp -p 28080:8080 -p 25001:5001 ipfs/kubo:latest
+docker run -d --name 3sixty-blob-storage-ipfs -p 24001:4001 -p 24001:4001/udp -p 28080:8080 -p 25001:5001 ipfs/kubo:latest
 ```
 
 ## Examples

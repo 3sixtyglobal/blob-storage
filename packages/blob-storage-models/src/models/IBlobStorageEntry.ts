@@ -1,6 +1,6 @@
 // Copyright 2024 IOTA Stiftung.
 // SPDX-License-Identifier: Apache-2.0.
-import type { IJsonLdContextDefinitionElement, IJsonLdNodeObject } from "@twin.org/data-json-ld";
+import type { IJsonLdContextDefinitionElement, IJsonLdNodeObject } from "@3sixty/data-json-ld";
 import type { BlobStorageCompressionType } from "./blobStorageCompressionType.js";
 import type { BlobStorageContexts } from "./blobStorageContexts.js";
 import type { BlobStorageTypes } from "./blobStorageTypes.js";

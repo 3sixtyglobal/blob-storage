@@ -1,11 +1,11 @@
-# TWIN Blob Storage Connector Memory
+# 3Sixty Blob Storage Connector Memory
 
 This package provides an in-memory connector for blob storage workflows where persistence is not required. It is suited to local development, automated testing, and fast feedback loops that benefit from isolated, ephemeral storage.
 
 ## Installation
 
 ```shell
-npm install @twin.org/blob-storage-connector-memory
+npm install @3sixty/blob-storage-connector-memory
 ```
 
 ## Examples
