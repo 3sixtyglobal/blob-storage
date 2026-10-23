@@ -1,6 +1,6 @@
 {
 	"name": "@3sixty/blob-storage-connector-file",
-	"version": "0.20.0-next.0",
+	"version": "0.20.0-next.1",
 	"description": "Persists blobs to local directories or mounted volumes through a file system connector.",
 	"repository": {
 		"type": "git",
@@ -29,7 +29,7 @@
 	},
 	"dependencies": {
 		"@3sixty/api-models": "next",
-		"@3sixty/blob-storage-models": "0.20.0-next.0",
+		"@3sixty/blob-storage-models": "0.20.0-next.1",
 		"@3sixty/context": "next",
 		"@3sixty/core": "next",
 		"@3sixty/crypto": "next",
