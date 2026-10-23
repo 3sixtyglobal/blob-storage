@@ -245,7 +245,7 @@ importers:
         specifier: next
         version: 0.20.0-next.1
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -315,7 +315,7 @@ importers:
         specifier: next
         version: 0.20.0-next.1
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -385,7 +385,7 @@ importers:
         specifier: next
         version: 0.20.0-next.1
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -464,7 +464,7 @@ importers:
         specifier: next
         version: 0.20.0-next.1
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -540,7 +540,7 @@ importers:
         specifier: next
         version: 0.20.0-next.1
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -610,7 +610,7 @@ importers:
         specifier: next
         version: 0.20.0-next.1
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -763,7 +763,7 @@ importers:
         version: 0.20.0-next.2
     devDependencies:
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-models
       '@3sixty/nameof-transformer':
         specifier: next
@@ -811,7 +811,7 @@ importers:
         specifier: next
         version: 0.20.0-next.1
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -848,7 +848,7 @@ importers:
         version: 0.20.0-next.2
     devDependencies:
       '@3sixty/blob-storage-connector-memory':
-        specifier: 0.20.0-next.0
+        specifier: 0.20.0-next.1
         version: link:../blob-storage-connector-memory
       '@3sixty/entity-storage-connector-memory':
         specifier: next
@@ -867,7 +867,7 @@ importers:
         version: 0.20.0-next.2
       '@3sixty/vault-connector-entity-storage':
         specifier: next
-        version: 0.20.0-next.0
+        version: 0.20.0-next.1
       '@vitest/coverage-v8':
         specifier: 5.0.5
         version: 5.0.5(vitest@5.0.5)
@@ -1003,12 +1003,8 @@ packages:
     engines: {node: '>=24.0.0'}
     hasBin: true
 
-  '@3sixty/vault-connector-entity-storage@0.20.0-next.0':
-    resolution: {integrity: sha512-W1SgX1nFgDZYd5Dbjib4KtNK9dkwjMTfTztQqCiDq4kGiRoYo5oqbGazZ8edSXInawGiU+/FwauYjwh5/B+XeQ==}
-    engines: {node: '>=24.0.0'}
-
-  '@3sixty/vault-models@0.20.0-next.0':
-    resolution: {integrity: sha512-6XQPJ+IKkiue0xTLCD2VtZP+HjokVEklkZuMYiOTFmFDGX1H5Ai+Qx3F4jO9jXvfP5bNjce4b5byhuPKC49N0A==}
+  '@3sixty/vault-connector-entity-storage@0.20.0-next.1':
+    resolution: {integrity: sha512-gPF8l3jxXihS7s+pvZKUsDHIEMiBAZC3nrAbrnTHvPBY6o3501qwww2q1wbGRc16RWdqC1AkmOAhusakPiMQ0Q==}
     engines: {node: '>=24.0.0'}
 
   '@3sixty/vault-models@0.20.0-next.1':
@@ -4803,20 +4799,14 @@ snapshots:
       glob: 13.0.6
       typescript: 6.0.3
 
-  '@3sixty/vault-connector-entity-storage@0.20.0-next.0':
+  '@3sixty/vault-connector-entity-storage@0.20.0-next.1':
     dependencies:
       '@3sixty/core': 0.20.0-next.2
       '@3sixty/crypto': 0.20.0-next.2
       '@3sixty/entity': 0.20.0-next.2
       '@3sixty/entity-storage-models': 0.20.0-next.1
       '@3sixty/nameof': 0.20.0-next.2
-      '@3sixty/vault-models': 0.20.0-next.0
-
-  '@3sixty/vault-models@0.20.0-next.0':
-    dependencies:
-      '@3sixty/core': 0.20.0-next.2
-      '@3sixty/nameof': 0.20.0-next.2
-      '@3sixty/web': 0.20.0-next.2
+      '@3sixty/vault-models': 0.20.0-next.1
 
   '@3sixty/vault-models@0.20.0-next.1':
     dependencies:
