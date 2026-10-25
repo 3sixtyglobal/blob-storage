@@ -1,4 +1,5 @@
 // Copyright 2024 IOTA Stiftung.
+// Copyright 2026 3Sixty Trade Ltd.
 // SPDX-License-Identifier: Apache-2.0.
 import { MemoryBlobStorageConnector } from "@3sixty/blob-storage-connector-memory";
 import {
@@ -803,6 +804,8 @@ describe("blob-storage-service", () => {
 		});
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
+		// Fixed time, as runtimes differ in whether compression internals call Date.now
+		Date.now = vi.fn().mockImplementation(() => 1724327816272);
 		const result = await service.create(data, undefined, undefined, undefined, {
 			compress: BlobStorageCompressionType.Gzip
 		});
