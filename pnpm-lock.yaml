@@ -245,7 +245,7 @@ importers:
         specifier: next
         version: 0.20.0-next.2
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -312,7 +312,7 @@ importers:
         specifier: next
         version: 0.20.0-next.2
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -379,7 +379,7 @@ importers:
         specifier: next
         version: 0.20.0-next.2
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -440,7 +440,7 @@ importers:
         specifier: next
         version: 0.20.0-next.2
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -513,7 +513,7 @@ importers:
         specifier: next
         version: 0.20.0-next.2
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -580,7 +580,7 @@ importers:
         specifier: next
         version: 0.20.0-next.2
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -721,7 +721,7 @@ importers:
         version: 0.20.0-next.4
     devDependencies:
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-models
       '@3sixty/nameof-transformer':
         specifier: next
@@ -766,7 +766,7 @@ importers:
         specifier: next
         version: 0.20.0-next.2
       '@3sixty/blob-storage-models':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-models
       '@3sixty/context':
         specifier: next
@@ -803,7 +803,7 @@ importers:
         version: 0.20.0-next.4
     devDependencies:
       '@3sixty/blob-storage-connector-memory':
-        specifier: 0.20.0-next.1
+        specifier: 0.20.0-next.2
         version: link:../blob-storage-connector-memory
       '@3sixty/entity-storage-connector-memory':
         specifier: next
