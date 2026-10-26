@@ -1,6 +1,6 @@
 {
 	"name": "@3sixty/blob-storage-connector-ipfs",
-	"version": "0.20.0-next.1",
+	"version": "0.20.0-next.2",
 	"description": "Stores and retrieves blobs through IPFS for content-addressed and distributed workflows.",
 	"repository": {
 		"type": "git",
@@ -31,7 +31,7 @@
 	},
 	"dependencies": {
 		"@3sixty/api-models": "next",
-		"@3sixty/blob-storage-models": "0.20.0-next.1",
+		"@3sixty/blob-storage-models": "0.20.0-next.2",
 		"@3sixty/context": "next",
 		"@3sixty/core": "next",
 		"@3sixty/crypto": "next",

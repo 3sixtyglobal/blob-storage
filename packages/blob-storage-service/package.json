@@ -1,6 +1,6 @@
 {
 	"name": "@3sixty/blob-storage-service",
-	"version": "0.20.0-next.1",
+	"version": "0.20.0-next.2",
 	"description": "Exposes blob operations through service components and HTTP route definitions.",
 	"repository": {
 		"type": "git",
@@ -32,7 +32,7 @@
 	},
 	"dependencies": {
 		"@3sixty/api-models": "next",
-		"@3sixty/blob-storage-models": "0.20.0-next.1",
+		"@3sixty/blob-storage-models": "0.20.0-next.2",
 		"@3sixty/context": "next",
 		"@3sixty/core": "next",
 		"@3sixty/crypto": "next",
@@ -46,7 +46,7 @@
 		"@3sixty/web": "next"
 	},
 	"devDependencies": {
-		"@3sixty/blob-storage-connector-memory": "0.20.0-next.1",
+		"@3sixty/blob-storage-connector-memory": "0.20.0-next.2",
 		"@3sixty/entity-storage-connector-memory": "next",
 		"@3sixty/nameof-transformer": "next",
 		"@3sixty/nameof-vitest-plugin": "next",
