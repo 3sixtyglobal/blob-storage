@@ -92,7 +92,7 @@ export class BlobStorageService implements IBlobStorageComponent {
 	 * The id of the vault key to use for encryption if the service has a vault connector configured.
 	 * @internal
 	 */
-	private readonly _vaultKeyId: string | undefined;
+	private readonly _vaultKeyId?: string;
 
 	/**
 	 * The optional telemetry component for recording metrics.

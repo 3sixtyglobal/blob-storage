@@ -109,7 +109,9 @@ export class IpfsBlobStorageConnector implements IBlobStorageConnector, IHealthP
 					}
 				];
 			}
-		} catch {}
+		} catch {
+			// The API is unreachable, report it as unhealthy below.
+		}
 		return [
 			{
 				source: IpfsBlobStorageConnector.CLASS_NAME,

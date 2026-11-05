@@ -4,7 +4,6 @@
 /**
  * The types of compression for blob storage data.
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const BlobStorageCompressionType = {
 	/**
 	 * Gzip.

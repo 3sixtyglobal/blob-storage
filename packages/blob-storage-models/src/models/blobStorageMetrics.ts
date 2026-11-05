@@ -6,7 +6,6 @@ import { BlobStorageMetricIds } from "./blobStorageMetricIds.js";
 /**
  * Metrics registered by the blob storage service.
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const BlobStorageMetrics: ITelemetryMetric[] = [
 	{ id: BlobStorageMetricIds.BlobCreated, label: "Blobs created", type: MetricType.Counter },
 	{ id: BlobStorageMetricIds.BlobRetrieved, label: "Blobs retrieved", type: MetricType.Counter },

@@ -8,7 +8,7 @@ import {
 } from "@3sixty/blob-storage-models";
 import { GuardError } from "@3sixty/core";
 import { SchemaOrgContexts, SchemaOrgTypes } from "@3sixty/standards-schema-org";
-import { HttpMethod } from "@3sixty/web";
+import { HttpMethod, MimeTypes } from "@3sixty/web";
 import { BlobStorageRestClient } from "../src/blobStorageRestClient.js";
 import {
 	createdResponse,
@@ -91,11 +91,11 @@ describe("BlobStorageRestClient", () => {
 		test("sends encodingFormat in the request body when provided", async () => {
 			fetchMock.mockResolvedValueOnce(createdResponse(LOCATION));
 
-			await client.create(TEST_BLOB_BASE64, "text/plain");
+			await client.create(TEST_BLOB_BASE64, MimeTypes.PlainText);
 
 			const [, options] = fetchMock.mock.calls[0];
 			const body = JSON.parse(options.body);
-			expect(body.encodingFormat).toBe("text/plain");
+			expect(body.encodingFormat).toBe(MimeTypes.PlainText);
 		});
 
 		test("sends fileExtension in the request body when provided", async () => {
@@ -228,11 +228,11 @@ describe("BlobStorageRestClient", () => {
 		test("sends encodingFormat in the request body when provided", async () => {
 			fetchMock.mockResolvedValueOnce(noContentResponse());
 
-			await client.update(BLOB_ID, "image/png");
+			await client.update(BLOB_ID, MimeTypes.Png);
 
 			const [, options] = fetchMock.mock.calls[0];
 			const body = JSON.parse(options.body);
-			expect(body.encodingFormat).toBe("image/png");
+			expect(body.encodingFormat).toBe(MimeTypes.Png);
 		});
 
 		test("sends fileExtension in the request body when provided", async () => {
@@ -327,7 +327,7 @@ describe("BlobStorageRestClient", () => {
 				ok: true,
 				status: 200,
 				headers: new Headers({
-					"content-type": "application/json",
+					"content-type": MimeTypes.Json,
 					link: `<${ENDPOINT}/${PREFIX}?cursor=page2>; rel="next"`
 				}),
 				json: async () => TEST_BLOB_ENTRY_LIST

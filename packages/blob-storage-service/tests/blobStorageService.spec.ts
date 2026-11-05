@@ -19,6 +19,7 @@ import {
 	initSchema as initSchemaVault
 } from "@3sixty/vault-connector-entity-storage";
 import { VaultConnectorFactory, VaultKeyType } from "@3sixty/vault-models";
+import { MimeTypes } from "@3sixty/web";
 import { BlobStorageService } from "../src/blobStorageService.js";
 import { BlobStorageEntry } from "../src/entities/blobStorageEntry.js";
 
@@ -80,7 +81,7 @@ describe("blob-storage-service", () => {
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				isEncrypted: false
 			}
 		]);
@@ -101,7 +102,7 @@ describe("blob-storage-service", () => {
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				fileExtension: "txt",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				isEncrypted: false
 			}
 		]);
@@ -126,7 +127,7 @@ describe("blob-storage-service", () => {
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				isEncrypted: false,
 				metadata: {
 					"@context": "https://schema.org",
@@ -159,7 +160,7 @@ describe("blob-storage-service", () => {
 			integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 			dateCreated: "2024-08-22T11:55:16.271Z",
 			fileExtension: "txt",
-			encodingFormat: "text/plain",
+			encodingFormat: MimeTypes.PlainText,
 			blob: "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==",
 			isEncrypted: false
 		});
@@ -182,7 +183,7 @@ describe("blob-storage-service", () => {
 			id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 			fileExtension: "txt",
 			dateCreated: "2024-08-22T11:55:16.271Z",
-			encodingFormat: "text/plain",
+			encodingFormat: MimeTypes.PlainText,
 			blobSize: 43,
 			integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 			blob: "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==",
@@ -211,7 +212,7 @@ describe("blob-storage-service", () => {
 			id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 			fileExtension: "txt",
 			dateCreated: "2024-08-22T11:56:56.272Z",
-			encodingFormat: "text/plain",
+			encodingFormat: MimeTypes.PlainText,
 			blobSize: 43,
 			integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 			blob: "VGhlIHF1aWNrIGJyb3duIGZveCBqdW1wcyBvdmVyIHRoZSBsYXp5IGRvZw==",
@@ -254,7 +255,7 @@ describe("blob-storage-service", () => {
 			id: "blob:memory:d7a8fbb307d7809469ca9abcb0082e4f8d5651e46d3cdb762d02d0bf37c9e592",
 			fileExtension: "txt",
 			dateCreated: "2024-08-22T11:56:56.272Z",
-			encodingFormat: "text/plain",
+			encodingFormat: MimeTypes.PlainText,
 			blobSize: 43,
 			integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 			isEncrypted: false,
@@ -291,7 +292,7 @@ describe("blob-storage-service", () => {
 				fileExtension: "txt",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				dateModified: "2024-08-22T11:56:56.272Z",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				blobSize: 43,
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				isEncrypted: false,
@@ -321,7 +322,7 @@ describe("blob-storage-service", () => {
 				fileExtension: "txt",
 				dateCreated: "2024-08-22T11:55:16.271Z",
 				dateModified: "2024-08-22T11:56:56.272Z",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				blobSize: 43,
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				isEncrypted: false,
@@ -404,7 +405,7 @@ describe("blob-storage-service", () => {
 					id: "blob:memory:29047d3b56d7e6f3cdaed85ffd549d86badf7241d245aa66102f556b0e0e0946",
 					type: "BlobStorageEntry",
 					dateCreated: "2024-08-22T11:56:56.272Z",
-					encodingFormat: "text/plain",
+					encodingFormat: MimeTypes.PlainText,
 					blobSize: 44,
 					integrity: "sha256-KQR9O1bX5vPNrthf/VSdhrrfckHSRapmEC9Vaw4OCUY=",
 					fileExtension: "txt",
@@ -427,7 +428,7 @@ describe("blob-storage-service", () => {
 					id: "blob:memory:35bbc692cc25c4ed8417eb2a78eba260ea6b166830a8c1e236a1131dd041c632",
 					type: "BlobStorageEntry",
 					dateCreated: "2024-08-22T11:56:56.272Z",
-					encodingFormat: "text/plain",
+					encodingFormat: MimeTypes.PlainText,
 					blobSize: 44,
 					integrity: "sha256-NbvGkswlxO2EF+sqeOuiYOprFmgwqMHiNqETHdBBxjI=",
 					fileExtension: "txt",
@@ -450,7 +451,7 @@ describe("blob-storage-service", () => {
 					id: "blob:memory:199998607d2fe64c9e6cac5522ba5f62ea87e0608221411cfc2b4994de4fef63",
 					type: "BlobStorageEntry",
 					dateCreated: "2024-08-22T11:56:56.272Z",
-					encodingFormat: "text/plain",
+					encodingFormat: MimeTypes.PlainText,
 					blobSize: 44,
 					integrity: "sha256-GZmYYH0v5kyebKxVIrpfYuqH4GCCIUEc/CtJlN5P72M=",
 					fileExtension: "txt",
@@ -525,7 +526,7 @@ describe("blob-storage-service", () => {
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				isEncrypted: true
 			}
 		]);
@@ -574,7 +575,7 @@ describe("blob-storage-service", () => {
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				isEncrypted: false
 			}
 		]);
@@ -623,7 +624,7 @@ describe("blob-storage-service", () => {
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				isEncrypted: true
 			}
 		]);
@@ -749,14 +750,14 @@ describe("blob-storage-service", () => {
 		const dataBytes = Converter.utf8ToBytes("The quick brown fox jumps over the lazy dog");
 		const data = Converter.bytesToBase64(dataBytes);
 
-		const id1 = await service.create(data, "application/pdf", "pdf");
-		const id2 = await service.create(data, "image/png", "png");
+		const id1 = await service.create(data, MimeTypes.Pdf, "pdf");
+		const id2 = await service.create(data, MimeTypes.Png, "png");
 
 		expect(id1).toBe(id2);
 
 		const store = await entityStorage.getStore();
 		expect(store.length).toBe(1);
-		expect(store[0].encodingFormat).toBe("application/pdf");
+		expect(store[0].encodingFormat).toBe(MimeTypes.Pdf);
 		expect(store[0].fileExtension).toBe("pdf");
 	});
 
@@ -816,7 +817,7 @@ describe("blob-storage-service", () => {
 				integrity: "sha256-16j7swfXgJRpypq8sAguT41WUeRtPNt2LQLQvzfJ5ZI=",
 				dateCreated: "2024-08-22T11:56:56.272Z",
 				fileExtension: "txt",
-				encodingFormat: "text/plain",
+				encodingFormat: MimeTypes.PlainText,
 				isEncrypted: false,
 				compression: BlobStorageCompressionType.Gzip
 			}

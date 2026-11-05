@@ -4,7 +4,6 @@
 /**
  * The types of blob storage data.
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const BlobStorageTypes = {
 	/**
 	 * Represents blob storage entry.

@@ -6,6 +6,5 @@ import type { IBlobStorageConnector } from "../models/IBlobStorageConnector.js";
 /**
  * Factory for creating blob storage connectors.
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const BlobStorageConnectorFactory =
 	Factory.createFactory<IBlobStorageConnector>("blob-storage");

@@ -4,7 +4,6 @@
 /**
  * The contexts of blob storage data.
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const BlobStorageContexts = {
 	/**
 	 * The canonical RDF namespace URI for Blob Storage.

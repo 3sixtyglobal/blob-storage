@@ -4,7 +4,6 @@
 /**
  * The metric IDs for the blob storage domain.
  */
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export const BlobStorageMetricIds = {
 	/**
 	 * Number of blobs created.
