@@ -1,4 +1,5 @@
 // Copyright 2024 IOTA Stiftung.
+// Copyright 2026 3Sixty Trade Ltd.
 // SPDX-License-Identifier: Apache-2.0.
 import { MemoryBlobStorageConnector } from "@3sixty/blob-storage-connector-memory";
 import { BlobStorageConnectorFactory, BlobStorageMetricIds } from "@3sixty/blob-storage-models";
@@ -18,7 +19,7 @@ import { BlobStorageEntry } from "../src/entities/blobStorageEntry.js";
 
 const TEST_BLOB = Converter.bytesToBase64(Converter.utf8ToBytes("hello metrics"));
 
-interface MetricValueEntry {
+interface IMetricValueEntry {
 	id: string;
 	value: "inc" | "dec" | number;
 	customData?: { [key: string]: unknown };
@@ -27,10 +28,10 @@ interface MetricValueEntry {
 function makeMockTelemetry(): {
 	component: ITelemetryComponent;
 	created: ITelemetryMetric[];
-	values: MetricValueEntry[];
+	values: IMetricValueEntry[];
 } {
 	const created: ITelemetryMetric[] = [];
-	const values: MetricValueEntry[] = [];
+	const values: IMetricValueEntry[] = [];
 	const component: ITelemetryComponent = {
 		className: () => "MockTelemetry",
 		start: async () => {},
